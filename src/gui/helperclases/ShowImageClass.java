@@ -19,7 +19,7 @@ public class ShowImageClass {
     }
     public Image showImage(String imageName) {
         if (imageName != null) {
-            String imagePath = "src/resources/images/" + imageName;
+            String imagePath = "resources/images/" + imageName;
             Image eventImage = new Image(new File(imagePath).toURI().toString());
             return eventImage;
         }
