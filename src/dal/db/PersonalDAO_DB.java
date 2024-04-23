@@ -45,7 +45,7 @@ public class PersonalDAO_DB implements IPersonal {
          * get the userid from the user that is trying to log in, and is checking for
          * if the password  matches that user.
          */ // "SELECT * FROM FuckEASVBar.dbo.Worker
-        String sql = "SELECT * FROM FuckEASVBar.dbo.Worker where PersonalName = ? and PersonalPassword = ?";
+        String sql = "SELECT * FROM SparksExamSchneider.dbo.Personal where PersonalName = ? and PersonalPassword = ?";
 
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)){

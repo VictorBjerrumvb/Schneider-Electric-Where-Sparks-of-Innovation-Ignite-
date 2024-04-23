@@ -13,7 +13,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("fxml/LoginView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("resources/fxml/LoginView.fxml"));
         Parent root = loader.load();
         primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Schneider");

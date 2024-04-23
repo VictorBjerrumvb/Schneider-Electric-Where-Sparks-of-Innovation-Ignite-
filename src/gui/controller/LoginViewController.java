@@ -2,6 +2,7 @@ package gui.controller;
 
 import be.Personal;
 import bll.PersonalManager;
+import gui.helperclases.ShowImageClass;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -10,22 +11,23 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class LoginViewController {
+
     @FXML
     private MFXPasswordField txtFieldPassword;
     @FXML
     private MFXTextField txtFieldUsername;
-    @FXML
-    private GridPane backGround;
     @FXML
     private MFXButton btnLogin1;
     @FXML
     private MFXButton btnLogin;
 
     private PersonalManager personalManager = new PersonalManager();
+
     @FXML
     private void handleLogin(ActionEvent actionEvent) throws Exception {
         String userName = txtFieldUsername.getText();
