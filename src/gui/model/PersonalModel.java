@@ -1,4 +1,4 @@
-package gui.controller;
+package gui.model;
 
 import be.Personal;
 import bll.PersonalManager;

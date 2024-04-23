@@ -1,14 +1,129 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="gui.controller.PersonalController"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="618.0" prefWidth="1110.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.PersonalController">
+   <top>
+      <GridPane prefHeight="59.0" prefWidth="1110.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="10.0" prefWidth="221.0" />
+          <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="630.0" />
+            <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="276.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="74.0" vgrow="ALWAYS" />
+        </rowConstraints>
+         <children>
+            <ImageView fx:id="imgLogo" fitHeight="74.0" fitWidth="197.0" onMouseClicked="#handleLogo" pickOnBounds="true" preserveRatio="true" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER">
+               <image>
+                  <Image url="@../images/logo.png" />
+               </image>
+            </ImageView>
+            <MFXTextField fx:id="txtSearch" floatMode="ABOVE" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" onMouseClicked="#handleSearch" prefHeight="819.0" prefWidth="3233.0" promptText="🔎 Search Profile Settings " GridPane.columnIndex="1">
+               <GridPane.margin>
+                  <Insets left="5.0" right="5.0" />
+               </GridPane.margin>
+            </MFXTextField>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+      </GridPane>
+   </top>
+   <left>
+      <VBox prefHeight="539.0" prefWidth="198.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+         <children>
+            <MFXButton fx:id="btnHome" alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#handleHome" prefHeight="40.0" prefWidth="198.0" text="Home" VBox.vgrow="NEVER">
+               <graphic>
+                  <ImageView accessibleRole="BUTTON" fitHeight="41.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/profileimages/profileIcon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+            </MFXButton>
+            <MFXButton fx:id="btnPersonalInfo" alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#handlePersonalInfo" prefHeight="40.0" prefWidth="198.0" text="Personal Info">
+               <graphic>
+                  <ImageView accessibleRole="BUTTON" fitHeight="41.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/profileimages/personalInfo.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+            </MFXButton>
+            <MFXButton fx:id="btnSecurity" alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#handleSecurity" prefHeight="40.0" prefWidth="198.0" text="Security">
+               <graphic>
+                  <ImageView accessibleRole="BUTTON" fitHeight="41.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/profileimages/profileLock.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+            </MFXButton>
+            <MFXButton fx:id="btnPeopleAndSharing" alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#handlePeopleAndSharing" prefHeight="40.0" prefWidth="198.0" text="People &amp; Sharing">
+               <graphic>
+                  <ImageView accessibleRole="BUTTON" fitHeight="41.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/profileimages/profileSharing.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MFXButton>
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <top>
+            <GridPane prefHeight="96.0" prefWidth="902.0" BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="128.0" minHeight="10.0" prefHeight="82.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="103.0" minHeight="0.0" prefHeight="14.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="85.0" prefWidth="85.0" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="TOP" GridPane.vgrow="NEVER">
+                     <children>
+                        <ImageView fx:id="imgProfilePicture" fitHeight="85.0" fitWidth="85.0" onDragDropped="#handleDragDrop" onDragOver="#handleDragOver" onMouseClicked="#handleProfilePicture" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/profileimages/image.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <Label alignment="TOP_CENTER" nodeOrientation="LEFT_TO_RIGHT" text="Profile Name" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+               </children>
+            </GridPane>
+         </top>
+         <center>
+            <FlowPane fx:id="flowPaneInformation" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+   </center>
+</BorderPane>
