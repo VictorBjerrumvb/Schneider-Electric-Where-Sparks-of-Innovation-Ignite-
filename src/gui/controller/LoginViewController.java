@@ -36,11 +36,13 @@ public class LoginViewController {
         if (!(personalLogged == null)) {
             // if it matches you are logged in
             if (personalLogged.getRoleId() == 1) {
-
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PersonalView.fxml"));
                 Parent secondWindow = loader.load();
                 Stage newStage = new Stage();
                 newStage.setTitle("Admin Page");
+                PersonalController controller = loader.getController();
+                controller.setup();
+                controller.setOperator(personalLogged);
                 Scene scene = new Scene(secondWindow);
                 newStage.setScene(scene);
 
