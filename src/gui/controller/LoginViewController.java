@@ -37,7 +37,7 @@ public class LoginViewController {
             // if it matches you are logged in
             if (personalLogged.getRoleId() == 1) {
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HomepageAdmin.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
                 Parent secondWindow = loader.load();
                 Stage newStage = new Stage();
                 newStage.setTitle("Admin Page");
