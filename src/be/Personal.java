@@ -23,6 +23,15 @@ public class Personal {
 
     }
 
+    public Personal(int id, String username, String password, String role, int roleId, double salary) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.roleId = roleId;
+        this.role = role;
+        this.salary = salary;
+    }
+
     public double getSalary() {
         return salary;
     }
@@ -69,5 +78,13 @@ public class Personal {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 }
