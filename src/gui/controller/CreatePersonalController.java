@@ -131,21 +131,23 @@ public class CreatePersonalController {
 
     @FXML
     private void handleCreate(ActionEvent actionEvent) {
-        if (btnCreate.getText().equals(create)) {
-            newPersonal.setSalary(Double.parseDouble(txtSalary.getText()));
-            newPersonal.setUsername(txtUsername.getText());
-            if (txtPassword.getText().equals(txtConfirmPassword.getText())) {
-                newPersonal.setPassword(txtPassword.getText());
-            }
-            if (!txtPassword.getText().equals(txtConfirmPassword.getText())) {
-                txtPassword.setText("");
-                txtConfirmPassword.setText("");
-                txtPassword.setPromptText("Password Didnt Match");
-            }
-            try {
-                personalModel.createPersonal(newPersonal);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        if (newPersonal.getRoleId() == 0) {
+            if (btnCreate.getText().equals(create)) {
+                newPersonal.setSalary(Double.parseDouble(txtSalary.getText()));
+                newPersonal.setUsername(txtUsername.getText());
+                if (txtPassword.getText().equals(txtConfirmPassword.getText())) {
+                    newPersonal.setPassword(txtPassword.getText());
+                }
+                if (!txtPassword.getText().equals(txtConfirmPassword.getText())) {
+                    txtPassword.setText("");
+                    txtConfirmPassword.setText("");
+                    txtPassword.setPromptText("Password Didnt Match");
+                }
+                try {
+                    personalModel.createPersonal(newPersonal);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         if (btnCreate.getText().equals(update)) {
