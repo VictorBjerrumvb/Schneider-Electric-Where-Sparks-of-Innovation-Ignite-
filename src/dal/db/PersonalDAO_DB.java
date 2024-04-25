@@ -54,7 +54,7 @@ public class PersonalDAO_DB implements IPersonal {
 
     @Override
     public Personal createPersonal(Personal personal) throws Exception {
-        String sql = "INSERT INTO SparksExamSchneider.dbo.Personal (PersonalName, PersonalPassword, PersonalRole, PersonalRoleId, PersonalSalary) VALUES (?,?,?,?);";
+        String sql = "INSERT INTO SparksExamSchneider.dbo.Personal (PersonalName, PersonalPassword, PersonalRole, PersonalRoleId, PersonalSalary) VALUES (?,?,?,?,?);";
 
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS))

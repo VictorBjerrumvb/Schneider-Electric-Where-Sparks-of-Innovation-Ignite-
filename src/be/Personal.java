@@ -87,4 +87,9 @@ public class Personal {
     public void setPicture(String picture) {
         this.picture = picture;
     }
+
+    @Override
+    public String toString() {
+        return username + " | " + role;
+    }
 }
