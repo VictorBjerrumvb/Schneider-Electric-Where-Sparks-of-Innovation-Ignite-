@@ -18,6 +18,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -26,7 +27,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Controller class for the personal view.
+ */
 public class PersonalController {
+
     @FXML
     private Label lblProfileName;
     @FXML
@@ -51,6 +56,9 @@ public class PersonalController {
     private Personal operator = new Personal();
     private PersonalModel personalModel;
 
+    /**
+     * Setup method for initializing the personal view.
+     */
     public void setup() {
         try {
             personalModel = new PersonalModel();
@@ -61,6 +69,12 @@ public class PersonalController {
         flowPaneInformation.getChildren().clear();
         addButtonToFlowPane("Change Password");
     }
+
+    /**
+     * Sets the operator (logged-in user) for the personal view.
+     *
+     * @param operator The logged-in user.
+     */
     public void setOperator(Personal operator) {
         this.operator = operator;
         lblProfileName.setText(operator.getUsername());
