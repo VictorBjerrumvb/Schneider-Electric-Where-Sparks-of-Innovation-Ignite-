@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="618.0" prefWidth="1110.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.CreatePersonalController">
+    <top>
+        <GridPane prefHeight="59.0" prefWidth="1110.0" BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="10.0" prefWidth="221.0" />
+                <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="728.0" />
+                <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="154.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="74.0" vgrow="ALWAYS" />
+            </rowConstraints>
+            <children>
+                <ImageView fx:id="imgLogo" fitHeight="74.0" fitWidth="197.0" onMouseClicked="#handleLogo" pickOnBounds="true" preserveRatio="true" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER">
+                    <image>
+                        <Image url="@../images/logo.png" />
+                    </image>
+                </ImageView>
+            <MenuButton fx:id="btnProfile" mnemonicParsing="false" prefHeight="85.0" prefWidth="255.0" text="Profile Name" GridPane.columnIndex="2">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#handleProfile" text="Profile" />
+                <MenuItem mnemonicParsing="false" onAction="#handleLogout" text="Logout" />
+              </items>
+               <graphic>
+                  <ImageView fx:id="imgProfileIcon" fitHeight="43.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/profileimages/image.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MenuButton>
+            </children>
+            <BorderPane.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </BorderPane.margin>
+        </GridPane>
+    </top>
+   <left>
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="549.0" prefWidth="196.0" BorderPane.alignment="CENTER">
+         <children>
+            <MFXButton fx:id="btnAdministrator" alignment="TOP_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#handleAdministrator" prefHeight="27.0" prefWidth="196.0" text="New Administrator" VBox.vgrow="NEVER">
+               <graphic>
+                  <ImageView fitHeight="35.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/createpersonalimages/admin.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </MFXButton>
+            <MFXButton fx:id="btnManager" alignment="TOP_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#handleManager" prefHeight="17.0" prefWidth="196.0" text="New Manager" VBox.vgrow="NEVER">
+               <graphic>
+                  <ImageView fitHeight="35.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/createpersonalimages/manager.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
+            </MFXButton>
+            <MFXButton fx:id="btnProgrammer" alignment="TOP_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#handleProgrammer" prefHeight="17.0" prefWidth="196.0" text="New Programmer" VBox.vgrow="NEVER">
+               <graphic>
+                  <ImageView fitHeight="35.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/createpersonalimages/programmer.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
+            </MFXButton>
+            <Label maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="17.0" prefWidth="237.0" text="List of Personal">
+               <VBox.margin>
+                  <Insets bottom="2.0" top="5.0" />
+               </VBox.margin>
+            </Label>
+            <ListView fx:id="listPersonal" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" onMouseClicked="#handleSelectedPersonal" prefHeight="410.0" prefWidth="196.0" />
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+      </VBox>
+   </left>
+   <center>
+      <GridPane alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="516.0" prefWidth="894.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="-Infinity" minHeight="0.0" prefHeight="86.0" vgrow="ALWAYS" />
+          <RowConstraints maxHeight="-Infinity" minHeight="0.0" prefHeight="86.0" vgrow="ALWAYS" />
+          <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="86.0" vgrow="ALWAYS" />
+            <RowConstraints maxHeight="410.0" minHeight="10.0" prefHeight="233.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="410.0" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <GridPane prefHeight="71.0" prefWidth="452.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="17.0" vgrow="ALWAYS" />
+                <RowConstraints maxHeight="43.0" minHeight="10.0" prefHeight="41.0" vgrow="ALWAYS" />
+              </rowConstraints>
+               <children>
+                  <Label text="Username" />
+                  <MFXTextField fx:id="txtUsername" floatMode="ABOVE" prefHeight="57.0" prefWidth="440.0" promptText="Schneider" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+               </children>
+               <GridPane.margin>
+                  <Insets bottom="5.0" right="5.0" />
+               </GridPane.margin>
+            </GridPane>
+            <GridPane prefHeight="71.0" prefWidth="452.0" GridPane.columnIndex="1">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="17.0" vgrow="ALWAYS" />
+                  <RowConstraints maxHeight="44.0" minHeight="10.0" prefHeight="43.0" vgrow="ALWAYS" />
+               </rowConstraints>
+               <children>
+                  <Label prefHeight="17.0" prefWidth="56.0" text="Password" />
+                  <MFXTextField fx:id="txtPassword" floatMode="ABOVE" prefHeight="69.0" prefWidth="449.0" promptText="VeryGoodPassword" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+               </children>
+               <GridPane.margin>
+                  <Insets bottom="5.0" />
+               </GridPane.margin>
+            </GridPane>
+            <GridPane prefHeight="71.0" prefWidth="452.0" GridPane.rowIndex="1">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="17.0" vgrow="ALWAYS" />
+                  <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="44.0" vgrow="ALWAYS" />
+               </rowConstraints>
+               <children>
+                  <Label text="Annual Salary" />
+                  <MFXTextField fx:id="txtSalary" floatMode="ABOVE" prefHeight="76.0" prefWidth="445.0" promptText="408000" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </MFXTextField>
+               </children>
+               <opaqueInsets>
+                  <Insets right="5.0" />
+               </opaqueInsets>
+               <GridPane.margin>
+                  <Insets bottom="5.0" right="5.0" />
+               </GridPane.margin>
+            </GridPane>
+            <GridPane prefHeight="71.0" prefWidth="452.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="17.0" vgrow="ALWAYS" />
+                  <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="43.0" vgrow="ALWAYS" />
+               </rowConstraints>
+               <children>
+                  <Label prefHeight="17.0" prefWidth="92.0" text="Verify Password" />
+                  <MFXTextField fx:id="txtConfirmPassword" floatMode="ABOVE" prefHeight="92.0" prefWidth="449.0" promptText="VeryGoodPassword" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+               </children>
+               <GridPane.margin>
+                  <Insets bottom="5.0" />
+               </GridPane.margin>
+            </GridPane>
+            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="60.0" vgrow="ALWAYS" />
+               </rowConstraints>
+               <children>
+                  <MFXButton fx:id="btnCreate" onAction="#handleCreate" prefHeight="104.0" prefWidth="335.0" text="Create" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+                     <GridPane.margin>
+                        <Insets right="5.0" />
+                     </GridPane.margin>
+                  </MFXButton>
+                  <MFXButton fx:id="btnCancel" onAction="#handleCancel" prefHeight="115.0" prefWidth="338.0" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
+                     <GridPane.margin>
+                        <Insets left="5.0" />
+                     </GridPane.margin>
+                  </MFXButton>
+               </children>
+            </GridPane>
+            <MFXComboBox fx:id="btnSelectTeam" alignment="TOP_LEFT" floatMode="ABOVE" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" onAction="#handleSelectTeam" prefHeight="50.0" prefWidth="447.0" text="Select a Team" GridPane.rowIndex="2">
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin>
+            </MFXComboBox>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+      </GridPane>
+   </center>
+</BorderPane>
