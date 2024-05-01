@@ -3,18 +3,18 @@ package be;
 import javax.persistence.*;
 
 /**
- * Represents a mapping between a personal profile and a team.
+ * Represents a mapping between a Personnel profile and a team.
  */
 @Entity
-@Table(name = "personal_team_mapping")
-public class PersonalTeamMapping {
+@Table(name = "Personnel_team_mapping")
+public class PersonnelTeamMapping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int mappingId;
 
     @ManyToOne
-    @JoinColumn(name = "personal_id")
-    private Personal personal;
+    @JoinColumn(name = "Personnel_id")
+    private Personnel personnel;
 
     @ManyToOne
     @JoinColumn(name = "team_id")
@@ -23,18 +23,18 @@ public class PersonalTeamMapping {
     // Constructors
 
     /**
-     * Constructs a personal-team mapping with default values.
+     * Constructs a Personnel-team mapping with default values.
      */
-    public PersonalTeamMapping() {
+    public PersonnelTeamMapping() {
     }
 
     /**
-     * Constructs a personal-team mapping with the specified personal profile and team.
-     * @param personal The personal profile to map.
+     * Constructs a Personnel-team mapping with the specified Personnel profile and team.
+     * @param personnel The Personnel profile to map.
      * @param team The team to map to.
      */
-    public PersonalTeamMapping(Personal personal, Team team) {
-        this.personal = personal;
+    public PersonnelTeamMapping(Personnel personnel, Team team) {
+        this.personnel = personnel;
         this.team = team;
     }
 
@@ -57,19 +57,19 @@ public class PersonalTeamMapping {
     }
 
     /**
-     * Retrieves the personal profile associated with this mapping.
-     * @return The personal profile.
+     * Retrieves the Personnel profile associated with this mapping.
+     * @return The Personnel profile.
      */
-    public Personal getPersonal() {
-        return personal;
+    public Personnel getPersonnel() {
+        return personnel;
     }
 
     /**
-     * Sets the personal profile associated with this mapping.
-     * @param personal The personal profile to set.
+     * Sets the Personnel profile associated with this mapping.
+     * @param personnel The Personnel profile to set.
      */
-    public void setPersonal(Personal personal) {
-        this.personal = personal;
+    public void setPersonnel(Personnel personnel) {
+        this.personnel = personnel;
     }
 
     /**

@@ -3,7 +3,7 @@ package be;
 import javax.persistence.*;
 
 /**
- * Represents the rates associated with a personal profile.
+ * Represents the rates associated with a Personnel profile.
  */
 @Entity
 @Table(name = "rate")
@@ -13,8 +13,8 @@ public class Rate {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "personal_id")
-    private Personal personal;
+    @JoinColumn(name = "Personnel_id")
+    private Personnel personnel;
 
     @Column(nullable = false)
     private double hourlyRate;
@@ -31,13 +31,13 @@ public class Rate {
     }
 
     /**
-     * Constructs a rate object with the specified personal profile, hourly rate, and daily rate.
-     * @param personal The personal profile associated with this rate.
+     * Constructs a rate object with the specified Personnel profile, hourly rate, and daily rate.
+     * @param personnel The Personnel profile associated with this rate.
      * @param hourlyRate The hourly rate.
      * @param dailyRate The daily rate.
      */
-    public Rate(Personal personal, double hourlyRate, double dailyRate) {
-        this.personal = personal;
+    public Rate(Personnel personnel, double hourlyRate, double dailyRate) {
+        this.personnel = personnel;
         this.hourlyRate = hourlyRate;
         this.dailyRate = dailyRate;
     }
@@ -61,19 +61,19 @@ public class Rate {
     }
 
     /**
-     * Retrieves the personal profile associated with this rate.
-     * @return The personal profile.
+     * Retrieves the Personnel profile associated with this rate.
+     * @return The Personnel profile.
      */
-    public Personal getPersonal() {
-        return personal;
+    public Personnel getPersonnel() {
+        return personnel;
     }
 
     /**
-     * Sets the personal profile associated with this rate.
-     * @param personal The personal profile to set.
+     * Sets the Personnel profile associated with this rate.
+     * @param personnel The Personnel profile to set.
      */
-    public void setPersonal(Personal personal) {
-        this.personal = personal;
+    public void setPersonnel(Personnel personnel) {
+        this.personnel = personnel;
     }
 
     /**

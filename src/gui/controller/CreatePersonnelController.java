@@ -1,9 +1,10 @@
 package gui.controller;
 
-import be.Personal;
+import be.Personnel;
 import gui.helperclases.ShowImageClass;
-import gui.model.PersonalModel;
+import gui.model.PersonnelModel;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,10 +13,11 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
-public class CreatePersonalController {
+public class CreatePersonnelController {
     public MFXTextField txtSalary;
     public MFXTextField txtConfirmPassword;
     public MenuButton btnProfile;
+    public MFXComboBox btnSelectTeam;
     @FXML
     private ImageView imgLogo;
     @FXML
@@ -27,7 +29,7 @@ public class CreatePersonalController {
     @FXML
     private MFXButton btnProgrammer;
     @FXML
-    private ListView listPersonal;
+    private ListView listPersonnel;
     @FXML
     private MFXTextField txtUsername;
     @FXML
@@ -37,60 +39,60 @@ public class CreatePersonalController {
     @FXML
     private MFXButton btnCancel;
 
-    private Personal newPersonal = new Personal();
-    private Personal selectedPersonal = new Personal();
-    private Personal operator;
+    private Personnel newPersonnel = new Personnel();
+    private Personnel selectedPersonnel = new Personnel();
+    private Personnel operator;
     private ShowImageClass showImageClass = new ShowImageClass();
-    private PersonalModel personalModel;
+    private PersonnelModel personnelModel;
     private String newAdministrator = "New Administrator";
     private String newManager = "New Manager";
     private String newProgrammer = "New Programmer";
     private String updateAdministrator = "Update Administrator";
     private String updateManager = "Update Manager";
     private String updateProgrammer = "Update Programmer";
-    private String changeAdministrator = "Change" + selectedPersonal.getUsername() + " To a  Administrator";
-    private String changeManager = "Change" + selectedPersonal.getUsername() + " To a  Manager";
-    private String changeProgrammer = "Change" + selectedPersonal.getUsername() + " To a Programmer";
+    private String changeAdministrator = "Change" + selectedPersonnel.getUsername() + " To a  Administrator";
+    private String changeManager = "Change" + selectedPersonnel.getUsername() + " To a  Manager";
+    private String changeProgrammer = "Change" + selectedPersonnel.getUsername() + " To a Programmer";
     private String create = "Create";
     private String update = "Update";
 
 
-    public CreatePersonalController() {
+    public CreatePersonnelController() {
         try {
-            personalModel = new PersonalModel();
+            personnelModel = new PersonnelModel();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
     public void setup() {
-        listPersonal.setItems(personalModel.getAllPersonal());
+        listPersonnel.setItems(personnelModel.getAllPersonnel());
 
-        if (selectedPersonal.getId() != 0) {
+        if (selectedPersonnel.getId() != 0) {
             btnCreate.setText(update);
-            if (selectedPersonal.getRoleId() == 1) {
+            if (selectedPersonnel.getRoleId() == 1) {
                 btnAdministrator.setText(updateAdministrator);
                 btnManager.setText(changeManager);
                 btnProgrammer.setText(changeProgrammer);
             }
-            if (selectedPersonal.getRoleId() == 2) {
+            if (selectedPersonnel.getRoleId() == 2) {
                 btnManager.setText(updateManager);
                 btnAdministrator.setText(changeAdministrator);
                 btnProgrammer.setText(changeProgrammer);
             }
-            if (selectedPersonal.getRoleId() == 3) {
+            if (selectedPersonnel.getRoleId() == 3) {
                 btnProgrammer.setText(updateProgrammer);
                 btnAdministrator.setText(changeAdministrator);
                 btnManager.setText(changeManager);
             }
         }
-        if (selectedPersonal.getId() == 0) {
+        if (selectedPersonnel.getId() == 0) {
             btnAdministrator.setText(newAdministrator);
             btnManager.setText(newManager);
             btnProgrammer.setText(newProgrammer);
             btnCreate.setText(create);
         }
     }
-    public void setOperator(Personal operator) {
+    public void setOperator(Personnel operator) {
         this.operator = operator;
         btnProfile.setText(operator.getUsername());
         if (operator != null && operator.getPicture() != null && !operator.getPicture().isEmpty()) {
@@ -113,30 +115,30 @@ public class CreatePersonalController {
 
     @FXML
     private void handleAdministrator(ActionEvent actionEvent) {
-        newPersonal.setRoleId(1);
-        newPersonal.setRole("Admin");
+        newPersonnel.setRoleId(1);
+        newPersonnel.setRole("Admin");
     }
 
     @FXML
     private void handleManager(ActionEvent actionEvent) {
-        newPersonal.setRoleId(2);
-        newPersonal.setRole("Manager");
+        newPersonnel.setRoleId(2);
+        newPersonnel.setRole("Manager");
     }
 
     @FXML
     private void handleProgrammer(ActionEvent actionEvent) {
-        newPersonal.setRoleId(3);
-        newPersonal.setRole("Programmer");
+        newPersonnel.setRoleId(3);
+        newPersonnel.setRole("Programmer");
     }
 
     @FXML
     private void handleCreate(ActionEvent actionEvent) {
-        if (newPersonal.getRoleId() == 0) {
+        if (newPersonnel.getRoleId() == 0) {
             if (btnCreate.getText().equals(create)) {
-                newPersonal.setSalary(Double.parseDouble(txtSalary.getText()));
-                newPersonal.setUsername(txtUsername.getText());
+                newPersonnel.setSalary(Double.parseDouble(txtSalary.getText()));
+                newPersonnel.setUsername(txtUsername.getText());
                 if (txtPassword.getText().equals(txtConfirmPassword.getText())) {
-                    newPersonal.setPassword(txtPassword.getText());
+                    newPersonnel.setPassword(txtPassword.getText());
                 }
                 if (!txtPassword.getText().equals(txtConfirmPassword.getText())) {
                     txtPassword.setText("");
@@ -144,7 +146,7 @@ public class CreatePersonalController {
                     txtPassword.setPromptText("Password Didnt Match");
                 }
                 try {
-                    personalModel.createPersonal(newPersonal);
+                    personnelModel.createPersonnel(newPersonnel);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -153,19 +155,19 @@ public class CreatePersonalController {
         if (btnCreate.getText().equals(update)) {
             if (!txtPassword.getText().isEmpty()) {
                 if (txtPassword.getText().equals(txtConfirmPassword.getText())) {
-                    selectedPersonal.setPassword(txtPassword.getText());
+                    selectedPersonnel.setPassword(txtPassword.getText());
                 }
             }
             if (!txtUsername.getText().isEmpty()) {
-                selectedPersonal.setUsername(txtUsername.getText());
+                selectedPersonnel.setUsername(txtUsername.getText());
             }
             if (!txtSalary.getText().isEmpty()) {
-                selectedPersonal.setSalary(Double.parseDouble(txtSalary.getText()));
+                selectedPersonnel.setSalary(Double.parseDouble(txtSalary.getText()));
             }
             try {
-                personalModel.updatePersonal(selectedPersonal);
+                personnelModel.updatePersonnel(selectedPersonnel);
                 setup();
-                selectedPersonal = new Personal();
+                selectedPersonnel = new Personnel();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -174,28 +176,31 @@ public class CreatePersonalController {
 
     @FXML
     private void handleCancel(ActionEvent actionEvent) {
-        selectedPersonal = new Personal();
+        selectedPersonnel = new Personnel();
         setup();
     }
 
     @FXML
-    private void handleSelectedPersonal(MouseEvent mouseEvent) {
-        selectedPersonal = (Personal) listPersonal.getSelectionModel().getSelectedItem();
+    private void handleSelectedPersonnel(MouseEvent mouseEvent) {
+        selectedPersonnel = (Personnel) listPersonnel.getSelectionModel().getSelectedItem();
         btnCreate.setText(update);
-        if (selectedPersonal.getRoleId() == 1) {
+        if (selectedPersonnel.getRoleId() == 1) {
             btnAdministrator.setText(updateAdministrator);
             btnManager.setText(changeManager);
             btnProgrammer.setText(changeProgrammer);
         }
-        if (selectedPersonal.getRoleId() == 2) {
+        if (selectedPersonnel.getRoleId() == 2) {
             btnManager.setText(updateManager);
             btnAdministrator.setText(changeAdministrator);
             btnProgrammer.setText(changeProgrammer);
         }
-        if (selectedPersonal.getRoleId() == 3) {
+        if (selectedPersonnel.getRoleId() == 3) {
             btnProgrammer.setText(updateProgrammer);
             btnAdministrator.setText(changeAdministrator);
             btnManager.setText(changeManager);
         }
+    }
+
+    public void handleSelectTeam(ActionEvent actionEvent) {
     }
 }

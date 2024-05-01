@@ -3,7 +3,7 @@ package be;
 import javax.persistence.*;
 
 /**
- * Represents the calculated rates associated with a personal profile.
+ * Represents the calculated rates associated with a Personnel profile.
  */
 @Entity
 @Table(name = "rate_calculation")
@@ -13,8 +13,8 @@ public class RateCalculation {
     private int rateId;
 
     @ManyToOne
-    @JoinColumn(name = "personal_id")
-    private Personal personal;
+    @JoinColumn(name = "Personnel_id")
+    private Personnel personnel;
 
     @Column(nullable = false)
     private double hourlyRate;
@@ -37,16 +37,16 @@ public class RateCalculation {
     }
 
     /**
-     * Constructs a rate calculation object with the specified personal profile, hourly rate, daily rate,
+     * Constructs a rate calculation object with the specified Personnel profile, hourly rate, daily rate,
      * markup, and gross margin.
-     * @param personal The personal profile associated with this rate calculation.
+     * @param personnel The Personnel profile associated with this rate calculation.
      * @param hourlyRate The hourly rate.
      * @param dailyRate The daily rate.
      * @param markUp The markup percentage.
      * @param grossMargin The gross margin percentage.
      */
-    public RateCalculation(Personal personal, double hourlyRate, double dailyRate, double markUp, double grossMargin) {
-        this.personal = personal;
+    public RateCalculation(Personnel personnel, double hourlyRate, double dailyRate, double markUp, double grossMargin) {
+        this.personnel = personnel;
         this.hourlyRate = hourlyRate;
         this.dailyRate = dailyRate;
         this.markUp = markUp;
@@ -72,19 +72,19 @@ public class RateCalculation {
     }
 
     /**
-     * Retrieves the personal profile associated with this rate calculation.
-     * @return The personal profile.
+     * Retrieves the Personnel profile associated with this rate calculation.
+     * @return The Personnel profile.
      */
-    public Personal getPersonal() {
-        return personal;
+    public Personnel getPersonnel() {
+        return personnel;
     }
 
     /**
-     * Sets the personal profile associated with this rate calculation.
-     * @param personal The personal profile to set.
+     * Sets the Personnel profile associated with this rate calculation.
+     * @param personnel The Personnel profile to set.
      */
-    public void setPersonal(Personal personal) {
-        this.personal = personal;
+    public void setPersonnel(Personnel personnel) {
+        this.personnel = personnel;
     }
 
     /**

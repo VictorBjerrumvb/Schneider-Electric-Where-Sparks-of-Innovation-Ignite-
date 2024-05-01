@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="618.0" prefWidth="1110.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.CreatePersonalController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="618.0" prefWidth="1110.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.CreatePersonnelController">
     <top>
         <GridPane prefHeight="59.0" prefWidth="1110.0" BorderPane.alignment="CENTER">
             <columnConstraints>
@@ -59,7 +59,7 @@
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/createpersonalimages/admin.png" />
+                        <Image url="@../images/createpersonnelimages/admin.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -68,7 +68,7 @@
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/createpersonalimages/manager.png" />
+                        <Image url="@../images/createpersonnelimages/manager.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -80,7 +80,7 @@
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/createpersonalimages/programmer.png" />
+                        <Image url="@../images/createpersonnelimages/programmer.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -88,12 +88,12 @@
                   <Insets top="5.0" />
                </VBox.margin>
             </MFXButton>
-            <Label maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="17.0" prefWidth="237.0" text="List of Personal">
+            <Label maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="17.0" prefWidth="237.0" text="List of Personnel">
                <VBox.margin>
                   <Insets bottom="2.0" top="5.0" />
                </VBox.margin>
             </Label>
-            <ListView fx:id="listPersonal" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" onMouseClicked="#handleSelectedPersonal" prefHeight="410.0" prefWidth="196.0" />
+            <ListView fx:id="listPersonnel" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" onMouseClicked="#handleSelectedPersonnel" prefHeight="410.0" prefWidth="196.0" />
          </children>
          <BorderPane.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

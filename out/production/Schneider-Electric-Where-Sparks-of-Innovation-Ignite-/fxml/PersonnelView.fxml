@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="618.0" prefWidth="1110.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.PersonalController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="618.0" prefWidth="1110.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.PersonnelController">
    <top>
       <GridPane prefHeight="59.0" prefWidth="1110.0" BorderPane.alignment="CENTER">
         <columnConstraints>
@@ -60,7 +60,7 @@
                   <Insets bottom="5.0" />
                </VBox.margin>
             </MFXButton>
-            <MFXButton fx:id="btnPersonalInfo" alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#handlePersonalInfo" prefHeight="40.0" prefWidth="198.0" text="Personal Info">
+            <MFXButton fx:id="btnPersonalInfo" alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#handlePersonnelInfo" prefHeight="40.0" prefWidth="198.0" text="Personal Info">
                <graphic>
                   <ImageView accessibleRole="BUTTON" fitHeight="41.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
                      <image>

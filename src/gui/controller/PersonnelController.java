@@ -1,8 +1,8 @@
 package gui.controller;
 
-import be.Personal;
+import be.Personnel;
 import gui.helperclases.ShowImageClass;
-import gui.model.PersonalModel;
+import gui.model.PersonnelModel;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.ActionEvent;
@@ -18,7 +18,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -28,9 +27,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Controller class for the personal view.
+ * Controller class for the Personnel view.
  */
-public class PersonalController {
+public class PersonnelController {
 
     @FXML
     private Label lblProfileName;
@@ -41,7 +40,7 @@ public class PersonalController {
     @FXML
     private MFXButton btnHome;
     @FXML
-    private MFXButton btnPersonalInfo;
+    private MFXButton btnPersonnelInfo;
     @FXML
     private MFXButton btnSecurity;
     @FXML
@@ -53,15 +52,15 @@ public class PersonalController {
 
     private ShowImageClass showImageClass = new ShowImageClass();
     private int textFieldCount = 0;
-    private Personal operator = new Personal();
-    private PersonalModel personalModel;
+    private Personnel operator = new Personnel();
+    private PersonnelModel personnelModel;
 
     /**
-     * Setup method for initializing the personal view.
+     * Setup method for initializing the Personnel view.
      */
     public void setup() {
         try {
-            personalModel = new PersonalModel();
+            personnelModel = new PersonnelModel();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -71,11 +70,11 @@ public class PersonalController {
     }
 
     /**
-     * Sets the operator (logged-in user) for the personal view.
+     * Sets the operator (logged-in user) for the Personnel view.
      *
      * @param operator The logged-in user.
      */
-    public void setOperator(Personal operator) {
+    public void setOperator(Personnel operator) {
         this.operator = operator;
         lblProfileName.setText(operator.getUsername());
         if (operator != null && operator.getPicture() != null && !operator.getPicture().isEmpty()) {
@@ -153,7 +152,7 @@ public class PersonalController {
     }
 
     @FXML
-    private void handlePersonalInfo(ActionEvent actionEvent) {
+    private void handlePersonnelInfo(ActionEvent actionEvent) {
     }
 
     @FXML
@@ -167,7 +166,7 @@ public class PersonalController {
             if (currentPassword.getText().equals(operator.getPassword())) {
                 operator.setPassword(newPassword.getText());
                 try {
-                    personalModel.updatePersonal(operator);
+                    personnelModel.updatePersonnel(operator);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -218,7 +217,7 @@ public class PersonalController {
                 // Updating UI
                 imgProfilePicture.setImage(showImageClass.showImage(destinationPath.getFileName().toString()));
                 operator.setPicture(destinationPath.getFileName().toString());
-                personalModel.updatePersonal(operator);
+                personnelModel.updatePersonnel(operator);
             } catch (IOException e) {
                 System.err.println("Error copying file: " + e.getMessage());
             } catch (Exception e) {
@@ -242,7 +241,7 @@ public class PersonalController {
                     // Updating UI
                     imgProfilePicture.setImage(showImageClass.showImage(file.getName()));
                     operator.setPicture(file.getName());
-                    personalModel.updatePersonal(operator);
+                    personnelModel.updatePersonnel(operator);
                 } catch (IOException e) {
                     System.err.println("Error copying file: " + e.getMessage());
                 } catch (Exception e) {

@@ -6,10 +6,10 @@ import javax.persistence.*;
 import java.util.Objects;
 
 /**
- * Represents a personal profile of an employee.
+ * Represents a Personnel profile of an employee.
  */
 @Entity
-public class Personal {
+public class Personnel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -43,8 +43,8 @@ public class Personal {
     // Constructors
 
     /**
-     * Constructs a personal profile object with the specified attributes.
-     * @param id The ID of the personal profile.
+     * Constructs a Personnel profile object with the specified attributes.
+     * @param id The ID of the Personnel profile.
      * @param username The username of the employee.
      * @param password The password of the employee.
      * @param roleId The ID of the role.
@@ -52,7 +52,7 @@ public class Personal {
      * @param salary The salary of the employee.
      * @param picture The picture of the employee.
      */
-    public Personal(int id, String username, String password, int roleId, String role, double salary, String picture) {
+    public Personnel(int id, String username, String password, int roleId, String role, double salary, String picture) {
         this.id = id;
         this.username = validate(username, "Username must not be empty");
         this.password = BCrypt.hashpw(password, BCrypt.gensalt());
@@ -65,7 +65,7 @@ public class Personal {
     /**
      * Default constructor.
      */
-    public Personal() {
+    public Personnel() {
     }
 
     // Utility Methods
@@ -135,7 +135,7 @@ public class Personal {
     }
 
     /**
-     * Retrieves the ID of the personal profile.
+     * Retrieves the ID of the Personnel profile.
      * @return The ID.
      */
     public int getId() {
@@ -143,7 +143,7 @@ public class Personal {
     }
 
     /**
-     * Sets the ID of the personal profile.
+     * Sets the ID of the Personnel profile.
      * @param id The ID to set.
      */
     public void setId(int id) {
@@ -201,7 +201,7 @@ public class Personal {
     // Equals and HashCode
 
     /**
-     * Checks if this personal profile is equal to another object.
+     * Checks if this Personnel profile is equal to another object.
      * @param o The object to compare to.
      * @return True if equal, false otherwise.
      */
@@ -209,12 +209,12 @@ public class Personal {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Personal personal = (Personal) o;
-        return id == personal.id;
+        Personnel personnel = (Personnel) o;
+        return id == personnel.id;
     }
 
     /**
-     * Generates a hash code for this personal profile.
+     * Generates a hash code for this Personnel profile.
      * @return The hash code.
      */
     @Override

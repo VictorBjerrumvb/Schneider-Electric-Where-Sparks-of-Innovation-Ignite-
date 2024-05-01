@@ -1,8 +1,9 @@
 package gui.controller;
 
-import be.Personal;
+import be.Personnel;
 import gui.helperclases.ShowImageClass;
-import gui.model.PersonalModel;
+import gui.helperclases.WidgetsClass;
+import gui.model.PersonnelModel;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,8 +12,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
 
 public class CalculatorViewController {
+    public FlowPane flowPaneInformation;
     @FXML
     private ImageView imgLogo;
     @FXML
@@ -20,11 +23,11 @@ public class CalculatorViewController {
     @FXML
     private ImageView imgProfileIcon;
     @FXML
-    private ListView listPersonal;
+    private ListView listPersonnel;
     @FXML
     private ListView listTeams;
     @FXML
-    private Label lblPersonalName;
+    private Label lblPersonnelName;
     @FXML
     private MFXTextField txtAnnualSalary;
     @FXML
@@ -52,21 +55,21 @@ public class CalculatorViewController {
     @FXML
     private MFXTextField txtAmountOfHoursAllocated;
 
-    private Personal operator = new Personal();
-    private PersonalModel personalModel;
+    private Personnel operator = new Personnel();
+    private PersonnelModel personnelModel;
     private ShowImageClass showImageClass = new ShowImageClass();
-    private Personal selectedPersonal = new Personal();
+    private Personnel selectedPersonnel = new Personnel();
     public CalculatorViewController() {
         try {
-            personalModel = new PersonalModel();
+            personnelModel = new PersonnelModel();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
     public void setup() {
-        listPersonal.setItems(personalModel.getAllPersonal());
+        listPersonnel.setItems(personnelModel.getAllPersonnel());
     }
-    public void setOperator(Personal operator) {
+    public void setOperator(Personnel operator) {
         this.operator = operator;
         btnProfile.setText(operator.getUsername());
         if (operator != null && operator.getPicture() != null && !operator.getPicture().isEmpty()) {
@@ -78,6 +81,7 @@ public class CalculatorViewController {
 
     @FXML
     private void handleLogo(MouseEvent mouseEvent) {
+        flowPaneInformation.getChildren().add(widgetsClass.createWidgetInGridpane("swipe","Create Personnel"));
     }
 
     @FXML
@@ -87,11 +91,11 @@ public class CalculatorViewController {
     @FXML
     private void handleLogout(ActionEvent actionEvent) {
     }
-
+    private WidgetsClass widgetsClass = new WidgetsClass();
     @FXML
     private void handleSelectedPersonal(MouseEvent mouseEvent) {
-        selectedPersonal = (Personal) listPersonal.getSelectionModel().getSelectedItem();
-        lblPersonalName.setText(selectedPersonal.getUsername());
+        selectedPersonnel = (Personnel) listPersonnel.getSelectionModel().getSelectedItem();
+        lblPersonnelName.setText(selectedPersonnel.getUsername());
     }
 
     @FXML

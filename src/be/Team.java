@@ -17,7 +17,7 @@ public class Team {
     private String name;
 
     @OneToMany(mappedBy = "team")
-    private Set<Personal> members;
+    private Set<Personnel> members;
 
     // Constructors
 
@@ -73,17 +73,17 @@ public class Team {
 
     /**
      * Retrieves the members of the team.
-     * @return A set of Personal objects representing team members.
+     * @return A set of Personnel objects representing team members.
      */
-    public Set<Personal> getMembers() {
+    public Set<Personnel> getMembers() {
         return members;
     }
 
     /**
      * Sets the members of the team.
-     * @param members A set of Personal objects representing team members.
+     * @param members A set of Personnel objects representing team members.
      */
-    public void setMembers(Set<Personal> members) {
+    public void setMembers(Set<Personnel> members) {
         this.members = members;
     }
 }

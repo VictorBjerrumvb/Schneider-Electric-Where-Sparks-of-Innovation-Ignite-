@@ -1,10 +1,10 @@
 package bll;
 
 import be.EmployeeProfile;
-import be.Personal;
+import be.Personnel;
 import dal.db.DataAccessException;
 import dal.db.EmployeeProfileDAO_DB;
-import dal.db.PersonalDAO_DB;
+import dal.db.PersonnelDAO_DB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,21 +12,21 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Manages operations related to personal and employee profiles.
+ * Manages operations related to Personnel and employee profiles.
  */
-public class PersonalManager {
-    private static final Logger logger = LoggerFactory.getLogger(PersonalManager.class);
-    private PersonalDAO_DB personalDAO_db;
+public class PersonnelManager {
+    private static final Logger logger = LoggerFactory.getLogger(PersonnelManager.class);
+    private PersonnelDAO_DB personnelDAO_db;
     private EmployeeProfileDAO_DB employeeProfileDAO_db;
 
     /**
-     * Constructs a PersonalManager and initializes DAOs.
+     * Constructs a PersonnelManager and initializes DAOs.
      *
      * @throws IOException If an I/O error occurs.
      */
-    public PersonalManager() throws IOException {
+    public PersonnelManager() throws IOException {
         try {
-            personalDAO_db = new PersonalDAO_DB();
+            personnelDAO_db = new PersonnelDAO_DB();
             employeeProfileDAO_db = new EmployeeProfileDAO_DB();
         } catch (IOException e) {
             logger.error("Failed to initialize the DAOs: ", e);
@@ -34,61 +34,61 @@ public class PersonalManager {
         }
     }
 
-    // Personal-related methods
+    // Personnel-related methods
 
     /**
-     * Retrieves all personal records.
+     * Retrieves all Personnel records.
      *
-     * @return A list of Personal objects.
+     * @return A list of Personnel objects.
      * @throws DataAccessException If an error occurs while accessing the data.
      */
-    public List<Personal> getAllPersonal() throws DataAccessException {
-        return personalDAO_db.getAllPersonal();
+    public List<Personnel> getAllPersonnel() throws DataAccessException {
+        return personnelDAO_db.getAllPersonnel();
     }
 
     /**
-     * Creates a new personal record.
+     * Creates a new Personnel record.
      *
-     * @param newPersonal The Personal object to create.
-     * @return The created Personal object.
+     * @param newPersonnel The Personnel object to create.
+     * @return The created Personnel object.
      * @throws DataAccessException If an error occurs while accessing the data.
      */
-    public Personal createPersonal(Personal newPersonal) throws DataAccessException {
-        return personalDAO_db.createPersonal(newPersonal);
+    public Personnel createPersonnel(Personnel newPersonnel) throws DataAccessException {
+        return personnelDAO_db.createPersonnel(newPersonnel);
     }
 
     /**
-     * Deletes a personal record.
+     * Deletes a Personnel record.
      *
-     * @param worker The Personal object to delete.
-     * @return The deleted Personal object.
+     * @param worker The Personnel object to delete.
+     * @return The deleted Personnel object.
      * @throws DataAccessException If an error occurs while accessing the data.
      */
-    public Personal deletePersonal(Personal worker) throws DataAccessException {
-        personalDAO_db.deletePersonal(worker);
+    public Personnel deletePersonnel(Personnel worker) throws DataAccessException {
+        personnelDAO_db.deletePersonnel(worker);
         return worker;
     }
 
     /**
-     * Updates an existing personal record.
+     * Updates an existing Personnel record.
      *
-     * @param selectedPersonal The Personal object to update.
+     * @param selectedPersonnel The Personnel object to update.
      * @throws DataAccessException If an error occurs while accessing the data.
      */
-    public void updatePersonal(Personal selectedPersonal) throws DataAccessException {
-        personalDAO_db.updatePersonal(selectedPersonal);
+    public void updatePersonnel(Personnel selectedPersonnel) throws DataAccessException {
+        personnelDAO_db.updatePersonnel(selectedPersonnel);
     }
 
     /**
-     * Validates a personal with the provided username and password.
+     * Validates a Personnel with the provided username and password.
      *
      * @param userName The username to validate.
      * @param password The password to validate.
-     * @return The validated Personal object, or null if validation fails.
+     * @return The validated Personnel object, or null if validation fails.
      * @throws DataAccessException If an error occurs while accessing the data.
      */
-    public Personal validatePersonal(String userName, String password) throws DataAccessException {
-        return personalDAO_db.validateUser(userName, password);
+    public Personnel validatePersonnel(String userName, String password) throws DataAccessException {
+        return personnelDAO_db.validateUser(userName, password);
     }
 
     // EmployeeProfile-related methods

@@ -1,7 +1,7 @@
 package gui.controller;
 
-import be.Personal;
-import bll.PersonalManager;
+import be.Personnel;
+import bll.PersonnelManager;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -29,8 +29,8 @@ public class LoginViewController {
     @FXML
     private MFXButton btnLogin;
 
-    // Instance of PersonalManager for handling personal-related operations
-    private PersonalManager personalManager = new PersonalManager();
+    // Instance of PersonnelManager for handling Personnel-related operations
+    private PersonnelManager personnelManager = new PersonnelManager();
 
     /**
      * Constructor for LoginViewController.
@@ -53,18 +53,18 @@ public class LoginViewController {
         String userPassword = txtFieldPassword.getText();
 
         // Validate the user credentials
-        Personal personalLogged = personalManager.validatePersonal(userName, userPassword);
-        if (!(personalLogged == null)) {
+        Personnel personnelLogged = personnelManager.validatePersonnel(userName.toLowerCase(), userPassword);
+        if (!(personnelLogged == null)) {
             // if it matches you are logged in
-            if (personalLogged.getRoleId() == 1) {
+            if (personnelLogged.getRoleId() == 1) {
                 // Load the admin view if the user is an admin
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PersonalView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CalculatorView.fxml"));
                 Parent secondWindow = loader.load();
                 Stage newStage = new Stage();
                 newStage.setTitle("Admin Page");
-                PersonalController controller = loader.getController();
-                controller.setup();
-                controller.setOperator(personalLogged);
+                CalculatorViewController controller = loader.getController();
+                //controller.setup();
+                controller.setOperator(personnelLogged);
                 Scene scene = new Scene(secondWindow);
                 newStage.setScene(scene);
 
@@ -78,7 +78,7 @@ public class LoginViewController {
                 currentStage.hide();
 
             }
-            if (personalLogged.getRoleId() == 2) {
+            if (personnelLogged.getRoleId() == 2) {
                 // Load the coordinator view if the user is a coordinator
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/KoordinatorPage.fxml"));
                 Parent secondWindow = loader.load();

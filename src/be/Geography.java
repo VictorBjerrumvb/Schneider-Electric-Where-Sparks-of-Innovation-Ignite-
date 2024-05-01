@@ -18,7 +18,7 @@ public class Geography {
     private String country;
 
     @OneToMany(mappedBy = "geography")
-    private Set<Personal> residents;
+    private Set<Personnel> residents;
 
     // Constructors
 
@@ -82,7 +82,7 @@ public class Geography {
      * Retrieves the set of residents associated with this geography.
      * @return The set of residents.
      */
-    public Set<Personal> getResidents() {
+    public Set<Personnel> getResidents() {
         return residents;
     }
 
@@ -90,7 +90,7 @@ public class Geography {
      * Sets the set of residents associated with this geography.
      * @param residents The set of residents to set.
      */
-    public void setResidents(Set<Personal> residents) {
+    public void setResidents(Set<Personnel> residents) {
         this.residents = residents;
     }
 
