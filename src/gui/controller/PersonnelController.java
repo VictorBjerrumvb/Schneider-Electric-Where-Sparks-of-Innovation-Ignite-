@@ -7,7 +7,10 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -144,6 +147,17 @@ public class PersonnelController {
 
     @FXML
     private void handleLogo(MouseEvent mouseEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+            Parent secondWindow = loader.load();
+            Scene scene = imgLogo.getScene(); // Get the current scene
+            scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+            MainViewController controller = loader.getController();
+            controller.setup();
+            controller.setOperator(operator);
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle exception appropriately
+        }
     }
 
     @FXML

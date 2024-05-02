@@ -55,12 +55,12 @@
    <left>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="549.0" prefWidth="196.0" BorderPane.alignment="CENTER">
          <children>
-            <Label maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="17.0" prefWidth="237.0" text="List of Personal">
+            <Label maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="17.0" prefWidth="237.0" text="List of Personnel">
                <VBox.margin>
                   <Insets bottom="2.0" top="5.0" />
                </VBox.margin>
             </Label>
-            <ListView fx:id="listPersonal" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" onMouseClicked="#handleSelectedPersonal" prefHeight="528.0" prefWidth="196.0">
+            <ListView fx:id="listPersonnel" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" onMouseClicked="#handleSelectedPersonnel" prefHeight="528.0" prefWidth="196.0">
                <VBox.margin>
                   <Insets />
                </VBox.margin></ListView>
@@ -110,7 +110,7 @@
                   <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <Label fx:id="lblPersonalName" text="Personal Name">
+                  <Label fx:id="lblPersonnelName" text="Personnel Name">
                      <GridPane.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </GridPane.margin>

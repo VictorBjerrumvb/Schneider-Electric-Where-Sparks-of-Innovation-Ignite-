@@ -8,36 +8,29 @@ import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
+import java.io.IOException;
+
 public class CreatePersonnelController {
-    public MFXTextField txtSalary;
-    public MFXTextField txtConfirmPassword;
-    public MenuButton btnProfile;
-    public MFXComboBox btnSelectTeam;
     @FXML
-    private ImageView imgLogo;
+    private MenuButton btnProfile;
     @FXML
-    private ImageView imgProfileIcon;
+    private ListView listTeam;
     @FXML
-    private MFXButton btnAdministrator;
+    private ImageView imgLogo, imgProfileIcon;
     @FXML
-    private MFXButton btnManager;
-    @FXML
-    private MFXButton btnProgrammer;
+    private MFXButton btnAdministrator, btnManager, btnProgrammer, btnCancel, btnCreate;
     @FXML
     private ListView listPersonnel;
     @FXML
-    private MFXTextField txtUsername;
-    @FXML
-    private MFXTextField txtPassword;
-    @FXML
-    private MFXButton btnCreate;
-    @FXML
-    private MFXButton btnCancel;
+    private MFXTextField txtUsername, txtPassword, txtConfirmPassword, txtSalary, txtSearchTeam;
 
     private Personnel newPersonnel = new Personnel();
     private Personnel selectedPersonnel = new Personnel();
@@ -103,14 +96,44 @@ public class CreatePersonnelController {
     }
     @FXML
     private void handleLogo(MouseEvent mouseEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+            Parent secondWindow = loader.load();
+            Scene scene = imgLogo.getScene(); // Get the current scene
+            scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+            MainViewController controller = loader.getController();
+            controller.setup();
+            controller.setOperator(operator);
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle exception appropriately
+        }
     }
 
     @FXML
     private void handleProfile(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PersonnelView.fxml"));
+            Parent secondWindow = loader.load();
+            Scene scene = btnProfile.getScene(); // Get the current scene
+            scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+            PersonnelController controller = loader.getController();
+            controller.setup();
+            controller.setOperator(operator);
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle exception appropriately
+        }
     }
 
     @FXML
     private void handleLogout(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
+            Parent secondWindow = loader.load();
+            Scene scene = btnProfile.getScene(); // Get the current scene
+            scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle exception appropriately
+        }
     }
 
     @FXML
@@ -199,8 +222,5 @@ public class CreatePersonnelController {
             btnAdministrator.setText(changeAdministrator);
             btnManager.setText(changeManager);
         }
-    }
-
-    public void handleSelectTeam(ActionEvent actionEvent) {
     }
 }

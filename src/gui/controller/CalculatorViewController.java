@@ -5,14 +5,21 @@ import gui.helperclases.ShowImageClass;
 import gui.helperclases.WidgetsClass;
 import gui.model.PersonnelModel;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+
+import java.io.IOException;
 
 public class CalculatorViewController {
     public FlowPane flowPaneInformation;
@@ -67,7 +74,9 @@ public class CalculatorViewController {
         }
     }
     public void setup() {
-        listPersonnel.setItems(personnelModel.getAllPersonnel());
+        ObservableList<Personnel> listOfPersonnel = FXCollections.observableArrayList();
+        listOfPersonnel.setAll(personnelModel.getAllPersonnel());
+        listPersonnel.setItems(listOfPersonnel);
     }
     public void setOperator(Personnel operator) {
         this.operator = operator;
@@ -81,21 +90,50 @@ public class CalculatorViewController {
 
     @FXML
     private void handleLogo(MouseEvent mouseEvent) {
-        flowPaneInformation.getChildren().add(widgetsClass.createWidgetInGridpane("swipe","Create Personnel"));
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+            Parent secondWindow = loader.load();
+            Scene scene = imgLogo.getScene(); // Get the current scene
+            scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+            MainViewController controller = loader.getController();
+            controller.setup();
+            controller.setOperator(operator);
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle exception appropriately
+        }
     }
 
     @FXML
     private void handleProfile(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PersonnelView.fxml"));
+            Parent secondWindow = loader.load();
+            Scene scene = btnProfile.getScene(); // Get the current scene
+            scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+            PersonnelController controller = loader.getController();
+            controller.setup();
+            controller.setOperator(operator);
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle exception appropriately
+        }
     }
 
     @FXML
     private void handleLogout(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
+            Parent secondWindow = loader.load();
+            Scene scene = btnProfile.getScene(); // Get the current scene
+            scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+        } catch (IOException e) {
+            e.printStackTrace(); // Handle exception appropriately
+        }
     }
-    private WidgetsClass widgetsClass = new WidgetsClass();
     @FXML
-    private void handleSelectedPersonal(MouseEvent mouseEvent) {
+    private void handleSelectedPersonnel(MouseEvent mouseEvent) {
         selectedPersonnel = (Personnel) listPersonnel.getSelectionModel().getSelectedItem();
         lblPersonnelName.setText(selectedPersonnel.getUsername());
+        txtAnnualSalary.setText(String.valueOf(selectedPersonnel.getSalary()));
     }
 
     @FXML

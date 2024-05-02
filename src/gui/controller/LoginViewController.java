@@ -58,12 +58,12 @@ public class LoginViewController {
             // if it matches you are logged in
             if (personnelLogged.getRoleId() == 1) {
                 // Load the admin view if the user is an admin
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CalculatorView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
                 Parent secondWindow = loader.load();
                 Stage newStage = new Stage();
                 newStage.setTitle("Admin Page");
-                CalculatorViewController controller = loader.getController();
-                //controller.setup();
+                MainViewController controller = loader.getController();
+                controller.setup();
                 controller.setOperator(personnelLogged);
                 Scene scene = new Scene(secondWindow);
                 newStage.setScene(scene);

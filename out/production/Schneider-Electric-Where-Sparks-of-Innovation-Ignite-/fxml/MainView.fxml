@@ -7,10 +7,11 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.MainViewController">
+<BorderPane prefHeight="600.0" prefWidth="1080.0" stylesheets="@../css/MainCss.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.MainViewController">
     <top>
         <MenuBar prefHeight="37.0" prefWidth="1072.0" stylesheets="@../css/TopBar.css" BorderPane.alignment="CENTER">
             <Menu text="Products" />
@@ -39,4 +40,7 @@
     <bottom>
         <Label text="Info about all sorts of things" BorderPane.alignment="CENTER" />
     </bottom>
+   <left>
+      <FlowPane fx:id="flowPaneInformation" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </left>
 </BorderPane>
