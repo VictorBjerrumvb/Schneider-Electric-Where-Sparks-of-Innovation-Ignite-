@@ -86,4 +86,9 @@ public class Team {
     public void setMembers(Set<Personnel> members) {
         this.members = members;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

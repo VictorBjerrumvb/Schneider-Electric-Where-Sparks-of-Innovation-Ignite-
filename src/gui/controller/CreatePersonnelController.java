@@ -1,8 +1,10 @@
 package gui.controller;
 
 import be.Personnel;
+import be.Team;
 import gui.helperclases.ShowImageClass;
 import gui.model.PersonnelModel;
+import gui.model.TeamModel;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -14,6 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuButton;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
@@ -37,15 +41,16 @@ public class CreatePersonnelController {
     private Personnel operator;
     private ShowImageClass showImageClass = new ShowImageClass();
     private PersonnelModel personnelModel;
+    private TeamModel teamModel;
     private String newAdministrator = "New Administrator";
     private String newManager = "New Manager";
     private String newProgrammer = "New Programmer";
     private String updateAdministrator = "Update Administrator";
     private String updateManager = "Update Manager";
     private String updateProgrammer = "Update Programmer";
-    private String changeAdministrator = "Change" + selectedPersonnel.getUsername() + " To a  Administrator";
-    private String changeManager = "Change" + selectedPersonnel.getUsername() + " To a  Manager";
-    private String changeProgrammer = "Change" + selectedPersonnel.getUsername() + " To a Programmer";
+    private String changeAdministrator = "Change To a  Administrator";
+    private String changeManager = "Change To a  Manager";
+    private String changeProgrammer = "Change To a Programmer";
     private String create = "Create";
     private String update = "Update";
 
@@ -53,12 +58,19 @@ public class CreatePersonnelController {
     public CreatePersonnelController() {
         try {
             personnelModel = new PersonnelModel();
+            teamModel = new TeamModel();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
     public void setup() {
         listPersonnel.setItems(personnelModel.getAllPersonnel());
+        listTeam.setItems(teamModel.getAllTeams());
+        txtSearchTeam.setText("");
+        txtPassword.setText("");
+        txtConfirmPassword.setText("");
+        txtSalary.setText("");
+        txtUsername.setText("");
 
         if (selectedPersonnel.getId() != 0) {
             btnCreate.setText(update);
@@ -169,9 +181,30 @@ public class CreatePersonnelController {
                     txtPassword.setPromptText("Password Didnt Match");
                 }
                 try {
+                    String searchTeamName = txtSearchTeam.getText();
+                    boolean teamExists = false;
+
+                    // Check if the team already exists
+                    for (Team t : teamModel.getAllTeams()) {
+                        if (t.getName().equals(searchTeamName)) {
+                            teamExists = true;
+                            break; // No need to continue searching if the team exists
+                        }
+                    }
+
+                    // If the team doesn't exist, create a new one
+                    if (!teamExists) {
+                        Team newTeam = new Team();
+                        newTeam.setName(searchTeamName);
+                        teamModel.createTeam(newTeam);
+                    }
+
+                    // Create personnel regardless of whether the team existed or not
                     personnelModel.createPersonnel(newPersonnel);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
+                } finally {
+                    setup();
                 }
             }
         }
@@ -205,22 +238,43 @@ public class CreatePersonnelController {
 
     @FXML
     private void handleSelectedPersonnel(MouseEvent mouseEvent) {
-        selectedPersonnel = (Personnel) listPersonnel.getSelectionModel().getSelectedItem();
-        btnCreate.setText(update);
-        if (selectedPersonnel.getRoleId() == 1) {
-            btnAdministrator.setText(updateAdministrator);
-            btnManager.setText(changeManager);
-            btnProgrammer.setText(changeProgrammer);
+        if (listPersonnel.getSelectionModel().getSelectedItem() != null) {
+            selectedPersonnel = (Personnel) listPersonnel.getSelectionModel().getSelectedItem();
+            btnCreate.setText(update);
+            if (selectedPersonnel.getRoleId() == 1) {
+                btnAdministrator.setText(updateAdministrator);
+                btnManager.setText(changeManager);
+                btnProgrammer.setText(changeProgrammer);
+            }
+            if (selectedPersonnel.getRoleId() == 2) {
+                btnManager.setText(updateManager);
+                btnAdministrator.setText(changeAdministrator);
+                btnProgrammer.setText(changeProgrammer);
+            }
+            if (selectedPersonnel.getRoleId() == 3) {
+                btnProgrammer.setText(updateProgrammer);
+                btnAdministrator.setText(changeAdministrator);
+                btnManager.setText(changeManager);
+            }
+        } else  {
+
         }
-        if (selectedPersonnel.getRoleId() == 2) {
-            btnManager.setText(updateManager);
-            btnAdministrator.setText(changeAdministrator);
-            btnProgrammer.setText(changeProgrammer);
+    }
+
+    @FXML
+    private void handleKeyPressedTeam(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.DELETE) {
+            Team team = (Team) listTeam.getSelectionModel().getSelectedItem();
+            if (team != null) {
+                teamModel.deleteTeam(team);
+                listTeam.setItems(teamModel.getAllTeams());
+            }
         }
-        if (selectedPersonnel.getRoleId() == 3) {
-            btnProgrammer.setText(updateProgrammer);
-            btnAdministrator.setText(changeAdministrator);
-            btnManager.setText(changeManager);
-        }
+    }
+
+    @FXML
+    private void handleSelectedTeam(MouseEvent mouseEvent) {
+        Team team = (Team) listTeam.getSelectionModel().getSelectedItem();
+        txtSearchTeam.setText(team.getName());
     }
 }
