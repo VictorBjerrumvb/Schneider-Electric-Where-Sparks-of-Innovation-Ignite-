@@ -34,6 +34,7 @@ import java.nio.file.Paths;
  */
 public class PersonnelController {
 
+    public MFXButton btnPersonalInfo;
     @FXML
     private Label lblProfileName;
     @FXML

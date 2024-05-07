@@ -26,13 +26,13 @@ public class CreatePersonnelController {
     @FXML
     private MenuButton btnProfile;
     @FXML
-    private ListView listTeam;
+    private ListView<Team> listTeam; // Specify the type parameter for ListView
     @FXML
     private ImageView imgLogo, imgProfileIcon;
     @FXML
     private MFXButton btnAdministrator, btnManager, btnProgrammer, btnCancel, btnCreate;
     @FXML
-    private ListView listPersonnel;
+    private ListView<Personnel> listPersonnel; // Specify the type parameter for ListView
     @FXML
     private MFXTextField txtUsername, txtPassword, txtConfirmPassword, txtSalary, txtSearchTeam;
 
@@ -63,6 +63,7 @@ public class CreatePersonnelController {
             throw new RuntimeException(e);
         }
     }
+
     public void setup() {
         listPersonnel.setItems(personnelModel.getAllPersonnel());
         listTeam.setItems(teamModel.getAllTeams());
@@ -97,6 +98,7 @@ public class CreatePersonnelController {
             btnCreate.setText(create);
         }
     }
+
     public void setOperator(Personnel operator) {
         this.operator = operator;
         btnProfile.setText(operator.getUsername());
@@ -106,6 +108,7 @@ public class CreatePersonnelController {
             imgProfileIcon.setImage(showImageClass.showImage("profileimages/image.png"));
         }
     }
+
     @FXML
     private void handleLogo(MouseEvent mouseEvent) {
         try {
@@ -169,67 +172,53 @@ public class CreatePersonnelController {
     @FXML
     private void handleCreate(ActionEvent actionEvent) {
         if (newPersonnel.getRoleId() == 0) {
-            if (btnCreate.getText().equals(create)) {
-                newPersonnel.setSalary(Double.parseDouble(txtSalary.getText()));
-                newPersonnel.setUsername(txtUsername.getText());
-                if (txtPassword.getText().equals(txtConfirmPassword.getText())) {
-                    newPersonnel.setPassword(txtPassword.getText());
-                }
-                if (!txtPassword.getText().equals(txtConfirmPassword.getText())) {
-                    txtPassword.setText("");
-                    txtConfirmPassword.setText("");
-                    txtPassword.setPromptText("Password Didnt Match");
-                }
-                try {
-                    String searchTeamName = txtSearchTeam.getText();
-                    boolean teamExists = false;
-
-                    // Check if the team already exists
-                    for (Team t : teamModel.getAllTeams()) {
-                        if (t.getName().equals(searchTeamName)) {
-                            teamExists = true;
-                            break; // No need to continue searching if the team exists
-                        }
-                    }
-
-                    // If the team doesn't exist, create a new one
-                    if (!teamExists) {
-                        Team newTeam = new Team();
-                        newTeam.setName(searchTeamName);
-                        teamModel.createTeam(newTeam);
-                    }
-
-                    // Create personnel regardless of whether the team existed or not
-                    personnelModel.createPersonnel(newPersonnel);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                } finally {
-                    setup();
-                }
-            }
+            // Role not selected, do nothing
+            return;
         }
-        if (btnCreate.getText().equals(update)) {
-            if (!txtPassword.getText().isEmpty()) {
-                if (txtPassword.getText().equals(txtConfirmPassword.getText())) {
-                    selectedPersonnel.setPassword(txtPassword.getText());
-                }
+
+        if (btnCreate.getText().equals(create)) {
+            newPersonnel.setSalary(Double.parseDouble(txtSalary.getText()));
+            newPersonnel.setUsername(txtUsername.getText());
+            if (txtPassword.getText().equals(txtConfirmPassword.getText())) {
+                newPersonnel.setPassword(txtPassword.getText());
+            } else {
+                txtPassword.setText("");
+                txtConfirmPassword.setText("");
+                txtPassword.setPromptText("Password Didnt Match");
+                return;
             }
-            if (!txtUsername.getText().isEmpty()) {
-                selectedPersonnel.setUsername(txtUsername.getText());
-            }
-            if (!txtSalary.getText().isEmpty()) {
-                selectedPersonnel.setSalary(Double.parseDouble(txtSalary.getText()));
-            }
+
             try {
-                personnelModel.updatePersonnel(selectedPersonnel);
-                setup();
-                selectedPersonnel = new Personnel();
+                String searchTeamName = txtSearchTeam.getText();
+                boolean teamExists = false;
+
+                // Check if the team already exists
+                for (Team t : listTeam.getItems()) { // Use listTeam.getItems() to iterate over items
+                    if (t.getName().equals(searchTeamName)) {
+                        teamExists = true;
+                        break; // No need to continue searching if the team exists
+                    }
+                }
+
+                // If the team doesn't exist, create a new one
+                if (!teamExists) {
+                    Team newTeam = new Team();
+                    newTeam.setName(searchTeamName);
+                    teamModel.createTeam(newTeam);
+                }
+
+                // Set the role ID based on the selected role
+                newPersonnel.setRoleId(newPersonnel.getRoleId());
+
+                // Create personnel regardless of whether the team existed or not
+                personnelModel.createPersonnel(newPersonnel);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+            } finally {
+                setup();
             }
         }
     }
-
     @FXML
     private void handleCancel(ActionEvent actionEvent) {
         selectedPersonnel = new Personnel();
@@ -239,7 +228,7 @@ public class CreatePersonnelController {
     @FXML
     private void handleSelectedPersonnel(MouseEvent mouseEvent) {
         if (listPersonnel.getSelectionModel().getSelectedItem() != null) {
-            selectedPersonnel = (Personnel) listPersonnel.getSelectionModel().getSelectedItem();
+            selectedPersonnel = listPersonnel.getSelectionModel().getSelectedItem(); // Remove unnecessary cast
             btnCreate.setText(update);
             if (selectedPersonnel.getRoleId() == 1) {
                 btnAdministrator.setText(updateAdministrator);
@@ -256,15 +245,13 @@ public class CreatePersonnelController {
                 btnAdministrator.setText(changeAdministrator);
                 btnManager.setText(changeManager);
             }
-        } else  {
-
         }
     }
 
     @FXML
     private void handleKeyPressedTeam(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.DELETE) {
-            Team team = (Team) listTeam.getSelectionModel().getSelectedItem();
+            Team team = listTeam.getSelectionModel().getSelectedItem(); // Remove unnecessary cast
             if (team != null) {
                 teamModel.deleteTeam(team);
                 listTeam.setItems(teamModel.getAllTeams());
@@ -274,7 +261,9 @@ public class CreatePersonnelController {
 
     @FXML
     private void handleSelectedTeam(MouseEvent mouseEvent) {
-        Team team = (Team) listTeam.getSelectionModel().getSelectedItem();
-        txtSearchTeam.setText(team.getName());
+        Team team = listTeam.getSelectionModel().getSelectedItem(); // Remove unnecessary cast
+        if (team != null) {
+            txtSearchTeam.setText(team.getName());
+        }
     }
 }
