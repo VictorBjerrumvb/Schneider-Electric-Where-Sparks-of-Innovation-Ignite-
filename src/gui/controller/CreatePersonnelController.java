@@ -177,48 +177,58 @@ public class CreatePersonnelController {
         }
 
         if (btnCreate.getText().equals(create)) {
-            newPersonnel.setSalary(Double.parseDouble(txtSalary.getText()));
-            newPersonnel.setUsername(txtUsername.getText());
-            if (txtPassword.getText().equals(txtConfirmPassword.getText())) {
-                newPersonnel.setPassword(txtPassword.getText());
-            } else {
-                txtPassword.setText("");
-                txtConfirmPassword.setText("");
-                txtPassword.setPromptText("Password Didnt Match");
+            String salaryText = txtSalary.getText().trim();
+            if (salaryText.isEmpty()) {
+                // Salary field is empty, show an error message to the user
+                // You can customize the error message based on your requirements
+                // For example:
+                showAlert("Salary field cannot be empty!");
                 return;
             }
 
             try {
-                String searchTeamName = txtSearchTeam.getText();
-                boolean teamExists = false;
+                // Attempt to parse the salary
+                double salary = Double.parseDouble(salaryText);
+                newPersonnel.setSalary(salary);
 
-                // Check if the team already exists
-                for (Team t : listTeam.getItems()) { // Use listTeam.getItems() to iterate over items
-                    if (t.getName().equals(searchTeamName)) {
-                        teamExists = true;
-                        break; // No need to continue searching if the team exists
-                    }
+                // Continue with creating the personnel
+                newPersonnel.setUsername(txtUsername.getText());
+                if (txtPassword.getText().equals(txtConfirmPassword.getText())) {
+                    newPersonnel.setPassword(txtPassword.getText());
+                } else {
+                    txtPassword.setText("");
+                    txtConfirmPassword.setText("");
+                    txtPassword.setPromptText("Password Didn't Match");
+                    return;
                 }
 
-                // If the team doesn't exist, create a new one
-                if (!teamExists) {
-                    Team newTeam = new Team();
-                    newTeam.setName(searchTeamName);
-                    teamModel.createTeam(newTeam);
+                // Database interaction to create personnel
+                try {
+                    // Call the method to create personnel in the model
+                    personnelModel.createPersonnel(newPersonnel);
+
+                    // Optionally, you can show a success message to the user
+                    // For example:
+                    showAlert("Personnel created successfully!");
+
+                    // Reset fields and update UI
+                    setup();
+                } catch (Exception e) {
+                    // Handle database exception
+                    // For example:
+                    showAlert("Error creating personnel: " + e.getMessage());
                 }
-
-                // Set the role ID based on the selected role
-                newPersonnel.setRoleId(newPersonnel.getRoleId());
-
-                // Create personnel regardless of whether the team existed or not
-                personnelModel.createPersonnel(newPersonnel);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                setup();
+            } catch (NumberFormatException e) {
+                // Error occurred while parsing the salary, show an error message to the user
+                // For example:
+                showAlert("Invalid salary format! Please enter a valid number.");
             }
         }
     }
+
+    private void showAlert(String s) {
+    }
+
     @FXML
     private void handleCancel(ActionEvent actionEvent) {
         selectedPersonnel = new Personnel();

@@ -66,7 +66,13 @@ public class PersonnelModel {
             // Create the Personnel data through the manager
             Personnel p = personnelManager.createPersonnel(personnel);
             // Add the created Personnel data to the observable list
-            allPersonnel.add(p);
+            if (p != null) {
+                allPersonnel.add(p);
+            } else {
+                // Log and handle the case where creation succeeds but adding to the list fails
+                LOGGER.error("Failed to add created Personnel to the observable list.");
+                // Notify the user of the failure
+            }
         } catch (Exception e) {
             // Log and handle any exceptions that occur during creation
             LOGGER.error("Failed to create Personnel: {}", e.getMessage());
@@ -83,6 +89,7 @@ public class PersonnelModel {
         try {
             // Update the Personnel data through the manager
             personnelManager.updatePersonnel(personnel);
+            // Personnel data is updated in the manager, but we assume it reflects in the list
         } catch (Exception e) {
             // Log and handle any exceptions that occur during update
             LOGGER.error("Failed to update Personnel: {}", e.getMessage());
