@@ -1,9 +1,11 @@
 package gui.controller;
 
+import be.CreateTeamMapping;
 import be.Personnel;
 import be.Team;
 import gui.helperclases.ShowImageClass;
 import gui.model.PersonnelModel;
+import gui.model.TeamMappingModel;
 import gui.model.TeamModel;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
@@ -205,7 +207,17 @@ public class CreatePersonnelController {
                 // Database interaction to create personnel
                 try {
                     // Call the method to create personnel in the model
-                    personnelModel.createPersonnel(newPersonnel);
+                    Personnel p = personnelModel.createPersonnelWithReturn(newPersonnel);
+                    Team nt = new Team();
+                    nt.setName(txtSearchTeam.getText());
+                    Team t = teamModel.createTeamWithReturn(nt);
+
+                    TeamMappingModel teamMappingModel = new TeamMappingModel();
+                    CreateTeamMapping createTeamMapping = new CreateTeamMapping();
+                    createTeamMapping.setTeamId(t.getId());
+                    createTeamMapping.setPersonnelId(p.getId());
+                    teamMappingModel.createTeam(createTeamMapping);
+
 
                     // Optionally, you can show a success message to the user
                     // For example:
@@ -239,6 +251,13 @@ public class CreatePersonnelController {
     private void handleSelectedPersonnel(MouseEvent mouseEvent) {
         if (listPersonnel.getSelectionModel().getSelectedItem() != null) {
             selectedPersonnel = listPersonnel.getSelectionModel().getSelectedItem(); // Remove unnecessary cast
+            txtUsername.setText(selectedPersonnel.getUsername());
+            txtSalary.setText(String.valueOf(selectedPersonnel.getSalary()));
+            TeamMappingModel teamMappingModel = new TeamMappingModel();
+            Team team = teamMappingModel.getPersonnelTeam(selectedPersonnel);
+            //if (team != null) {
+                //txtSearchTeam.setText(team.getName());
+            //}
             btnCreate.setText(update);
             if (selectedPersonnel.getRoleId() == 1) {
                 btnAdministrator.setText(updateAdministrator);
@@ -254,6 +273,17 @@ public class CreatePersonnelController {
                 btnProgrammer.setText(updateProgrammer);
                 btnAdministrator.setText(changeAdministrator);
                 btnManager.setText(changeManager);
+            }
+        }
+    }
+
+    @FXML
+    private void handleKeyPressedPersonnel(KeyEvent keyEvent) {
+        if (keyEvent.getCode() == KeyCode.DELETE) {
+            Personnel personnel = listPersonnel.getSelectionModel().getSelectedItem(); // Remove unnecessary cast
+            if (personnel != null) {
+                personnelModel.deletePersonnel(personnel);
+                listPersonnel.setItems(personnelModel.getAllPersonnel());
             }
         }
     }

@@ -7,6 +7,10 @@ import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Model class for managing Personnel data in the GUI.
  */
@@ -14,6 +18,7 @@ public class PersonnelModel {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonnelModel.class);
     private ObservableList<Personnel> allPersonnel;
     private PersonnelManager personnelManager;
+    private Map<Integer, Personnel> personnelMap = new HashMap<>();
 
     /**
      * Constructs a new PersonnelModel instance.
@@ -24,6 +29,7 @@ public class PersonnelModel {
             allPersonnel = FXCollections.observableArrayList();
             // Fetch all Personnel data from the manager and add it to the observable list
             allPersonnel.addAll(personnelManager.getAllPersonnel());
+            preprocessPersonnel(allPersonnel); // Preprocess personnel data
         } catch (Exception e) {
             // Log and handle any exceptions that occur during initialization
             LOGGER.error("Failed to load Personnel data: {}", e.getMessage());
@@ -38,6 +44,16 @@ public class PersonnelModel {
      */
     public ObservableList<Personnel> getAllPersonnel() {
         return allPersonnel;
+    }
+
+    /**
+     * Retrieves a Personnel object by its ID.
+     *
+     * @param id The ID of the Personnel to retrieve.
+     * @return The Personnel object if found, otherwise null.
+     */
+    public Personnel getPersonnelById(int id) {
+        return personnelMap.get(id);
     }
 
     /**
@@ -68,6 +84,7 @@ public class PersonnelModel {
             // Add the created Personnel data to the observable list
             if (p != null) {
                 allPersonnel.add(p);
+                personnelMap.put(p.getId(), p); // Add to personnel map
             } else {
                 // Log and handle the case where creation succeeds but adding to the list fails
                 LOGGER.error("Failed to add created Personnel to the observable list.");
@@ -78,6 +95,28 @@ public class PersonnelModel {
             LOGGER.error("Failed to create Personnel: {}", e.getMessage());
             // Notify the user of the failure
         }
+    }
+
+    public Personnel createPersonnelWithReturn(Personnel personnel) {
+        Personnel p = new Personnel();
+        try {
+            // Create the Personnel data through the manager
+            p = personnelManager.createPersonnel(personnel);
+            // Add the created Personnel data to the observable list
+            if (p != null) {
+                allPersonnel.add(p);
+                personnelMap.put(p.getId(), p); // Add to personnel map
+            } else {
+                // Log and handle the case where creation succeeds but adding to the list fails
+                LOGGER.error("Failed to add created Personnel to the observable list.");
+                // Notify the user of the failure
+            }
+        } catch (Exception e) {
+            // Log and handle any exceptions that occur during creation
+            LOGGER.error("Failed to create Personnel: {}", e.getMessage());
+            // Notify the user of the failure
+        }
+        return  p;
     }
 
     /**
@@ -94,6 +133,12 @@ public class PersonnelModel {
             // Log and handle any exceptions that occur during update
             LOGGER.error("Failed to update Personnel: {}", e.getMessage());
             // Notify the user of the failure
+        }
+    }
+
+    private void preprocessPersonnel(List<Personnel> allPersonnel) {
+        for (Personnel p : allPersonnel) {
+            personnelMap.put(p.getId(), p);
         }
     }
 }
