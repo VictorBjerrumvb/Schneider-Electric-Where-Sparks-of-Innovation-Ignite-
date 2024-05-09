@@ -1,5 +1,6 @@
 package gui.model;
 
+import be.Personnel;
 import be.Team;
 import bll.TeamManager;
 import javafx.collections.FXCollections;
@@ -98,6 +99,16 @@ public class TeamModel {
     private void preprocessTeam(List<Team> allTeam) {
         for (Team t : allTeam) {
             teamMap.put(t.getId(), t);
+        }
+    }
+
+    public void updateTeam(Team team) {
+        try {
+            teamManager.updateTeam(team);
+            allTeams.clear();
+            allTeams.addAll(teamManager.getAllTeams());
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 }

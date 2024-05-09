@@ -3,13 +3,14 @@ package be;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Represents a Personnel profile of an employee.
  */
 @Entity
-public class Personnel {
+public class Personnel{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

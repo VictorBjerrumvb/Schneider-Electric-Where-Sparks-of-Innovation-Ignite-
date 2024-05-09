@@ -49,7 +49,7 @@ public class TeamMappingDAO_DB {
                 int mappingId = rs.getInt("MappingId");
 
 
-                CreateTeamMapping teamMapping = new CreateTeamMapping (teamId,personnelId,mappingId);
+                CreateTeamMapping teamMapping = new CreateTeamMapping (personnelId, teamId ,mappingId);
                 allTeamMappings.add(teamMapping);
             }
         } catch (SQLException e) {
@@ -59,7 +59,7 @@ public class TeamMappingDAO_DB {
     }
 
     public CreateTeamMapping deleteTeamMappingWithTeamNPersonnelId (CreateTeamMapping createTeamMapping) throws Exception {
-        String sql = "SELECT * FROM SparksExamSchneider.dbo.PersonnelTeamMapping WHERE TeamId = ? AND PersonnelId = ?";
+        String sql = "DELETE FROM SparksExamSchneider.dbo.PersonnelTeamMapping WHERE TeamId = ? AND PersonnelId = ?";
 
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql))
@@ -77,12 +77,29 @@ public class TeamMappingDAO_DB {
     }
 
     public CreateTeamMapping deleteTeamMappingWithMappingId (CreateTeamMapping createTeamMapping) throws Exception {
-        String sql = "SELECT * FROM SparksExamSchneider.dbo.PersonnelTeamMapping WHERE MappingId = ?";
+        String sql = "DELETE FROM SparksExamSchneider.dbo.PersonnelTeamMapping WHERE MappingId = ?";
 
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql))
         {
             stmt.setInt(1,createTeamMapping.getMappingId());
+            stmt.executeUpdate();
+        }
+        catch (SQLException ex)
+        {
+            ex.printStackTrace();
+            throw new Exception("Could not delete TeamMapping", ex);
+        }
+        return createTeamMapping;
+    }
+
+    public CreateTeamMapping deleteTeamMappingWithPersonnelId (CreateTeamMapping createTeamMapping) throws Exception {
+        String sql = "DELETE FROM SparksExamSchneider.dbo.PersonnelTeamMapping WHERE PersonnelId = ?";
+
+        try (Connection conn = databaseConnector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql))
+        {
+            stmt.setInt(1,createTeamMapping.getPersonnelId());
             stmt.executeUpdate();
         }
         catch (SQLException ex)
@@ -110,7 +127,7 @@ public class TeamMappingDAO_DB {
             }
             return createTeamMapping;
         } catch (SQLException ex) {
-            throw new DataAccessException("Could not add TeamMapping", ex);
+            throw new DataAccessException("Could not add TeamMapping | Database Class", ex);
         }
     }
 }

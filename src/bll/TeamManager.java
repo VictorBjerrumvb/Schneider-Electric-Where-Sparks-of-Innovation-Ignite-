@@ -62,4 +62,8 @@ public class TeamManager {
         teamDAO_db.deleteTeam(team);
         return team;
     }
+
+    public void updateTeam(Team selectedTeam) throws DataAccessException {
+        teamDAO_db.updateTeam(selectedTeam);
+    }
 }

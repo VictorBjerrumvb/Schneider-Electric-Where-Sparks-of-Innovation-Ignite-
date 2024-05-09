@@ -5,6 +5,7 @@ import be.Personnel;
 import be.Team;
 import bll.TeamManager;
 import bll.TeamMappingManager;
+import dal.db.DataAccessException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -16,72 +17,81 @@ import java.util.*;
 public class TeamMappingModel {
     private ObservableList<CreateTeamMapping> allTeamMappings;
     private TeamMappingManager teamMappingManager;
-    // Assuming you have a class level variable to store team mappings
     private Map<Integer, Set<Integer>> teamToPersonnelMap = new HashMap<>();
 
-
-    /**
-     * Constructs a new PersonnelModel instance.
-     */
     public TeamMappingModel() {
         try {
             teamMappingManager = new TeamMappingManager();
             allTeamMappings = FXCollections.observableArrayList();
-            // Fetch all Personnel data from the manager and add it to the observable list
             allTeamMappings.addAll(teamMappingManager.getAllTeamMappings());
+            preprocessTeamMappings(allTeamMappings);
         } catch (Exception e) {
             System.out.println(e);
         }
     }
 
-    /**
-     * Retrieves the observable list of all Personnel data.
-     *
-     * @return The observable list of Personnel data.
-     */
     public ObservableList<CreateTeamMapping> getAllTeamMappings() {
         return allTeamMappings;
     }
 
-    // Method to preprocess data
-    public void preprocessTeamMappings(List<CreateTeamMapping> allTeamMappings) {
+    private Map<Integer, Set<Integer>> getTeamToPersonnelMap() {
+        return teamToPersonnelMap;
+    }
+
+    private void preprocessTeamMappings(List<CreateTeamMapping> allTeamMappings) {
         for (CreateTeamMapping c : allTeamMappings) {
             teamToPersonnelMap.computeIfAbsent(c.getTeamId(), k -> new HashSet<>()).add(c.getPersonnelId());
         }
     }
 
     // Method to get all team members
-    public ObservableList<Personnel> getAllTeamMembers(Team team) {
+    public ObservableList<Personnel> getAllTeamMembers(Team team) throws DataAccessException {
+
         ObservableList<Personnel> allTeamMembers = FXCollections.observableArrayList();
-        Set<Integer> personnelIds = teamToPersonnelMap.getOrDefault(team.getId(), Collections.emptySet());
-        PersonnelModel personnelModel = new PersonnelModel();
-        for (int personnelId : personnelIds) {
-            Personnel p = personnelModel.getPersonnelById(personnelId); // Assuming a method to get personnel by ID
-            if (p != null) {
-                allTeamMembers.add(p);
+
+        Map<Integer, Set<Integer>> teamToPersonnelMap = getTeamToPersonnelMap();
+
+        Set<Integer> personnelIds = teamToPersonnelMap.get(team.getId());
+        if (personnelIds != null) {
+            PersonnelModel personnelModel = new PersonnelModel();
+            for (int personnelId : personnelIds) {
+                Personnel personnel = personnelModel.getPersonnelById(personnelId);
+                if (personnel != null) {
+                    allTeamMembers.add(personnel);
+                }
             }
         }
+
         return allTeamMembers;
     }
-    public Team getPersonnelTeam(Personnel personnel) {
-        Team pTeam = new Team();
-        TeamModel teamModel = new TeamModel();
-        // Assuming you have a class level variable to store team mappings
-        Map<Integer, Integer> personnelToTeamMap = new HashMap<>();
+
+
+    public ObservableList<Team> getPersonnelTeam(Personnel personnel) {
+        ObservableList<Team> allPersonnelTeams = FXCollections.observableArrayList();
+
+        Map<Integer, List<Integer>> personnelToTeamMap = new HashMap<>();
 
         // Preprocess team mappings data
+        List<CreateTeamMapping> allTeamMappings = getAllTeamMappings();
         for (CreateTeamMapping c : allTeamMappings) {
-            personnelToTeamMap.put(c.getPersonnelId(), c.getTeamId());
+            personnelToTeamMap.computeIfAbsent(c.getPersonnelId(), k -> new ArrayList<>()).add(c.getTeamId());
         }
 
-        // Retrieve the team ID associated with the personnel
-        Integer teamId = personnelToTeamMap.get(personnel.getId());
-        if (teamId != null) {
-            // Assuming you have a method to get a team by its ID
-            pTeam = teamModel.getTeamById(teamId);
+        // Retrieve the team IDs associated with the personnel
+        List<Integer> teamIds = personnelToTeamMap.get(personnel.getId());
+        if (teamIds != null) {
+            TeamModel teamModel = new TeamModel();
+            for (Integer teamId : teamIds) {
+                Team team = teamModel.getTeamById(teamId);
+                if (team != null) {
+                    allPersonnelTeams.add(team);
+                }
+            }
         }
-        return pTeam;
+
+        return allPersonnelTeams;
     }
+
 
     /**
      * Deletes the specified Personnel data from both the manager and the observable list.
@@ -102,10 +112,30 @@ public class TeamMappingModel {
      *
      * @param createTeamMapping The Personnel data to delete.
      */
+    public void deleteTeamMappingWithPersonnelId(CreateTeamMapping createTeamMapping) {
+        try {
+            teamMappingManager.deleteTeamMappingWithPersonnelId(createTeamMapping);
+            allTeamMappings.remove(createTeamMapping);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    /**
+     * Deletes the specified Personnel data from both the manager and the observable list.
+     *
+     * @param createTeamMapping The Personnel data to delete.
+     */
     public void deleteTeamMappingWithTeamNPersonnelId(CreateTeamMapping createTeamMapping) {
         try {
             teamMappingManager.deleteTeamMappingWithTeamNPersonnelId(createTeamMapping);
-            allTeamMappings.remove(createTeamMapping);
+            for (CreateTeamMapping c : getAllTeamMappings()) {
+                if (c.getPersonnelId() == createTeamMapping.getPersonnelId() &&
+                    c.getTeamId() == createTeamMapping.getTeamId()) {
+                    allTeamMappings.remove(c);
+                    break;
+                }
+            }
         } catch (Exception e) {
             System.out.println(e);
         }

@@ -27,3 +27,8 @@
 .buttonWidget:pressed {
     -fx-background-color: #00325c; /* Even darker shade of blue when pressed */
 }
+.red-outline {
+    -fx-border-color: red;
+    -fx-border-width: 2px;
+    -fx-border-radius: 4px;
+}

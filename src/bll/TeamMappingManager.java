@@ -73,6 +73,18 @@ public class TeamMappingManager {
      * @return The deleted Personnel object.
      * @throws DataAccessException If an error occurs while accessing the data.
      */
+    public CreateTeamMapping deleteTeamMappingWithPersonnelId(CreateTeamMapping deleteTeamMapping) throws Exception {
+        teamMappingDAO_db.deleteTeamMappingWithPersonnelId(deleteTeamMapping);
+        return deleteTeamMapping;
+    }
+
+    /**
+     * Deletes a Personnel record.
+     *
+     * @param deleteTeamMapping The Personnel object to delete.
+     * @return The deleted Personnel object.
+     * @throws DataAccessException If an error occurs while accessing the data.
+     */
     public CreateTeamMapping deleteTeamMappingWithTeamNPersonnelId(CreateTeamMapping deleteTeamMapping) throws Exception {
         teamMappingDAO_db.deleteTeamMappingWithTeamNPersonnelId(deleteTeamMapping);
         return deleteTeamMapping;

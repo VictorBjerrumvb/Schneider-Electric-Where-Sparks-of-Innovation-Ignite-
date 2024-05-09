@@ -128,6 +128,8 @@ public class PersonnelModel {
         try {
             // Update the Personnel data through the manager
             personnelManager.updatePersonnel(personnel);
+            allPersonnel.clear();
+            allPersonnel.addAll(personnelManager.getAllPersonnel());
             // Personnel data is updated in the manager, but we assume it reflects in the list
         } catch (Exception e) {
             // Log and handle any exceptions that occur during update

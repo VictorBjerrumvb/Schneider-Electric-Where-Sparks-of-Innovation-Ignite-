@@ -2,13 +2,10 @@ package gui.controller;
 
 import be.CreateTeamMapping;
 import be.Personnel;
-import be.Team;
 import gui.helperclases.ShowImageClass;
 import gui.model.PersonnelModel;
 import gui.model.TeamMappingModel;
-import gui.model.TeamModel;
 import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,6 +18,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
 import java.io.IOException;
 
@@ -28,22 +26,19 @@ public class CreatePersonnelController {
     @FXML
     private MenuButton btnProfile;
     @FXML
-    private ListView<Team> listTeam; // Specify the type parameter for ListView
-    @FXML
     private ImageView imgLogo, imgProfileIcon;
     @FXML
-    private MFXButton btnAdministrator, btnManager, btnProgrammer, btnCancel, btnCreate;
+    private MFXButton btnAdministrator, btnManager, btnProgrammer, btnCreate;
     @FXML
     private ListView<Personnel> listPersonnel; // Specify the type parameter for ListView
     @FXML
-    private MFXTextField txtUsername, txtPassword, txtConfirmPassword, txtSalary, txtSearchTeam;
+    private MFXTextField txtUsername, txtPassword, txtConfirmPassword, txtSalary, txtRole;
 
     private Personnel newPersonnel = new Personnel();
     private Personnel selectedPersonnel = new Personnel();
     private Personnel operator;
     private ShowImageClass showImageClass = new ShowImageClass();
     private PersonnelModel personnelModel;
-    private TeamModel teamModel;
     private String newAdministrator = "New Administrator";
     private String newManager = "New Manager";
     private String newProgrammer = "New Programmer";
@@ -60,7 +55,6 @@ public class CreatePersonnelController {
     public CreatePersonnelController() {
         try {
             personnelModel = new PersonnelModel();
-            teamModel = new TeamModel();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -68,12 +62,11 @@ public class CreatePersonnelController {
 
     public void setup() {
         listPersonnel.setItems(personnelModel.getAllPersonnel());
-        listTeam.setItems(teamModel.getAllTeams());
-        txtSearchTeam.setText("");
         txtPassword.setText("");
         txtConfirmPassword.setText("");
         txtSalary.setText("");
         txtUsername.setText("");
+        txtRole.setText("");
 
         if (selectedPersonnel.getId() != 0) {
             btnCreate.setText(update);
@@ -101,15 +94,23 @@ public class CreatePersonnelController {
         }
     }
 
+    /**
+     * Sets the current operator (personnel) of the application.
+     * Updates the profile button text with operator's username and sets the profile image.
+     * @param operator The personnel to set as the operator.
+     */
     public void setOperator(Personnel operator) {
         this.operator = operator;
+        // Set profile button text to operator's username
         btnProfile.setText(operator.getUsername());
+        // Set profile image to operator's picture or default image if not available
         if (operator != null && operator.getPicture() != null && !operator.getPicture().isEmpty()) {
             imgProfileIcon.setImage(showImageClass.showImage(operator.getPicture()));
         } else {
             imgProfileIcon.setImage(showImageClass.showImage("profileimages/image.png"));
         }
     }
+
 
     @FXML
     private void handleLogo(MouseEvent mouseEvent) {
@@ -156,25 +157,37 @@ public class CreatePersonnelController {
     @FXML
     private void handleAdministrator(ActionEvent actionEvent) {
         newPersonnel.setRoleId(1);
-        newPersonnel.setRole("Admin");
+        // Remove red outline style from this button
+        btnAdministrator.getStyleClass().remove("red-outline");
+        btnManager.getStyleClass().remove("red-outline");
+        btnProgrammer.getStyleClass().remove("red-outline");
     }
 
     @FXML
     private void handleManager(ActionEvent actionEvent) {
         newPersonnel.setRoleId(2);
-        newPersonnel.setRole("Manager");
+        // Remove red outline style from this button
+        btnAdministrator.getStyleClass().remove("red-outline");
+        btnManager.getStyleClass().remove("red-outline");
+        btnProgrammer.getStyleClass().remove("red-outline");
     }
 
     @FXML
     private void handleProgrammer(ActionEvent actionEvent) {
         newPersonnel.setRoleId(3);
-        newPersonnel.setRole("Programmer");
+        // Remove red outline style from this button
+        btnAdministrator.getStyleClass().remove("red-outline");
+        btnManager.getStyleClass().remove("red-outline");
+        btnProgrammer.getStyleClass().remove("red-outline");
     }
+
 
     @FXML
     private void handleCreate(ActionEvent actionEvent) {
         if (newPersonnel.getRoleId() == 0) {
-            // Role not selected, do nothing
+            btnAdministrator.getStyleClass().add("red-outline");
+            btnManager.getStyleClass().add("red-outline");
+            btnProgrammer.getStyleClass().add("red-outline");
             return;
         }
 
@@ -187,53 +200,48 @@ public class CreatePersonnelController {
                 showAlert("Salary field cannot be empty!");
                 return;
             }
-
-            try {
-                // Attempt to parse the salary
-                double salary = Double.parseDouble(salaryText);
-                newPersonnel.setSalary(salary);
-
-                // Continue with creating the personnel
-                newPersonnel.setUsername(txtUsername.getText());
-                if (txtPassword.getText().equals(txtConfirmPassword.getText())) {
-                    newPersonnel.setPassword(txtPassword.getText());
-                } else {
-                    txtPassword.setText("");
-                    txtConfirmPassword.setText("");
-                    txtPassword.setPromptText("Password Didn't Match");
-                    return;
-                }
-
-                // Database interaction to create personnel
+            if (txtRole.getText().equals("")) {
+                txtRole.setPromptText("Please Fill in a role");
+            }
+            else {
                 try {
-                    // Call the method to create personnel in the model
-                    Personnel p = personnelModel.createPersonnelWithReturn(newPersonnel);
-                    Team nt = new Team();
-                    nt.setName(txtSearchTeam.getText());
-                    Team t = teamModel.createTeamWithReturn(nt);
+                    // Attempt to parse the salary
+                    double salary = Double.parseDouble(salaryText);
+                    newPersonnel.setSalary(salary);
+                    newPersonnel.setRole(txtRole.getText());
 
-                    TeamMappingModel teamMappingModel = new TeamMappingModel();
-                    CreateTeamMapping createTeamMapping = new CreateTeamMapping();
-                    createTeamMapping.setTeamId(t.getId());
-                    createTeamMapping.setPersonnelId(p.getId());
-                    teamMappingModel.createTeam(createTeamMapping);
+                    // Continue with creating the personnel
+                    newPersonnel.setUsername(txtUsername.getText());
+                    if (txtPassword.getText().equals(txtConfirmPassword.getText())) {
+                        newPersonnel.setPassword(txtPassword.getText());
+                    } else {
+                        txtPassword.setText("");
+                        txtConfirmPassword.setText("");
+                        txtPassword.setPromptText("Password Didn't Match");
+                        return;
+                    }
 
+                    // Database interaction to create personnel
+                    try {
+                        // Call the method to create personnel in the model
+                        Personnel p = personnelModel.createPersonnelWithReturn(newPersonnel);
 
-                    // Optionally, you can show a success message to the user
+                        // Optionally, you can show a success message to the user
+                        // For example:
+                        showAlert("Personnel created successfully!");
+
+                        // Reset fields and update UI
+                        setup();
+                    } catch (Exception e) {
+                        // Handle database exception
+                        // For example:
+                        showAlert("Error creating personnel: " + e.getMessage());
+                    }
+                } catch (NumberFormatException e) {
+                    // Error occurred while parsing the salary, show an error message to the user
                     // For example:
-                    showAlert("Personnel created successfully!");
-
-                    // Reset fields and update UI
-                    setup();
-                } catch (Exception e) {
-                    // Handle database exception
-                    // For example:
-                    showAlert("Error creating personnel: " + e.getMessage());
+                    showAlert("Invalid salary format! Please enter a valid number.");
                 }
-            } catch (NumberFormatException e) {
-                // Error occurred while parsing the salary, show an error message to the user
-                // For example:
-                showAlert("Invalid salary format! Please enter a valid number.");
             }
         }
     }
@@ -253,12 +261,8 @@ public class CreatePersonnelController {
             selectedPersonnel = listPersonnel.getSelectionModel().getSelectedItem(); // Remove unnecessary cast
             txtUsername.setText(selectedPersonnel.getUsername());
             txtSalary.setText(String.valueOf(selectedPersonnel.getSalary()));
-            TeamMappingModel teamMappingModel = new TeamMappingModel();
-            Team team = teamMappingModel.getPersonnelTeam(selectedPersonnel);
-            //if (team != null) {
-                //txtSearchTeam.setText(team.getName());
-            //}
             btnCreate.setText(update);
+            txtRole.setText(selectedPersonnel.getRole());
             if (selectedPersonnel.getRoleId() == 1) {
                 btnAdministrator.setText(updateAdministrator);
                 btnManager.setText(changeManager);
@@ -280,30 +284,14 @@ public class CreatePersonnelController {
     @FXML
     private void handleKeyPressedPersonnel(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.DELETE) {
+            TeamMappingModel teamMappingModel = new TeamMappingModel();
             Personnel personnel = listPersonnel.getSelectionModel().getSelectedItem(); // Remove unnecessary cast
             if (personnel != null) {
-                personnelModel.deletePersonnel(personnel);
-                listPersonnel.setItems(personnelModel.getAllPersonnel());
+                CreateTeamMapping createTeamMapping = new CreateTeamMapping();
+                createTeamMapping.setPersonnelId(personnel.getId());
+                teamMappingModel.deleteTeamMappingWithPersonnelId(createTeamMapping);
+                listPersonnel.getItems().remove(personnel);
             }
-        }
-    }
-
-    @FXML
-    private void handleKeyPressedTeam(KeyEvent keyEvent) {
-        if (keyEvent.getCode() == KeyCode.DELETE) {
-            Team team = listTeam.getSelectionModel().getSelectedItem(); // Remove unnecessary cast
-            if (team != null) {
-                teamModel.deleteTeam(team);
-                listTeam.setItems(teamModel.getAllTeams());
-            }
-        }
-    }
-
-    @FXML
-    private void handleSelectedTeam(MouseEvent mouseEvent) {
-        Team team = listTeam.getSelectionModel().getSelectedItem(); // Remove unnecessary cast
-        if (team != null) {
-            txtSearchTeam.setText(team.getName());
         }
     }
 }

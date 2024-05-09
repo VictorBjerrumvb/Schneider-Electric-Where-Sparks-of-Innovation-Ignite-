@@ -3,6 +3,7 @@
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
@@ -15,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="618.0" prefWidth="1110.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.CreatePersonnelController">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="618.0" prefWidth="1110.0" stylesheets="@../css/MainCss.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.CreatePersonnelController">
     <top>
         <GridPane prefHeight="59.0" prefWidth="1110.0" BorderPane.alignment="CENTER">
             <columnConstraints>
@@ -45,6 +46,7 @@
                   </ImageView>
                </graphic>
             </MenuButton>
+            <ButtonBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="59.0" prefWidth="3210.0" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.vgrow="ALWAYS" />
             </children>
             <BorderPane.margin>
                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -108,9 +110,10 @@
         <rowConstraints>
           <RowConstraints maxHeight="-Infinity" minHeight="0.0" prefHeight="86.0" vgrow="ALWAYS" />
           <RowConstraints maxHeight="-Infinity" minHeight="0.0" prefHeight="86.0" vgrow="ALWAYS" />
-          <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="86.0" vgrow="ALWAYS" />
-            <RowConstraints maxHeight="410.0" minHeight="10.0" prefHeight="233.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="410.0" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="-Infinity" minHeight="0.0" prefHeight="86.0" vgrow="ALWAYS" />
+            <RowConstraints maxHeight="-Infinity" minHeight="0.0" prefHeight="86.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="0.0" prefHeight="86.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="0.0" prefHeight="86.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <GridPane prefHeight="71.0" prefWidth="452.0">
@@ -184,7 +187,7 @@
                   <Insets bottom="5.0" />
                </GridPane.margin>
             </GridPane>
-            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="5">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
@@ -214,21 +217,8 @@
                   <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="43.0" vgrow="ALWAYS" />
                </rowConstraints>
                <children>
-                  <Label prefHeight="17.0" prefWidth="92.0" text="Apply Team" />
-                  <MFXTextField fx:id="txtSearchTeam" floatMode="ABOVE" prefHeight="92.0" prefWidth="449.0" promptText="Inserts New Team name" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP" />
-               </children>
-            </GridPane>
-            <GridPane GridPane.rowIndex="3">
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints maxHeight="26.0" minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="207.0" minHeight="10.0" prefHeight="207.0" vgrow="SOMETIMES" />
-               </rowConstraints>
-               <children>
-                  <ListView fx:id="listTeam" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyPressed="#handleKeyPressedTeam" onMouseClicked="#handleSelectedTeam" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
-                  <Label prefHeight="17.0" prefWidth="176.0" text="Select an existing Team" />
+                  <Label prefHeight="17.0" prefWidth="92.0" text="Employe Role" />
+                  <MFXTextField fx:id="txtRole" floatMode="ABOVE" prefHeight="92.0" prefWidth="449.0" promptText="Service Manager" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP" />
                </children>
             </GridPane>
          </children>

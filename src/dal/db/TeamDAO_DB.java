@@ -128,4 +128,16 @@ public class TeamDAO_DB {
         // Construct and return the Team object
         return new Team(id, name); // Assuming you have a constructor for the Team class
     }
+    public Team updateTeam(Team team) throws DataAccessException {
+        String sql = "UPDATE SparksExamSchneider.dbo.Team SET TeamName = ? WHERE TeamId = ?;";
+        try (Connection conn = databaseConnector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, team.getName());
+            stmt.setInt(2, team.getId());
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataAccessException("Could not update Team", ex);
+        }
+        return team;
+    }
 }
