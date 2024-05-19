@@ -266,7 +266,7 @@ public class CreateTeamController {
             CreateTeamMapping createTeamMapping = new CreateTeamMapping();
             createTeamMapping.setTeamId(selectedTeam.getId());
             createTeamMapping.setPersonnelId(personnel.getId());
-            teamMappingModel.createTeam(createTeamMapping);
+            teamMappingModel.createTeamMapping(createTeamMapping);
 
             // Update the items of listTeamMembers
             listTeamMembers.getItems().add(personnel);

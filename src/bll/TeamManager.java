@@ -1,22 +1,17 @@
 package bll;
 
-import be.Personnel;
 import be.Team;
 import dal.db.DataAccessException;
-import dal.db.EmployeeProfileDAO_DB;
-import dal.db.PersonnelDAO_DB;
 import dal.db.TeamDAO_DB;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 public class TeamManager {
-    private TeamDAO_DB teamDAO_db;
+    private final TeamDAO_DB teamDAO_db;
 
     /**
-     * Constructs a PersonnelManager and initializes DAOs.
+     * Constructs a TeamManager and initializes DAOs.
      *
      * @throws IOException If an I/O error occurs.
      */
@@ -28,12 +23,10 @@ public class TeamManager {
         }
     }
 
-    // Personnel-related methods
-
     /**
-     * Retrieves all Personnel records.
+     * Retrieves all teams.
      *
-     * @return A list of Personnel objects.
+     * @return A list of Team objects.
      * @throws DataAccessException If an error occurs while accessing the data.
      */
     public List<Team> getAllTeams() throws DataAccessException {
@@ -41,10 +34,10 @@ public class TeamManager {
     }
 
     /**
-     * Creates a new Personnel record.
+     * Creates a new team.
      *
-     * @param newTeam The Personnel object to create.
-     * @return The created Personnel object.
+     * @param newTeam The Team object to create.
+     * @return The created Team object.
      * @throws DataAccessException If an error occurs while accessing the data.
      */
     public Team createTeam(Team newTeam) throws DataAccessException {
@@ -52,10 +45,10 @@ public class TeamManager {
     }
 
     /**
-     * Deletes a Personnel record.
+     * Deletes a team.
      *
-     * @param team The Personnel object to delete.
-     * @return The deleted Personnel object.
+     * @param team The Team object to delete.
+     * @return The deleted Team object.
      * @throws DataAccessException If an error occurs while accessing the data.
      */
     public Team deleteTeam(Team team) throws Exception {
@@ -63,6 +56,12 @@ public class TeamManager {
         return team;
     }
 
+    /**
+     * Updates a team.
+     *
+     * @param selectedTeam The Team object to update.
+     * @throws DataAccessException If an error occurs while accessing the data.
+     */
     public void updateTeam(Team selectedTeam) throws DataAccessException {
         teamDAO_db.updateTeam(selectedTeam);
     }

@@ -67,7 +67,7 @@ public class PersonnelDAO_DB implements IPersonnel {
      */
     @Override
     public Personnel createPersonnel(Personnel personnel) throws DataAccessException {
-        String sql = "INSERT INTO SparksExamSchneider.dbo.Personnel (PersonnelName, PersonnelPassword, PersonnelRole, PersonnelRoleId, PersonnelSalary) VALUES (?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO SparksExamSchneider.dbo.Personnel (PersonnelName, PersonnelPassword, PersonnelRole, PersonnelRoleId, PersonnelSalary, PersonnelPicture) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             // Set parameters for the prepared statement
@@ -76,6 +76,7 @@ public class PersonnelDAO_DB implements IPersonnel {
             stmt.setString(3, personnel.getRole());
             stmt.setInt(4, personnel.getRoleId());
             stmt.setDouble(5, personnel.getSalary());
+            stmt.setString(6, personnel.getPicture());
             stmt.executeUpdate();
 
             // Retrieve auto-generated keys
@@ -93,7 +94,7 @@ public class PersonnelDAO_DB implements IPersonnel {
 
     @Override
     public Personnel deletePersonnel(Personnel personnel) throws DataAccessException {
-        String deleteSql = "DELETE FROM SparksExamSchneider.dbo.Personnel WHERE PersonnelId = ?;";
+        String deleteSql = "DELETE FROM SparksExamSchneider.dbo.Personnel WHERE PersonnelId = ?";
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement deleteStmt = conn.prepareStatement(deleteSql)) {
             deleteStmt.setInt(1, personnel.getId());
@@ -107,15 +108,15 @@ public class PersonnelDAO_DB implements IPersonnel {
 
     @Override
     public Personnel updatePersonnel(Personnel personnel) throws DataAccessException {
-        String sql = "UPDATE SparksExamSchneider.dbo.Personnel SET PersonnelName = ?, PersonnelPassword = ?, PersonnelRole = ?, PersonnelRoleId = ?, PersonnelPicture = ?, PersonnelSalary = ? WHERE PersonnelId = ?;";
+        String sql = "UPDATE SparksExamSchneider.dbo.Personnel SET PersonnelName = ?, PersonnelPassword = ?, PersonnelRole = ?, PersonnelRoleId = ?, PersonnelSalary = ?, PersonnelPicture = ? WHERE PersonnelId = ?";
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, personnel.getUsername());
             stmt.setString(2, personnel.getPassword());
             stmt.setString(3, personnel.getRole());
             stmt.setInt(4, personnel.getRoleId());
-            stmt.setString(5, personnel.getPicture());
-            stmt.setDouble(6, personnel.getSalary());
+            stmt.setDouble(5, personnel.getSalary());
+            stmt.setString(6, personnel.getPicture());
             stmt.setInt(7, personnel.getId());
             stmt.executeUpdate();
         } catch (SQLException ex) {
@@ -127,14 +128,15 @@ public class PersonnelDAO_DB implements IPersonnel {
 
     private Personnel mapResultSetToPersonnel(ResultSet rs) throws SQLException {
         int id = rs.getInt("PersonnelId");
+        String username = rs.getString("PersonnelName");
+        String password = rs.getString("PersonnelPassword");
         int roleId = rs.getInt("PersonnelRoleId");
         String role = rs.getString("PersonnelRole");
         double salary = rs.getDouble("PersonnelSalary");
         String picture = rs.getString("PersonnelPicture");
-        String PersonnelName = rs.getString("PersonnelName");
-        String PersonnelPassword = rs.getString("PersonnelPassword");
-        return new Personnel(id, PersonnelName, PersonnelPassword, roleId, role, salary, picture);
+        return new Personnel(id, username, password, roleId, role, salary, picture);
     }
+
     @Override
     public Personnel validateUser(String userName, String password) throws DataAccessException {
         String sql = "SELECT * FROM SparksExamSchneider.dbo.Personnel WHERE PersonnelName = ? AND PersonnelPassword = ?";

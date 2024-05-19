@@ -27,18 +27,23 @@ public class DatabaseConnector {
      * @throws IOException if an I/O error occurs when reading the database properties file.
      */
     public DatabaseConnector() throws IOException {
-        // Load database properties from the configuration file
-        Properties databaseProperties = new Properties();
-        databaseProperties.load(new FileInputStream(new File(PROP_FILE)));
+        try {
+            // Load database properties from the configuration file
+            Properties databaseProperties = new Properties();
+            databaseProperties.load(new FileInputStream(new File(PROP_FILE)));
 
-        // Initialize SQLServerDataSource with database properties
-        dataSource = new SQLServerDataSource();
-        dataSource.setServerName(databaseProperties.getProperty("Server"));
-        dataSource.setDatabaseName(databaseProperties.getProperty("Database"));
-        dataSource.setUser(databaseProperties.getProperty("User"));
-        dataSource.setPassword(databaseProperties.getProperty("Password"));
-        dataSource.setPortNumber(1433); // Default SQL Server port
-        dataSource.setTrustServerCertificate(true); // Trust the server certificate for SSL
+            // Initialize SQLServerDataSource with database properties
+            dataSource = new SQLServerDataSource();
+            dataSource.setServerName(databaseProperties.getProperty("Server"));
+            dataSource.setDatabaseName(databaseProperties.getProperty("Database"));
+            dataSource.setUser(databaseProperties.getProperty("User"));
+            dataSource.setPassword(databaseProperties.getProperty("Password"));
+            dataSource.setPortNumber(1433); // Default SQL Server port
+            dataSource.setTrustServerCertificate(true); // Trust the server certificate for SSL
+        } catch (IOException ex) {
+            // Log or handle the exception appropriately
+            throw ex;
+        }
     }
 
     /**
@@ -55,17 +60,20 @@ public class DatabaseConnector {
      * A simple main method to test the DatabaseConnector class by establishing a connection and checking if it's open.
      *
      * @param args command-line arguments (not used).
-     * @throws SQLException if a database access error occurs.
-     * @throws IOException  if an I/O error occurs when reading the database properties file.
      */
-    public static void main(String[] args) throws SQLException, IOException {
-        // Create a new instance of DatabaseConnector
-        DatabaseConnector databaseConnector = new DatabaseConnector();
+    public static void main(String[] args) {
+        try {
+            // Create a new instance of DatabaseConnector
+            DatabaseConnector databaseConnector = new DatabaseConnector();
 
-        // Try-with-resources to automatically close the connection after use
-        try (Connection connection = databaseConnector.getConnection()) {
-            // Print whether the connection is open or closed
-            System.out.println("Is the connection open? " + !connection.isClosed());
+            // Try-with-resources to automatically close the connection after use
+            try (Connection connection = databaseConnector.getConnection()) {
+                // Print whether the connection is open or closed
+                System.out.println("Is the connection open? " + !connection.isClosed());
+            }
+        } catch (IOException | SQLException ex) {
+            // Handle exceptions appropriately
+            ex.printStackTrace();
         }
     }
 }

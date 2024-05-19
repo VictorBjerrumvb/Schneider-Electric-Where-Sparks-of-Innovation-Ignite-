@@ -25,18 +25,13 @@ public class LoginViewController {
     @FXML
     private MFXTextField txtFieldUsername;
     @FXML
-    private MFXButton btnLogin1;
-    @FXML
     private MFXButton btnLogin;
+    @FXML
+    private MFXButton btnForgotPassword;
 
     // Instance of PersonnelManager for handling Personnel-related operations
     private PersonnelManager personnelManager = new PersonnelManager();
 
-    /**
-     * Constructor for LoginViewController.
-     *
-     * @throws IOException if an I/O error occurs.
-     */
     public LoginViewController() throws IOException {
     }
 
@@ -54,49 +49,38 @@ public class LoginViewController {
 
         // Validate the user credentials
         Personnel personnelLogged = personnelManager.validatePersonnel(userName.toLowerCase(), userPassword);
-        if (!(personnelLogged == null)) {
-            // if it matches you are logged in
+        if (personnelLogged != null) {
+            // Load different views based on user role
+            FXMLLoader loader;
+            String title;
             if (personnelLogged.getRoleId() == 1) {
-                // Load the admin view if the user is an admin
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
-                Parent secondWindow = loader.load();
-                Stage newStage = new Stage();
-                newStage.setTitle("Admin Page");
-                MainViewController controller = loader.getController();
-                controller.setup();
-                controller.setOperator(personnelLogged);
-                Scene scene = new Scene(secondWindow);
-                newStage.setScene(scene);
-
-                // Check if the current window is maximized
-                Stage currentStage = (Stage) btnLogin.getScene().getWindow();
-                if (currentStage.isMaximized()) {
-                    newStage.setMaximized(true); // Maximize the new window
-                }
-
-                newStage.show();
-                currentStage.hide();
-
+                loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+                title = "Admin Page";
+            } else if (personnelLogged.getRoleId() == 2) {
+                loader = new FXMLLoader(getClass().getResource("/fxml/KoordinatorPage.fxml"));
+                title = "Coordinator Page";
+            } else {
+                // Handle other roles or scenarios as needed
+                return;
             }
-            if (personnelLogged.getRoleId() == 2) {
-                // Load the coordinator view if the user is a coordinator
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/KoordinatorPage.fxml"));
-                Parent secondWindow = loader.load();
-                Stage newStage = new Stage();
-                newStage.setTitle("Coordinator Page");
-                Scene scene = new Scene(secondWindow);
-                newStage.setScene(scene);
 
-                // Check if the current window is maximized
-                Stage currentStage = (Stage) btnLogin.getScene().getWindow();
-                if (currentStage.isMaximized()) {
-                    newStage.setMaximized(true); // Maximize the new window
-                }
+            Parent secondWindow = loader.load();
+            MainViewController controller = loader.getController();
+            controller.setup();
+            controller.setOperator(personnelLogged);
+            Scene scene = new Scene(secondWindow);
 
-                newStage.show();
-                currentStage.hide();
-
+            // Check if the current window is maximized
+            Stage currentStage = (Stage) btnLogin.getScene().getWindow();
+            Stage newStage = new Stage();
+            newStage.setScene(scene);
+            newStage.setTitle(title);
+            if (currentStage.isMaximized()) {
+                newStage.setMaximized(true); // Maximize the new window
             }
+
+            newStage.show();
+            currentStage.hide();
         } else {
             // Display a message for incorrect password or username
             txtFieldUsername.setText("");

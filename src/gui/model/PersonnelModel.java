@@ -27,13 +27,10 @@ public class PersonnelModel {
         try {
             personnelManager = new PersonnelManager();
             allPersonnel = FXCollections.observableArrayList();
-            // Fetch all Personnel data from the manager and add it to the observable list
             allPersonnel.addAll(personnelManager.getAllPersonnel());
-            preprocessPersonnel(allPersonnel); // Preprocess personnel data
+            preprocessPersonnel(allPersonnel);
         } catch (Exception e) {
-            // Log and handle any exceptions that occur during initialization
             LOGGER.error("Failed to load Personnel data: {}", e.getMessage());
-            // Handle exception appropriately, perhaps notify the user
         }
     }
 
@@ -66,9 +63,7 @@ public class PersonnelModel {
             personnelManager.deletePersonnel(personnel);
             allPersonnel.remove(personnel);
         } catch (Exception e) {
-            // Log and handle any exceptions that occur during deletion
             LOGGER.error("Failed to delete Personnel: {}", e.getMessage());
-            // Notify the user of the failure
         }
     }
 
@@ -79,44 +74,16 @@ public class PersonnelModel {
      */
     public void createPersonnel(Personnel personnel) {
         try {
-            // Create the Personnel data through the manager
             Personnel p = personnelManager.createPersonnel(personnel);
-            // Add the created Personnel data to the observable list
             if (p != null) {
                 allPersonnel.add(p);
-                personnelMap.put(p.getId(), p); // Add to personnel map
+                personnelMap.put(p.getId(), p);
             } else {
-                // Log and handle the case where creation succeeds but adding to the list fails
                 LOGGER.error("Failed to add created Personnel to the observable list.");
-                // Notify the user of the failure
             }
         } catch (Exception e) {
-            // Log and handle any exceptions that occur during creation
             LOGGER.error("Failed to create Personnel: {}", e.getMessage());
-            // Notify the user of the failure
         }
-    }
-
-    public Personnel createPersonnelWithReturn(Personnel personnel) {
-        Personnel p = new Personnel();
-        try {
-            // Create the Personnel data through the manager
-            p = personnelManager.createPersonnel(personnel);
-            // Add the created Personnel data to the observable list
-            if (p != null) {
-                allPersonnel.add(p);
-                personnelMap.put(p.getId(), p); // Add to personnel map
-            } else {
-                // Log and handle the case where creation succeeds but adding to the list fails
-                LOGGER.error("Failed to add created Personnel to the observable list.");
-                // Notify the user of the failure
-            }
-        } catch (Exception e) {
-            // Log and handle any exceptions that occur during creation
-            LOGGER.error("Failed to create Personnel: {}", e.getMessage());
-            // Notify the user of the failure
-        }
-        return  p;
     }
 
     /**
@@ -126,15 +93,11 @@ public class PersonnelModel {
      */
     public void updatePersonnel(Personnel personnel) {
         try {
-            // Update the Personnel data through the manager
             personnelManager.updatePersonnel(personnel);
             allPersonnel.clear();
             allPersonnel.addAll(personnelManager.getAllPersonnel());
-            // Personnel data is updated in the manager, but we assume it reflects in the list
         } catch (Exception e) {
-            // Log and handle any exceptions that occur during update
             LOGGER.error("Failed to update Personnel: {}", e.getMessage());
-            // Notify the user of the failure
         }
     }
 
@@ -142,5 +105,9 @@ public class PersonnelModel {
         for (Personnel p : allPersonnel) {
             personnelMap.put(p.getId(), p);
         }
+    }
+
+    public Personnel createPersonnelWithReturn(Personnel newPersonnel) {
+        return newPersonnel;
     }
 }

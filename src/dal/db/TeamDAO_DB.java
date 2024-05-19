@@ -1,9 +1,6 @@
 package dal.db;
 
-import be.Personnel;
 import be.Team;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.*;
@@ -39,7 +36,7 @@ public class TeamDAO_DB {
      * @throws DataAccessException if an error occurs while fetching the Team from the database.
      */
     public Team getTeamById(int id) throws DataAccessException {
-        String sql = "SELECT * FROM team WHERE id = ?";
+        String sql = "SELECT * FROM Team WHERE TeamId = ?";
         try (Connection connection = databaseConnector.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, id);
@@ -61,13 +58,10 @@ public class TeamDAO_DB {
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-
-                // Map DB row to Song object
+                // Map DB row to Team object
                 int id = rs.getInt("TeamId");
                 String name = rs.getString("TeamName");
-
-
-                Team team = new Team (id,name);
+                Team team = new Team(id, name);
                 allTeams.add(team);
             }
         } catch (SQLException e) {
@@ -76,25 +70,20 @@ public class TeamDAO_DB {
         return allTeams;
     }
 
-    public Team deleteTeam(Team team) throws Exception {
-
-        String sql="DELETE FROM SparksExamSchneider.dbo.Team WHERE TeamId = ?;";
+    public Team deleteTeam(Team team) throws DataAccessException {
+        String sql = "DELETE FROM SparksExamSchneider.dbo.Team WHERE TeamId = ?";
         try (Connection conn = databaseConnector.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql))
-        {
-            stmt.setInt(1,team.getId());
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, team.getId());
             stmt.executeUpdate();
-        }
-        catch (SQLException ex)
-        {
-            ex.printStackTrace();
-            throw new Exception("Could not delete Team", ex);
+        } catch (SQLException ex) {
+            throw new DataAccessException("Could not delete Team", ex);
         }
         return team;
     }
 
     public Team createTeam(Team team) throws DataAccessException {
-        String sql = "INSERT INTO SparksExamSchneider.dbo.Team (TeamName) VALUES (?);";
+        String sql = "INSERT INTO SparksExamSchneider.dbo.Team (TeamName) VALUES (?)";
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             // Set parameters for the prepared statement
@@ -104,7 +93,7 @@ public class TeamDAO_DB {
             // Retrieve auto-generated keys
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
-                    team.setId(rs.getInt(1)); // Set the generated ID to the Personnel object
+                    team.setId(rs.getInt(1)); // Set the generated ID to the Team object
                 }
             }
             return team;
@@ -121,15 +110,14 @@ public class TeamDAO_DB {
      * @throws SQLException if a SQL exception occurs while extracting data from the ResultSet.
      */
     private Team extractTeamFromResultSet(ResultSet rs) throws SQLException {
-        int id = rs.getInt("id");
-        String name = rs.getString("name");
-        // You may need to extract more fields depending on your Team class
-
+        int id = rs.getInt("TeamId");
+        String name = rs.getString("TeamName");
         // Construct and return the Team object
-        return new Team(id, name); // Assuming you have a constructor for the Team class
+        return new Team(id, name);
     }
+
     public Team updateTeam(Team team) throws DataAccessException {
-        String sql = "UPDATE SparksExamSchneider.dbo.Team SET TeamName = ? WHERE TeamId = ?;";
+        String sql = "UPDATE SparksExamSchneider.dbo.Team SET TeamName = ? WHERE TeamId = ?";
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, team.getName());

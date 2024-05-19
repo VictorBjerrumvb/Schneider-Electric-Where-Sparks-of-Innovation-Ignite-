@@ -49,14 +49,15 @@ public class EmployeeProfile {
 
     /**
      * Parameterized constructor to initialize an employee profile with provided values.
-     * @param annualSalary The annual salary of the employee.
-     * @param overheadMultiplier The overhead multiplier.
-     * @param fixedAnnualAmount The fixed annual amount.
-     * @param geography The geography or country of the employee.
-     * @param team The team the employee belongs to.
+     *
+     * @param annualSalary              The annual salary of the employee.
+     * @param overheadMultiplier        The overhead multiplier.
+     * @param fixedAnnualAmount         The fixed annual amount.
+     * @param geography                 The geography or country of the employee.
+     * @param team                      The team the employee belongs to.
      * @param annualEffectiveWorkingHours The annual effective working hours of the employee.
-     * @param utilizationPercentage The utilization percentage of the employee.
-     * @param isOverhead Indicates if the employee is considered an overhead cost.
+     * @param utilizationPercentage     The utilization percentage of the employee.
+     * @param isOverhead                Indicates if the employee is considered an overhead cost.
      */
     public EmployeeProfile(double annualSalary, double overheadMultiplier, double fixedAnnualAmount,
                            Geography geography, Team team, double annualEffectiveWorkingHours,
@@ -72,7 +73,29 @@ public class EmployeeProfile {
     }
 
     /**
+     * Calculates the hourly rate based on the employee's profile.
+     *
+     * @return The calculated hourly rate.
+     */
+    public double calculateHourlyRate() {
+        double baseRate = (annualSalary + fixedAnnualAmount) / annualEffectiveWorkingHours;
+        baseRate *= (1 + overheadMultiplier / 100.0);
+        baseRate *= (utilizationPercentage / 100.0);
+        return baseRate;
+    }
+
+    /**
+     * Calculates the day rate based on the employee's profile.
+     *
+     * @return The calculated day rate.
+     */
+    public double calculateDayRate() {
+        return calculateHourlyRate() * 8; // Assuming 8 hours per day
+    }
+
+    /**
      * Compares this employee profile to another object for equality.
+     *
      * @param o The object to compare to.
      * @return True if the objects are equal, false otherwise.
      */
@@ -94,6 +117,7 @@ public class EmployeeProfile {
 
     /**
      * Generates a hash code for this employee profile.
+     *
      * @return The hash code.
      */
     @Override
@@ -105,6 +129,7 @@ public class EmployeeProfile {
 
     /**
      * Returns a string representation of this employee profile.
+     *
      * @return The string representation.
      */
     @Override

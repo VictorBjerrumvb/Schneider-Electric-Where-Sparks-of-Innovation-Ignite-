@@ -10,19 +10,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 
 import java.io.IOException;
-
 
 public class MainViewController {
 
     public FlowPane flowPaneInformation;
 
-
     private WidgetsClass widgetsClass = new WidgetsClass();
     private Personnel operator;
-
 
     public void setup() {
         flowPaneInformation.getChildren().clear();
@@ -31,19 +27,19 @@ public class MainViewController {
         switchAdminView();
         switchTeamsView();
     }
+
     public void setOperator(Personnel operator) {
         this.operator = operator;
     }
+
     private void switchPersonnelView() {
         GridPane gridPane = widgetsClass.createWidgetGridpane();
         Button personnel = widgetsClass.createWidgetButton("Swipe");
         Label managePersonnel = widgetsClass.createWidgetLabel("Manage Personnel");
 
-        // Set alignment for each cell
         GridPane.setHalignment(personnel, HPos.CENTER);
         GridPane.setHalignment(managePersonnel, HPos.CENTER);
 
-        // Add nodes to the grid
         gridPane.add(personnel, 0, 1);
         gridPane.add(managePersonnel, 0, 0);
 
@@ -56,13 +52,13 @@ public class MainViewController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CreatePersonnelView.fxml"));
                 Parent secondWindow = loader.load();
-                Scene scene = personnel.getScene(); // Get the current scene
-                scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+                Scene scene = personnel.getScene();
+                scene.setRoot(secondWindow);
                 CreatePersonnelController controller = loader.getController();
                 controller.setup();
                 controller.setOperator(operator);
             } catch (IOException e) {
-                e.printStackTrace(); // Handle exception appropriately
+                e.printStackTrace();
             }
         });
     }

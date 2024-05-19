@@ -10,7 +10,7 @@ import java.util.Objects;
  * Represents a Personnel profile of an employee.
  */
 @Entity
-public class Personnel{
+public class Personnel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -40,6 +40,19 @@ public class Personnel{
     @ManyToOne
     @JoinColumn(name = "geography_id")
     private Geography geography;
+
+    // New fields for employee profile attributes
+    @Column(nullable = false)
+    private double overheadMultiplier;
+
+    @Column(nullable = false)
+    private double fixedAnnualAmount;
+
+    @Column(nullable = false)
+    private double annualEffectiveWorkingHours;
+
+    @Column(nullable = false)
+    private double utilizationPercentage;
 
     // Constructors
 
@@ -226,5 +239,37 @@ public class Personnel{
     @Override
     public String toString() {
         return username + " | " + role;
+    }
+
+    public double getOverheadMultiplier() {
+        return overheadMultiplier;
+    }
+
+    public void setOverheadMultiplier(double overheadMultiplier) {
+        this.overheadMultiplier = overheadMultiplier;
+    }
+
+    public double getFixedAnnualAmount() {
+        return fixedAnnualAmount;
+    }
+
+    public void setFixedAnnualAmount(double fixedAnnualAmount) {
+        this.fixedAnnualAmount = fixedAnnualAmount;
+    }
+
+    public double getAnnualEffectiveWorkingHours() {
+        return annualEffectiveWorkingHours;
+    }
+
+    public void setAnnualEffectiveWorkingHours(double annualEffectiveWorkingHours) {
+        this.annualEffectiveWorkingHours = annualEffectiveWorkingHours;
+    }
+
+    public double getUtilizationPercentage() {
+        return utilizationPercentage;
+    }
+
+    public void setUtilizationPercentage(double utilizationPercentage) {
+        this.utilizationPercentage = utilizationPercentage;
     }
 }

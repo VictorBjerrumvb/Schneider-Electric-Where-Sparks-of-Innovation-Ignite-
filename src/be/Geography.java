@@ -30,6 +30,7 @@ public class Geography {
 
     /**
      * Constructor to initialize a geography object with the given country.
+     *
      * @param country The name of the country.
      */
     public Geography(String country) {
@@ -38,16 +39,20 @@ public class Geography {
 
     /**
      * Constructor to initialize a geography object with the given id and country.
-     * @param id The id of the geography.
-     * @param name The name of the country.
+     *
+     * @param id     The id of the geography.
+     * @param country The name of the country.
      */
-    public Geography(int id, String name) {
+    public Geography(int id, String country) {
+        this.id = id;
+        this.country = country;
     }
 
     // Getters and Setters
 
     /**
      * Retrieves the id of the geography.
+     *
      * @return The id.
      */
     public int getId() {
@@ -56,6 +61,7 @@ public class Geography {
 
     /**
      * Sets the id of the geography.
+     *
      * @param id The id to set.
      */
     public void setId(int id) {
@@ -64,6 +70,7 @@ public class Geography {
 
     /**
      * Retrieves the name of the country.
+     *
      * @return The country name.
      */
     public String getCountry() {
@@ -72,6 +79,7 @@ public class Geography {
 
     /**
      * Sets the name of the country.
+     *
      * @param country The country name to set.
      */
     public void setCountry(String country) {
@@ -80,6 +88,7 @@ public class Geography {
 
     /**
      * Retrieves the set of residents associated with this geography.
+     *
      * @return The set of residents.
      */
     public Set<Personnel> getResidents() {
@@ -88,6 +97,7 @@ public class Geography {
 
     /**
      * Sets the set of residents associated with this geography.
+     *
      * @param residents The set of residents to set.
      */
     public void setResidents(Set<Personnel> residents) {
@@ -98,6 +108,7 @@ public class Geography {
 
     /**
      * Checks if this geography is equal to another object.
+     *
      * @param o The object to compare to.
      * @return True if equal, false otherwise.
      */
@@ -111,6 +122,7 @@ public class Geography {
 
     /**
      * Generates a hash code for this geography.
+     *
      * @return The hash code.
      */
     @Override
@@ -122,6 +134,7 @@ public class Geography {
 
     /**
      * Returns a string representation of this geography.
+     *
      * @return The string representation.
      */
     @Override
@@ -134,6 +147,7 @@ public class Geography {
 
     /**
      * Retrieves the name of the geography.
+     *
      * @return The name of the geography.
      */
     public String getName() {

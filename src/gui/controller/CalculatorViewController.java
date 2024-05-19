@@ -143,4 +143,48 @@ public class CalculatorViewController {
     @FXML
     private void handleSearchCountryName(ActionEvent actionEvent) {
     }
+    @FXML
+    private void handleCalculate(ActionEvent actionEvent) {
+        // Calculate and display day rate or hourly rate based on the entered employee profile
+        calculateRates();
+    }
+
+    private void calculateRates() {
+        // Get selected employee from the list
+        Personnel selectedEmployee = (Personnel) listPersonnel.getSelectionModel().getSelectedItem();
+        if (selectedEmployee != null) {
+            double annualSalary = selectedEmployee.getSalary();
+            double overheadMultiplier = selectedEmployee.getOverheadMultiplier();
+            double fixedAnnualAmount = selectedEmployee.getFixedAnnualAmount();
+            double annualEffectiveWorkingHours = selectedEmployee.getAnnualEffectiveWorkingHours();
+            double utilizationPercentage = selectedEmployee.getUtilizationPercentage();
+
+            // Perform calculations based on the provided formulas
+            double hourlyRate = (annualSalary / (annualEffectiveWorkingHours * utilizationPercentage)) + overheadMultiplier;
+            double dayRate = hourlyRate * 8; // Assuming 8 working hours per day
+
+            // Apply multipliers
+            double markupMultiplier = Double.parseDouble(txtMarkupMultiplier.getText());
+            double gmMultiplier = Double.parseDouble(txtMarginMultiplier.getText());
+            hourlyRate *= (1 + (markupMultiplier / 100));
+            hourlyRate *= (1 + (gmMultiplier / 100));
+            dayRate *= (1 + (markupMultiplier / 100));
+            dayRate *= (1 + (gmMultiplier / 100));
+
+            // Display the calculated rates in the UI
+            txtHourlyRate.setText(String.valueOf(hourlyRate));
+            txtDailyRate.setText(String.valueOf(dayRate));
+        }
+    }
+    @FXML
+    private void handleDistributeCost(ActionEvent actionEvent) {
+        // Distribute the cost of overhead employees among various teams
+        distributeCost();
+    }
+
+    private void distributeCost() {
+        // Implement the functionality to distribute the cost of overhead employees among various teams
+        // You may need additional UI elements to select teams and specify cost distribution percentages
+        // Calculate and update the cost distribution accordingly
+    }
 }

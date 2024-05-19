@@ -1,6 +1,7 @@
 package dal.db;
 
 import be.Geography;
+import dal.db.DataAccessException;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -19,10 +20,14 @@ public class GeographyDAO_DB {
     /**
      * Constructs a new GeographyDAO_DB object and initializes the DatabaseConnector.
      *
-     * @throws IOException if an I/O error occurs when initializing the DatabaseConnector.
+     * @throws DataAccessException if an error occurs when initializing the DatabaseConnector.
      */
-    public GeographyDAO_DB() throws IOException {
-        databaseConnector = new DatabaseConnector();
+    public GeographyDAO_DB() throws DataAccessException {
+        try {
+            databaseConnector = new DatabaseConnector();
+        } catch (IOException ex) {
+            throw new DataAccessException("Error initializing database connector", ex);
+        }
     }
 
     /**

@@ -258,7 +258,7 @@ public class CreatePersonnelController {
     @FXML
     private void handleSelectedPersonnel(MouseEvent mouseEvent) {
         if (listPersonnel.getSelectionModel().getSelectedItem() != null) {
-            selectedPersonnel = listPersonnel.getSelectionModel().getSelectedItem(); // Remove unnecessary cast
+            selectedPersonnel = listPersonnel.getSelectionModel().getSelectedItem();
             txtUsername.setText(selectedPersonnel.getUsername());
             txtSalary.setText(String.valueOf(selectedPersonnel.getSalary()));
             btnCreate.setText(update);

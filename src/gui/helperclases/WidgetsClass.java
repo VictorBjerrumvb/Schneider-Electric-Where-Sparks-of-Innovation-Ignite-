@@ -13,7 +13,7 @@ public class WidgetsClass {
      * Creates a GridPane containing a button and a label.
      *
      * @param buttonText The text to be displayed on the button.
-     * @param labelText The text to be displayed on the label.
+     * @param labelText   The text to be displayed on the label.
      * @return The GridPane containing the button and label.
      */
     public GridPane createWidgetInGridpane(String buttonText, String labelText) {
@@ -25,8 +25,8 @@ public class WidgetsClass {
         button1.getStyleClass().add("buttonWidget");
         label1.getStyleClass().add("labelWidget");
         widgetGridpane.getStyleClass().add("grid-pane");
-        widgetGridpane.add(button1,0,1);
-        widgetGridpane.add(label1,0,0);
+        widgetGridpane.add(button1, 0, 1);
+        widgetGridpane.add(label1, 0, 0);
 
         return widgetGridpane;
     }
@@ -75,7 +75,7 @@ public class WidgetsClass {
     public GridPane applyContainer(GridPane gridPane) {
         GridPane container = new GridPane();
         container.getStyleClass().add("grid-pane-container");
-        container.add(gridPane, 0,0);
+        container.add(gridPane, 0, 0);
         return container;
     }
 }

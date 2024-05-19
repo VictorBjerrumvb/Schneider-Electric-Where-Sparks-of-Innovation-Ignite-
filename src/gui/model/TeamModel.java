@@ -1,6 +1,5 @@
 package gui.model;
 
-import be.Personnel;
 import be.Team;
 import bll.TeamManager;
 import javafx.collections.FXCollections;
@@ -11,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Model class for managing Personnel data in the GUI.
+ * Model class for managing Team data in the GUI.
  */
 public class TeamModel {
     private ObservableList<Team> allTeams;
@@ -19,15 +18,15 @@ public class TeamModel {
     private Map<Integer, Team> teamMap = new HashMap<>();
 
     /**
-     * Constructs a new PersonnelModel instance.
+     * Constructs a new TeamModel instance.
      */
     public TeamModel() {
         try {
             teamManager = new TeamManager();
             allTeams = FXCollections.observableArrayList();
-            // Fetch all Personnel data from the manager and add it to the observable list
+            // Fetch all Team data from the manager and add it to the observable list
             allTeams.addAll(teamManager.getAllTeams());
-            preprocessTeam(allTeams); // Preprocess personnel data
+            preprocessTeam(allTeams); // Preprocess team data
         } catch (Exception e) {
             System.out.println(e);
         }

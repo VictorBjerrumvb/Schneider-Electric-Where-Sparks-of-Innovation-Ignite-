@@ -3,6 +3,7 @@ package dal.db;
 import be.EmployeeProfile;
 import be.Geography;
 import be.Team;
+import dal.db.DataAccessException;
 
 import java.io.IOException;
 import java.sql.*;
@@ -20,10 +21,14 @@ public class EmployeeProfileDAO_DB {
     /**
      * Constructs a new EmployeeProfileDAO_DB object and initializes the DatabaseConnector.
      *
-     * @throws IOException if an I/O error occurs when initializing the DatabaseConnector.
+     * @throws DataAccessException if an error occurs when initializing the DatabaseConnector.
      */
-    public EmployeeProfileDAO_DB() throws IOException {
-        databaseConnector = new DatabaseConnector();
+    public EmployeeProfileDAO_DB() throws DataAccessException {
+        try {
+            databaseConnector = new DatabaseConnector();
+        } catch (IOException ex) {
+            throw new DataAccessException("Error initializing database connector", ex);
+        }
     }
 
     /**

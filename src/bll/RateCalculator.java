@@ -1,8 +1,6 @@
 package bll;
 
 import be.EmployeeProfile;
-import be.Geography;
-import be.Team;
 import dal.db.DataAccessException;
 import dal.db.EmployeeProfileDAO_DB;
 import dal.db.GeographyDAO_DB;
@@ -24,7 +22,7 @@ public class RateCalculator {
      *
      * @throws IOException If an I/O error occurs.
      */
-    public RateCalculator() throws IOException {
+    public RateCalculator() throws IOException, DataAccessException {
         this.employeeProfileDAO = new EmployeeProfileDAO_DB();
         this.geographyDAO = new GeographyDAO_DB();
         this.teamDAO = new TeamDAO_DB();

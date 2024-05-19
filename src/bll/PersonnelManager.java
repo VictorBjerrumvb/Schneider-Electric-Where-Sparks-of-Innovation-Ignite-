@@ -31,6 +31,8 @@ public class PersonnelManager {
         } catch (IOException e) {
             logger.error("Failed to initialize the DAOs: ", e);
             throw new RuntimeException("Failed to initialize the DAOs", e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -93,24 +95,44 @@ public class PersonnelManager {
 
     // EmployeeProfile-related methods
 
+    /**
+     * Retrieves all EmployeeProfile records.
+     *
+     * @return A list of EmployeeProfile objects.
+     * @throws DataAccessException If an error occurs while accessing the data.
+     */
     public List<EmployeeProfile> getAllEmployeeProfiles() throws DataAccessException {
         return employeeProfileDAO_db.getAllEmployeeProfiles();
     }
 
+    /**
+     * Creates a new EmployeeProfile record.
+     *
+     * @param employeeProfile The EmployeeProfile object to create.
+     * @return The created EmployeeProfile object.
+     * @throws DataAccessException If an error occurs while accessing the data.
+     */
     public EmployeeProfile createEmployeeProfile(EmployeeProfile employeeProfile) throws DataAccessException {
         return employeeProfileDAO_db.createEmployeeProfile(employeeProfile);
     }
 
+    /**
+     * Updates an existing EmployeeProfile record.
+     *
+     * @param employeeProfile The EmployeeProfile object to update.
+     * @throws DataAccessException If an error occurs while accessing the data.
+     */
     public void updateEmployeeProfile(EmployeeProfile employeeProfile) throws DataAccessException {
         employeeProfileDAO_db.updateEmployeeProfile(employeeProfile);
     }
 
+    /**
+     * Deletes an existing EmployeeProfile record.
+     *
+     * @param employeeProfile The EmployeeProfile object to delete.
+     * @throws DataAccessException If an error occurs while accessing the data.
+     */
     public void deleteEmployeeProfile(EmployeeProfile employeeProfile) throws DataAccessException {
         employeeProfileDAO_db.deleteEmployeeProfile(employeeProfile);
     }
-
-    // Rate-related methods (if applicable)
-
-    // Add methods for calculating rates, handling rate configurations, etc.
-
 }
