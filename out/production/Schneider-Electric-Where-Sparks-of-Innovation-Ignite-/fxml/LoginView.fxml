@@ -26,9 +26,9 @@
          </image></ImageView>
         <AnchorPane id="contentPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="364.0" prefWidth="490.0" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
             <children>
-                <MFXTextField fx:id="txtFieldUsername" layoutX="105.0" layoutY="98.0" prefHeight="49.0" prefWidth="280.0" AnchorPane.leftAnchor="105.0" AnchorPane.rightAnchor="105.0" AnchorPane.topAnchor="98.0" />
-                <MFXPasswordField fx:id="txtFieldPassword" layoutX="105.0" layoutY="192.0" prefHeight="49.0" prefWidth="280.0" AnchorPane.bottomAnchor="123.0" AnchorPane.leftAnchor="105.0" AnchorPane.rightAnchor="105.0" AnchorPane.topAnchor="192.0" />
-                <MFXButton fx:id="btnLogin" buttonType="RAISED" depthLevel="LEVEL1" layoutX="315.0" layoutY="256.0" onAction="#handleLogin" text="Login">
+                <MFXTextField fx:id="txtFieldUsername" floatMode="ABOVE" layoutX="105.0" layoutY="98.0" onKeyPressed="#handlePasswordLoginKey" prefHeight="49.0" prefWidth="280.0" AnchorPane.leftAnchor="105.0" AnchorPane.rightAnchor="105.0" AnchorPane.topAnchor="98.0" />
+                <MFXPasswordField fx:id="txtFieldPassword" floatMode="ABOVE" layoutX="105.0" layoutY="192.0" onKeyPressed="#handlePasswordLoginKey" prefHeight="49.0" prefWidth="280.0" AnchorPane.bottomAnchor="123.0" AnchorPane.leftAnchor="105.0" AnchorPane.rightAnchor="105.0" AnchorPane.topAnchor="192.0" />
+                <MFXButton fx:id="btnLogin" buttonType="RAISED" depthLevel="LEVEL1" layoutX="315.0" layoutY="256.0" onAction="#handleLogin" onKeyPressed="#handlePasswordLoginKey" text="Login">
                     <font>
                         <Font size="18.0" />
                     </font>

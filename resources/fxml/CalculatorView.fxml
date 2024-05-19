@@ -165,7 +165,7 @@
                         <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
                      </rowConstraints>
                      <children>
-                        <Label text="Fixed Salary For Projekt" />
+                        <Label prefHeight="17.0" prefWidth="143.0" text="Fixed Salary For Project" />
                         <MFXTextField fx:id="txtFixedSalary" floatMode="ABOVE" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="13.0" prefWidth="300.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
                      </children>
                      <GridPane.margin>

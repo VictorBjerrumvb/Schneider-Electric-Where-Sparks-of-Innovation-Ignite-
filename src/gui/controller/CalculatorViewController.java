@@ -1,9 +1,13 @@
 package gui.controller;
 
 import be.Personnel;
+import be.Team;
+import dal.db.DataAccessException;
 import gui.helperclases.ShowImageClass;
 import gui.helperclases.WidgetsClass;
 import gui.model.PersonnelModel;
+import gui.model.TeamMappingModel;
+import gui.model.TeamModel;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -64,11 +68,16 @@ public class CalculatorViewController {
 
     private Personnel operator = new Personnel();
     private PersonnelModel personnelModel;
+    private TeamMappingModel teamMappingModel;
+    private TeamModel teamModel;
     private ShowImageClass showImageClass = new ShowImageClass();
     private Personnel selectedPersonnel = new Personnel();
+    private Team selectedTeam = new Team();
     public CalculatorViewController() {
         try {
             personnelModel = new PersonnelModel();
+            teamMappingModel = new TeamMappingModel();
+            teamModel = new TeamModel();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -77,6 +86,9 @@ public class CalculatorViewController {
         ObservableList<Personnel> listOfPersonnel = FXCollections.observableArrayList();
         listOfPersonnel.setAll(personnelModel.getAllPersonnel());
         listPersonnel.setItems(listOfPersonnel);
+        ObservableList<Team> listOfTeams = FXCollections.observableArrayList();
+        listOfTeams.setAll(teamModel.getAllTeams());
+        listTeams.setItems(listOfTeams);
     }
     public void setOperator(Personnel operator) {
         this.operator = operator;
@@ -137,7 +149,20 @@ public class CalculatorViewController {
     }
 
     @FXML
-    private void handleSelectedTeam(MouseEvent mouseEvent) {
+    private void handleSelectedTeam(MouseEvent mouseEvent) throws DataAccessException {
+        selectedTeam = (Team) listTeams.getSelectionModel().getSelectedItem();
+        ObservableList<Personnel> listOfTeamMembers = FXCollections.observableArrayList();
+        listOfTeamMembers.setAll(teamMappingModel.getAllTeamMembers(selectedTeam));
+        if (listOfTeamMembers.isEmpty()) {
+            String firststring = "The selected Team";
+            String secondstring = "does not have any members";
+            listPersonnel.getItems().clear();
+            listPersonnel.getItems().add(firststring);
+            listPersonnel.getItems().add(secondstring);
+        }
+        if (!listOfTeamMembers.isEmpty()) {
+            listPersonnel.setItems(teamMappingModel.getAllTeamMembers(selectedTeam));
+        }
     }
 
     @FXML

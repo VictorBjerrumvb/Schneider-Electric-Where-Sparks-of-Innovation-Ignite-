@@ -1,6 +1,8 @@
 package gui.controller;
 
+import be.ManagerMembers;
 import be.Personnel;
+import be.Team;
 import bll.PersonnelManager;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
@@ -10,6 +12,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -97,5 +101,12 @@ public class LoginViewController {
     @FXML
     private void handleForgotPassword(ActionEvent actionEvent) {
         // Placeholder method for handling forgot password functionality
+    }
+
+    @FXML
+    private void handlePasswordLoginKey(KeyEvent keyEvent) throws Exception {
+        if (keyEvent.getCode() == KeyCode.ENTER) {
+            handleLogin(new ActionEvent());
+        }
     }
 }
