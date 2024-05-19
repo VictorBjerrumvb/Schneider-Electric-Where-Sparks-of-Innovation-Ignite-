@@ -26,6 +26,7 @@ public class MainViewController {
         switchCalculatorView();
         switchAdminView();
         switchTeamsView();
+        switchManagersView();
     }
 
     public void setOperator(Personnel operator) {
@@ -150,6 +151,38 @@ public class MainViewController {
                 Scene scene = button.getScene(); // Get the current scene
                 scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
                 CreateTeamController controller = loader.getController();
+                controller.setup();
+                controller.setOperator(operator);
+            } catch (IOException e) {
+                e.printStackTrace(); // Handle exception appropriately
+            }
+        });
+    }
+    private void switchManagersView() {
+        GridPane gridPane = widgetsClass.createWidgetGridpane();
+        Button button = widgetsClass.createWidgetButton("Swipe");
+        Label label = widgetsClass.createWidgetLabel("Assign Personnel to Managers");
+
+        // Set alignment for each cell
+        GridPane.setHalignment(button, HPos.CENTER);
+        GridPane.setHalignment(label, HPos.CENTER);
+
+        // Add nodes to the grid
+        gridPane.add(button, 0, 1);
+        gridPane.add(label, 0, 0);
+
+        gridPane.getStyleClass().add("grid-pane");
+        GridPane container = widgetsClass.applyContainer(gridPane);
+
+        flowPaneInformation.getChildren().add(container);
+
+        button.setOnAction(event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ManageManagersView.fxml"));
+                Parent secondWindow = loader.load();
+                Scene scene = button.getScene(); // Get the current scene
+                scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+                ManageManagersController controller = loader.getController();
                 controller.setup();
                 controller.setOperator(operator);
             } catch (IOException e) {
