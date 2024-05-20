@@ -58,15 +58,17 @@ public class ManagerMembersModel {
     public ObservableList<Personnel> getAllManagerMembers(Personnel personnel) throws DataAccessException {
         ObservableList<Personnel> allManagerMembers = FXCollections.observableArrayList();
 
-        Map<Integer, Set<Integer>> managerToPersonnelMap = getManagerToPersonnelMap();
+        if (personnel != null) { // Check if personnel is not null
+            Map<Integer, Set<Integer>> managerToPersonnelMap = getManagerToPersonnelMap();
 
-        Set<Integer> personnelIds = managerToPersonnelMap.get(personnel.getId());
-        if (personnelIds != null) {
-            PersonnelModel personnelModel = new PersonnelModel();
-            for (int personnelId : personnelIds) {
-                Personnel managerMember = personnelModel.getPersonnelById(personnelId);
-                if (managerMember != null) {
-                    allManagerMembers.add(managerMember);
+            Set<Integer> personnelIds = managerToPersonnelMap.get(personnel.getId());
+            if (personnelIds != null) {
+                PersonnelModel personnelModel = new PersonnelModel();
+                for (int personnelId : personnelIds) {
+                    Personnel managerMember = personnelModel.getPersonnelById(personnelId);
+                    if (managerMember != null) {
+                        allManagerMembers.add(managerMember);
+                    }
                 }
             }
         }

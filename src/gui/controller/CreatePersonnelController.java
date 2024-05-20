@@ -1,5 +1,5 @@
 package gui.controller;
-
+import javafx.scene.control.TextField;
 import be.CreateTeamMapping;
 import be.ManagerMembers;
 import be.Personnel;
@@ -24,8 +24,18 @@ import javafx.scene.paint.Color;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreatePersonnelController {
+    @FXML
+    private TextField txtTeam1Percentage;
+    @FXML
+    private TextField txtTeam2Percentage;
+    @FXML
+    private TextField txtTeam3Percentage;
+
+    private Map<String, Double> teamTimeAllocations = new HashMap<>();
     @FXML
     private MenuButton btnProfile;
     @FXML
@@ -197,11 +207,23 @@ public class CreatePersonnelController {
         if (btnCreate.getText().equals(create)) {
             String salaryText = txtSalary.getText().trim();
             if (salaryText.isEmpty()) {
-                // Salary field is empty, show an error message to the user
-                // You can customize the error message based on your requirements
-                // For example:
-                showAlert("Salary field cannot be empty!");
-                return;
+                // This block of code will only execute if the salary text field is empty,
+                // but it seems like you want to set the team time allocations regardless of the salary.
+                // You should remove this condition so that the team time allocations are always set.
+                double team1Percentage = Double.parseDouble(txtTeam1Percentage.getText());
+                double team2Percentage = Double.parseDouble(txtTeam2Percentage.getText());
+                double team3Percentage = Double.parseDouble(txtTeam3Percentage.getText());
+
+                // Validate that the total percentage equals 100
+                if (team1Percentage + team2Percentage + team3Percentage != 100) {
+                    showAlert("Total percentage must equal 100%");
+                    return;
+                }
+
+                // Set time allocations for each team
+                teamTimeAllocations.put("Team 1", team1Percentage);
+                teamTimeAllocations.put("Team 2", team2Percentage);
+                teamTimeAllocations.put("Team 3", team3Percentage);
             }
             if (txtRole.getText().equals("")) {
                 txtRole.setPromptText("Please Fill in a role");
