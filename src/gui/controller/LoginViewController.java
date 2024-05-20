@@ -58,20 +58,13 @@ public class LoginViewController {
             // Load different views based on user role
             FXMLLoader loader;
             String title;
-            if (personnelLogged.getRoleId() == 1) {
-                loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
-                title = "Admin Page";
-            } else if (personnelLogged.getRoleId() == 2) {
-                loader = new FXMLLoader(getClass().getResource("/fxml/KoordinatorPage.fxml"));
-                title = "Coordinator Page";
-            } else {
-                // Handle other roles or scenarios as needed
-                return;
-            }
+
+            loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+            title = "Admin Page";
 
             Parent secondWindow = loader.load();
             MainViewController controller = loader.getController();
-            controller.setup();
+            controller.setup(personnelLogged);
             controller.setOperator(personnelLogged);
             Scene scene = new Scene(secondWindow);
 

@@ -133,7 +133,7 @@ public class CreatePersonnelController {
             Scene scene = imgLogo.getScene(); // Get the current scene
             scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
             MainViewController controller = loader.getController();
-            controller.setup();
+            controller.setup(operator);
             controller.setOperator(operator);
         } catch (IOException e) {
             e.printStackTrace(); // Handle exception appropriately

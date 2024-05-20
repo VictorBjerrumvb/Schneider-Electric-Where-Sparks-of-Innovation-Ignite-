@@ -1,9 +1,12 @@
 package gui.controller;
 
 import be.Personnel;
+import dal.db.DataAccessException;
 import gui.helperclases.ShowImageClass;
 import gui.helperclases.WidgetsClass;
+import gui.model.ManagerMembersModel;
 import gui.model.PersonnelModel;
+import gui.model.TeamMappingModel;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -16,6 +19,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
@@ -38,23 +42,10 @@ import java.nio.file.Paths;
  */
 public class PersonnelController {
 
-    public MFXButton btnPersonalInfo;
     @FXML
     private Label lblProfileName;
     @FXML
-    private ImageView imgLogo;
-    @FXML
-    private MFXTextField txtSearch;
-    @FXML
-    private MFXButton btnHome;
-    @FXML
-    private MFXButton btnPersonnelInfo;
-    @FXML
-    private MFXButton btnSecurity;
-    @FXML
-    private MFXButton btnPeopleAndSharing;
-    @FXML
-    private ImageView imgProfilePicture;
+    private ImageView imgLogo,imgProfilePicture;
     @FXML
     private FlowPane flowPaneInformation;
 
@@ -75,7 +66,41 @@ public class PersonnelController {
         }
 
         flowPaneInformation.getChildren().clear();
-        addButtonToFlowPane("Change Password");
+        GridPane gridPaneP = widgetsClass.createWidgetGridpane();
+
+        Label labelP = widgetsClass.createWidgetLabel("Change Profile Picture");
+        Button buttonP = widgetsClass.createWidgetButton("Click me");
+
+        gridPaneP.add(labelP, 0, 0);
+        gridPaneP.add(buttonP, 0, 1);
+
+        gridPaneP.getStyleClass().add("grid-pane");
+        GridPane containerP = widgetsClass.applyContainer(gridPaneP);
+
+        //-----------------------------------------------------------------------------------------//
+        GridPane gridPane = widgetsClass.createWidgetGridpane();
+
+        Label label = widgetsClass.createWidgetLabel("Change Password");
+        Button button = widgetsClass.createWidgetButton("Click me");
+
+        gridPane.add(label, 0, 0);
+        gridPane.add(button, 0, 1);
+
+        gridPane.getStyleClass().add("grid-pane");
+        GridPane container = widgetsClass.applyContainer(gridPane);
+
+        flowPaneInformation.getChildren().addAll(containerP,container);
+
+        //-----------------------------------------------------------------------------------------//
+
+        buttonP.setOnAction(event -> {
+            selectProfilePicture();
+        });
+        button.setOnAction(event -> {
+            handleSecurity(new ActionEvent());
+        });
+
+
     }
 
     /**
@@ -114,43 +139,6 @@ public class PersonnelController {
         }
     }
 
-    private TextField addComponentsToGridPane(String labelText) {
-        // Create label
-        Label label = new Label(labelText);
-
-        // Create text field
-        TextField textField = new TextField();
-        GridPane gridpane = new GridPane();
-        // Add label and text field to grid pane
-        gridpane.add(label, 0, textFieldCount);
-        gridpane.add(textField, 0, textFieldCount + 1);
-
-        // Increment text field count for positioning
-        textFieldCount += 2;
-
-        // Center label above text field
-        GridPane.setHalignment(label, Pos.CENTER.getHpos());
-        flowPaneInformation.getChildren().add(gridpane);
-        return textField;
-    }
-    private Label addLabelToFlowPane(String labelText) {
-        // Create label
-        Label label = new Label(labelText);
-
-        flowPaneInformation.getChildren().add(label);
-        return label;
-    }
-
-    private Button addButtonToFlowPane(String buttonText) {
-        // Create button
-        Button button = new Button(buttonText);
-
-        // Add button to flow pane
-        flowPaneInformation.getChildren().add(button);
-
-        return button;
-    }
-
     @FXML
     private void handleLogo(MouseEvent mouseEvent) {
         try {
@@ -159,7 +147,7 @@ public class PersonnelController {
             Scene scene = imgLogo.getScene(); // Get the current scene
             scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
             MainViewController controller = loader.getController();
-            controller.setup();
+            controller.setup(operator);
             controller.setOperator(operator);
         } catch (IOException e) {
             e.printStackTrace(); // Handle exception appropriately
@@ -176,17 +164,39 @@ public class PersonnelController {
         flowPaneInformation.getChildren().clear();
         GridPane gridPane = widgetsClass.createWidgetGridpane();
 
-        Label label = widgetsClass.createWidgetLabel(operator.getUsername());
-        MFXTextField username = widgetsClass.createWidgetMFXTextfield();
+        Label label = widgetsClass.createWidgetLabel("Username | " + operator.getUsername());
+        Label labelR = widgetsClass.createWidgetLabel("Role | " + operator.getRole());
+        Label labelS = widgetsClass.createWidgetLabel("Salary | " + operator.getSalary());
 
         GridPane.setHalignment(label, HPos.CENTER);
 
         gridPane.add(label, 0, 0);
+        gridPane.add(labelR, 0, 1);
+        gridPane.add(labelS, 0, 2);
 
         gridPane.getStyleClass().add("grid-pane");
         GridPane container = widgetsClass.applyContainer(gridPane);
 
-        flowPaneInformation.getChildren().add(container);
+        //-----------------------------------------------------------------------------------------//
+
+        GridPane gridPaneP = widgetsClass.createWidgetGridpane();
+
+        Label labelP = widgetsClass.createWidgetLabel("Change Profile Picture");
+        Button buttonP = widgetsClass.createWidgetButton("Click me");
+
+        gridPaneP.add(labelP, 0, 0);
+        gridPaneP.add(buttonP, 0, 1);
+
+        gridPaneP.getStyleClass().add("grid-pane");
+        GridPane containerP = widgetsClass.applyContainer(gridPaneP);
+
+        flowPaneInformation.getChildren().addAll(container,containerP);
+
+        //-----------------------------------------------------------------------------------------//
+
+        buttonP.setOnAction(event -> {
+            selectProfilePicture();
+        });
     }
 
     @FXML
@@ -227,26 +237,15 @@ public class PersonnelController {
 
             // Get stored hashed password
             String hashedPassword = operator.getPassword();
-            System.out.println("Stored hashed password: " + hashedPassword);
-
-            // Verify the current password
-            String currentPwdText = currentPassword.getText();
-            String newPwdText = newPassword.getText();
-            String confirmPwdText = confirmPassword.getText();
-
-            System.out.println("Entered current password: " + currentPwdText);
-            System.out.println("Entered new password: " + newPwdText);
-            System.out.println("Entered confirm password: " + confirmPwdText);
 
             try {
-                if (BCrypt.checkpw(currentPwdText, hashedPassword)) {
+                if (BCrypt.checkpw(currentPassword.getText(), hashedPassword)) {
                     // Check if new password and confirm password match
-                    if (newPwdText.equals(confirmPwdText)) {
+                    if (newPassword.getText().equals(confirmPassword.getText())) {
                         // Hash the new password and update the operator's password
-                        String newHashedPassword = BCrypt.hashpw(confirmPwdText, BCrypt.gensalt());
+                        String newHashedPassword = BCrypt.hashpw(confirmPassword.getText(), BCrypt.gensalt());
                         operator.setPassword(newHashedPassword);
                         personnelModel.updatePersonnel(operator);
-                        System.out.println("Password updated successfully.");
                     } else {
                         // New password and confirm password didn't match
                         newPassword.setText("");
@@ -255,14 +254,12 @@ public class PersonnelController {
                         newPassword.setPromptText("Passwords Didn't Match");
                         newPassword.getStyleClass().add("red-outline");
                         confirmPassword.getStyleClass().add("red-outline");
-                        System.out.println("New passwords do not match.");
                     }
                 } else {
                     // Current password is incorrect
                     currentPassword.setText("");
                     currentPassword.setPromptText("Incorrect Password");
                     currentPassword.getStyleClass().add("red-outline");
-                    System.out.println("Current password is incorrect.");
                 }
             } catch (Exception e) {
                 System.out.println("Error during password verification: " + e.getMessage());
@@ -272,11 +269,86 @@ public class PersonnelController {
     }
 
     @FXML
-    private void handlePeopleAndSharing(ActionEvent actionEvent) {
+    private void handlePeopleAndSharing(ActionEvent actionEvent) throws DataAccessException {
+        flowPaneInformation.getChildren().clear();
+        GridPane gridPane = widgetsClass.createWidgetGridpane();
+        Label label = widgetsClass.createWidgetLabel("List of Teams you Control");
+
+        ListView teams = widgetsClass.createWidgetListview();
+        ManagerMembersModel managerMembersModel = new ManagerMembersModel();
+        teams.setItems(managerMembersModel.getAllManagerTeams(operator));
+
+        GridPane.setHalignment(label, HPos.CENTER);
+        GridPane.setHalignment(teams, HPos.CENTER);
+
+        gridPane.add(label, 0, 0);
+        gridPane.add(teams, 0, 1);
+
+        gridPane.getStyleClass().add("grid-pane");
+        GridPane containerTeam = widgetsClass.applyContainer(gridPane);
+
+
+        //-----------------------------------------------------------------------------------------//
+
+
+        GridPane gridpaneP = widgetsClass.createWidgetGridpane();
+        Label labelp = widgetsClass.createWidgetLabel("List of Personnel you Control");
+
+        ListView personel = widgetsClass.createWidgetListview();
+        personel.setItems(managerMembersModel.getAllManagerMembers(operator));
+
+        GridPane.setHalignment(labelp, HPos.CENTER);
+        GridPane.setHalignment(personel, HPos.CENTER);
+
+        gridpaneP.add(labelp, 0, 0);
+        gridpaneP.add(personel, 0, 1);
+
+        gridpaneP.getStyleClass().add("grid-pane");
+        GridPane containerPersonnel = widgetsClass.applyContainer(gridpaneP);
+
+        flowPaneInformation.getChildren().addAll(containerTeam, containerPersonnel);
+
     }
 
     @FXML
     private void handleProfilePicture(MouseEvent mouseEvent) {
+        selectProfilePicture();
+    }
+    @FXML
+    private void handleDragDrop(DragEvent dragEvent) {
+        Dragboard dragboard = dragEvent.getDragboard();
+        if (dragboard.hasFiles()) {
+            for (File file : dragboard.getFiles()) {
+                // Construct the destination path
+                try {
+                    // Construct the destination path
+                    Path destinationPath = generateUniqueFilePath(Paths.get("resources/images"), file.getName());
+
+                    // Copy the file to the destination folder
+                    Files.copy(file.toPath(), destinationPath);
+
+                    // Updating UI
+                    imgProfilePicture.setImage(showImageClass.showImage(file.getName()));
+                    operator.setPicture(file.getName());
+                    personnelModel.updatePersonnel(operator);
+                } catch (IOException e) {
+                    System.err.println("Error copying file: " + e.getMessage());
+                } catch (Exception e) {
+                    System.out.println("error uploading Profile picture" + e.getMessage());
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void handleDragOver(DragEvent dragEvent) {
+        if (dragEvent.getGestureSource() != this) {
+            dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+        }
+        dragEvent.consume();
+    }
+
+    private void selectProfilePicture() {
         // Create a new FileChooser
         FileChooser fileChooser = new FileChooser();
 
@@ -314,38 +386,5 @@ public class PersonnelController {
                 System.out.println("error uploading Profile picture" + e.getMessage());
             }
         }
-    }
-    @FXML
-    private void handleDragDrop(DragEvent dragEvent) {
-        Dragboard dragboard = dragEvent.getDragboard();
-        if (dragboard.hasFiles()) {
-            for (File file : dragboard.getFiles()) {
-                // Construct the destination path
-                try {
-                    // Construct the destination path
-                    Path destinationPath = generateUniqueFilePath(Paths.get("resources/images"), file.getName());
-
-                    // Copy the file to the destination folder
-                    Files.copy(file.toPath(), destinationPath);
-
-                    // Updating UI
-                    imgProfilePicture.setImage(showImageClass.showImage(file.getName()));
-                    operator.setPicture(file.getName());
-                    personnelModel.updatePersonnel(operator);
-                } catch (IOException e) {
-                    System.err.println("Error copying file: " + e.getMessage());
-                } catch (Exception e) {
-                    System.out.println("error uploading Profile picture" + e.getMessage());
-                }
-            }
-        }
-    }
-
-    @FXML
-    private void handleDragOver(DragEvent dragEvent) {
-        if (dragEvent.getGestureSource() != this) {
-            dragEvent.acceptTransferModes(TransferMode.COPY_OR_MOVE);
-        }
-        dragEvent.consume();
     }
 }

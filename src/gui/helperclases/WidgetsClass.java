@@ -4,6 +4,7 @@ import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -55,6 +56,13 @@ public class WidgetsClass {
         MFXPasswordField txt = new MFXPasswordField();
         txt.setMinWidth(180);
         return txt;
+    }
+
+    public ListView createWidgetListview() {
+        ListView lst = new ListView();
+        lst.setMinWidth(400);
+        lst.setMinHeight(400);
+        return lst;
     }
 
     /**

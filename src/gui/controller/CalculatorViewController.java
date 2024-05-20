@@ -118,7 +118,7 @@ public class CalculatorViewController {
             Scene scene = imgLogo.getScene();
             scene.setRoot(secondWindow);
             MainViewController controller = loader.getController();
-            controller.setup();
+            controller.setup(operator);
             controller.setOperator(operator);
         } catch (IOException e) {
             e.printStackTrace();

@@ -20,12 +20,17 @@ public class MainViewController {
     private WidgetsClass widgetsClass = new WidgetsClass();
     private Personnel operator;
 
-    public void setup() {
+    public void setup(Personnel operator) {
         flowPaneInformation.getChildren().clear();
-        switchPersonnelView();
-        switchCalculatorView();
-        switchTeamsView();
-        switchManagersView();
+        if (operator.getRoleId() == 1) {
+            switchPersonnelView();
+            switchCalculatorView();
+            switchTeamsView();
+            switchManagersView();
+        }
+        if (operator.getRoleId() == 2) {
+            switchCalculatorView();
+        }
     }
 
     public void setOperator(Personnel operator) {
