@@ -1,10 +1,12 @@
 package gui.controller;
 
 import be.CreateTeamMapping;
+import be.ManagerMembers;
 import be.Personnel;
 import be.Team;
 import dal.db.DataAccessException;
 import gui.helperclases.ShowImageClass;
+import gui.model.ManagerMembersModel;
 import gui.model.PersonnelModel;
 import gui.model.TeamMappingModel;
 import gui.model.TeamModel;
@@ -318,10 +320,22 @@ public class CreateTeamController {
             Team team = (Team) listPersonnelTeams.getSelectionModel().getSelectedItem(); // Remove unnecessary cast
             if (team != null) {
                 CreateTeamMapping createTeamMapping = new CreateTeamMapping();
+                ManagerMembersModel managerMembersModel = new ManagerMembersModel();
+
                 createTeamMapping.setPersonnelId(selectedPersonnel.getId());
                 createTeamMapping.setTeamId(team.getId());
-                teamMappingModel.deleteTeamMappingWithTeamNPersonnelId(createTeamMapping);
+
+                ManagerMembers managerMembers = new ManagerMembers();
+                managerMembers.setTeamId(team.getId());
+                if (createTeamMapping.getTeamId() != 0) {
+                    teamMappingModel.deleteTeamMappingWithTeamNPersonnelId(createTeamMapping);
+                }
+                if (managerMembers.getTeamId() != 0) {
+                    managerMembersModel.deleteManagerTeam(managerMembers);
+                }
+                teamModel.deleteTeam(team);
                 listPersonnelTeams.getItems().remove(team);
+                setup();
             }
         }
     }

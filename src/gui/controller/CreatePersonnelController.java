@@ -295,9 +295,16 @@ public class CreatePersonnelController {
                 createTeamMapping.setPersonnelId(personnel.getId());
                 ManagerMembers managerMembers = new ManagerMembers();
                 managerMembers.setPersonnelId(personnel.getId());
-
-                managerMembersModel.deleteManagerMembers(managerMembers);
-                teamMappingModel.deleteTeamMappingWithPersonnelId(createTeamMapping);
+                managerMembers.setManagerId(personnel.getId());
+                if (managerMembers.getPersonnelId() != 0) {
+                    managerMembersModel.deleteManagerMembers(managerMembers);
+                }
+                if (managerMembers.getManagerId() != 0) {
+                    managerMembersModel.deleteManagerManager(managerMembers);
+                }
+                if (createTeamMapping.getPersonnelId() != 0) {
+                    teamMappingModel.deleteTeamMappingWithPersonnelId(createTeamMapping);
+                }
                 personnelModel.deletePersonnel(personnel);
 
                 listPersonnel.getItems().remove(personnel);
