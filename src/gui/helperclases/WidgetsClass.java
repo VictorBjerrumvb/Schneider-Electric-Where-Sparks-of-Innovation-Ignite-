@@ -1,5 +1,7 @@
 package gui.helperclases;
 
+import io.github.palexdev.materialfx.controls.MFXPasswordField;
+import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -41,6 +43,18 @@ public class WidgetsClass {
         Button button1 = new Button(buttonText);
         button1.getStyleClass().add("buttonWidget");
         return button1;
+    }
+
+    public MFXTextField createWidgetMFXTextfield() {
+        MFXTextField txt = new MFXTextField();
+        txt.setMinWidth(180);
+        return txt;
+    }
+
+    public MFXPasswordField createWidgetMFXPassword() {
+        MFXPasswordField txt = new MFXPasswordField();
+        txt.setMinWidth(180);
+        return txt;
     }
 
     /**

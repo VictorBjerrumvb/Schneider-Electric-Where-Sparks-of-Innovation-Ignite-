@@ -24,6 +24,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CalculatorViewController {
     public FlowPane flowPaneInformation;
@@ -145,6 +147,14 @@ public class CalculatorViewController {
     private void handleSelectedPersonnel(MouseEvent mouseEvent) {
         selectedPersonnel = (Personnel) listPersonnel.getSelectionModel().getSelectedItem();
         lblPersonnelName.setText(selectedPersonnel.getUsername());
+        ObservableList<Team> listOfTeams = FXCollections.observableArrayList();
+        listOfTeams.setAll(teamMappingModel.getPersonnelTeam(selectedPersonnel));
+        List<String> teams = new ArrayList<>();
+        for (Team t : listOfTeams) {
+            String string = t.getName();
+            teams.add(string);
+        }
+        lblTeamName.setText(String.valueOf(teams));
         txtAnnualSalary.setText(String.valueOf(selectedPersonnel.getSalary()));
     }
 
@@ -211,5 +221,9 @@ public class CalculatorViewController {
         // Implement the functionality to distribute the cost of overhead employees among various teams
         // You may need additional UI elements to select teams and specify cost distribution percentages
         // Calculate and update the cost distribution accordingly
+    }
+
+    public void handleReload(MouseEvent mouseEvent) {
+        listPersonnel.setItems(personnelModel.getAllPersonnel());
     }
 }

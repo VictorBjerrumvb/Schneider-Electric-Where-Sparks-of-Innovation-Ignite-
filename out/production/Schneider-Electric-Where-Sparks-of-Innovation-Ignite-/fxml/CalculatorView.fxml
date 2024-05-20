@@ -55,7 +55,7 @@
    <left>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="549.0" prefWidth="196.0" BorderPane.alignment="CENTER">
          <children>
-            <Label maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="17.0" prefWidth="237.0" text="List of Personnel">
+            <Label maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#handleReload" prefHeight="17.0" prefWidth="237.0" text="List of Personnel">
                <VBox.margin>
                   <Insets bottom="2.0" top="5.0" />
                </VBox.margin>

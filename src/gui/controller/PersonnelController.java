@@ -2,12 +2,15 @@ package gui.controller;
 
 import be.Personnel;
 import gui.helperclases.ShowImageClass;
+import gui.helperclases.WidgetsClass;
 import gui.model.PersonnelModel;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -22,6 +25,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,6 +62,7 @@ public class PersonnelController {
     private int textFieldCount = 0;
     private Personnel operator = new Personnel();
     private PersonnelModel personnelModel;
+    private WidgetsClass widgetsClass = new WidgetsClass();
 
     /**
      * Setup method for initializing the Personnel view.
@@ -168,30 +173,94 @@ public class PersonnelController {
 
     @FXML
     private void handlePersonnelInfo(ActionEvent actionEvent) {
+        flowPaneInformation.getChildren().clear();
+        GridPane gridPane = widgetsClass.createWidgetGridpane();
+
+        Label label = widgetsClass.createWidgetLabel(operator.getUsername());
+        MFXTextField username = widgetsClass.createWidgetMFXTextfield();
+
+        GridPane.setHalignment(label, HPos.CENTER);
+
+        gridPane.add(label, 0, 0);
+
+        gridPane.getStyleClass().add("grid-pane");
+        GridPane container = widgetsClass.applyContainer(gridPane);
+
+        flowPaneInformation.getChildren().add(container);
     }
 
     @FXML
     private void handleSecurity(ActionEvent actionEvent) {
         flowPaneInformation.getChildren().clear();
-        TextField currentPassword = addComponentsToGridPane("Enter your current Password");
-        TextField newPassword =  addComponentsToGridPane("Enter your new Password");
-        Button changePassword = addButtonToFlowPane("Change Password");
+        GridPane gridPane = widgetsClass.createWidgetGridpane();
+        Button button = widgetsClass.createWidgetButton("Change Password");
+        Label label = widgetsClass.createWidgetLabel("Change Password");
+        MFXPasswordField currentPassword = widgetsClass.createWidgetMFXPassword();
+        currentPassword.setPromptText("Current Password");
+        MFXPasswordField newPassword = widgetsClass.createWidgetMFXPassword();
+        newPassword.setPromptText("Enter new Password");
+        MFXPasswordField confirmPassword = widgetsClass.createWidgetMFXPassword();
+        confirmPassword.setPromptText("Confirm new Password");
 
-        changePassword.setOnAction(event -> {
-            if (currentPassword.getText().equals(operator.getPassword())) {
-                operator.setPassword(newPassword.getText());
-                try {
+        GridPane.setHalignment(button, HPos.CENTER);
+        GridPane.setHalignment(label, HPos.CENTER);
+        GridPane.setHalignment(currentPassword, HPos.CENTER);
+        GridPane.setHalignment(newPassword, HPos.CENTER);
+        GridPane.setHalignment(confirmPassword, HPos.CENTER);
+
+        gridPane.add(label, 0, 0);
+        gridPane.add(button, 0, 1);
+        gridPane.add(currentPassword, 0, 2);
+        gridPane.add(newPassword, 0, 3);
+        gridPane.add(confirmPassword, 0, 4);
+
+        gridPane.getStyleClass().add("grid-pane");
+        GridPane container = widgetsClass.applyContainer(gridPane);
+
+        flowPaneInformation.getChildren().add(container);
+
+        button.setOnAction(event -> {
+            // Clear previous styles
+            currentPassword.getStyleClass().remove("red-outline");
+            newPassword.getStyleClass().remove("red-outline");
+            confirmPassword.getStyleClass().remove("red-outline");
+
+            // Get stored hashed password
+            String hashedPassword = operator.getPassword();
+            System.out.println("Stored hashed password: " + hashedPassword);
+
+            // Verify the current password
+            String currentPwdText = currentPassword.getText();
+            String newPwdText = newPassword.getText();
+            String confirmPwdText = confirmPassword.getText();
+
+            System.out.println("Entered current password: " + currentPwdText);
+            System.out.println("Entered new password: " + newPwdText);
+            System.out.println("Entered confirm password: " + confirmPwdText);
+
+            if (BCrypt.checkpw(currentPwdText, hashedPassword)) {
+                // Check if new password and confirm password match
+                if (newPwdText.equals(confirmPwdText)) {
+                    // update the operator's password
+                    operator.setPassword(newPassword.getText());
                     personnelModel.updatePersonnel(operator);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    System.out.println("Password updated successfully.");
+                } else {
+                    // New password and confirm password didn't match
+                    newPassword.setText("");
+                    confirmPassword.setText("");
+                    confirmPassword.setPromptText("Passwords Didn't Match");
+                    newPassword.setPromptText("Passwords Didn't Match");
+                    newPassword.getStyleClass().add("red-outline");
+                    confirmPassword.getStyleClass().add("red-outline");
+                    System.out.println("New passwords do not match.");
                 }
-                flowPaneInformation.getChildren().removeAll(changePassword,newPassword,changePassword);
-                Label passwordChanged = addLabelToFlowPane("Successfully Changed Password");
-                flowPaneInformation.getChildren().add(passwordChanged);
             } else {
+                // Current password is incorrect
                 currentPassword.setText("");
-                newPassword.setText("");
                 currentPassword.setPromptText("Incorrect Password");
+                currentPassword.getStyleClass().add("red-outline");
+                System.out.println("Current password is incorrect.");
             }
         });
     }

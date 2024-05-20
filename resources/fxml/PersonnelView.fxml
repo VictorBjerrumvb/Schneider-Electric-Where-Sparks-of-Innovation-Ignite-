@@ -2,6 +2,7 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
@@ -84,7 +85,7 @@
                   <Insets bottom="5.0" />
                </VBox.margin>
             </MFXButton>
-            <MFXButton fx:id="btnPeopleAndSharing" alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#handlePeopleAndSharing" prefHeight="40.0" prefWidth="198.0" text="People &amp; Sharing">
+            <MFXButton fx:id="btnPeopleAndSharing" alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#handlePeopleAndSharing" prefHeight="40.0" prefWidth="198.0" text="Employees/Coworkers">
                <graphic>
                   <ImageView accessibleRole="BUTTON" fitHeight="41.0" fitWidth="96.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -122,7 +123,11 @@
             </GridPane>
          </top>
          <center>
-            <FlowPane fx:id="flowPaneInformation" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+            <FlowPane fx:id="flowPaneInformation" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <stylesheets>
+                  <URL value="@../css/Wigdets.css" />
+                  <URL value="@../css/MainCss.css" />
+               </stylesheets></FlowPane>
          </center>
       </BorderPane>
    </center>
