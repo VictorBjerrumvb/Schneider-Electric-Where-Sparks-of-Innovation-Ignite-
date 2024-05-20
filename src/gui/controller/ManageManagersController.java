@@ -26,6 +26,8 @@ import javafx.scene.input.*;
 import java.io.IOException;
 
 public class ManageManagersController {
+    public Label lblManagerTeams1;
+    public ListView listProcentTeams;
     @FXML
     private ImageView imgLogo, imgProfileIcon;
     @FXML
@@ -324,5 +326,33 @@ public class ManageManagersController {
                 listManagerTeams.getItems().remove(team);
             }
         }
+    }
+
+    public void handleOnDroppedProcentTeams(DragEvent dragEvent) {
+        Dragboard db = dragEvent.getDragboard();
+        boolean success = false;
+        if (db.hasString() && db.getString().equals("personnel")) {
+            // Use dragPersonnel instead of retrieving from Dragboard
+            Team team = dragTeam;
+            ManagerMembers managerMembers = new ManagerMembers();
+            managerMembers.setManagerId(selectedManager.getId());
+            managerMembers.setTeamId(team.getId());
+            managerMembersModel.createManagerMembers(managerMembers);
+
+            // Update the items of listTeamMembers
+            listProcentTeams.getItems().add(team);
+
+            success = true;
+        }
+        dragEvent.setDropCompleted(success);
+        dragEvent.consume();
+
+    }
+
+    public void handleOnDragOverProcentTeams(DragEvent dragEvent) {
+        if (dragEvent.getGestureSource() != listProcentTeams && dragEvent.getDragboard().hasString()) {
+            dragEvent.acceptTransferModes(TransferMode.MOVE);
+        }
+        dragEvent.consume();
     }
 }
