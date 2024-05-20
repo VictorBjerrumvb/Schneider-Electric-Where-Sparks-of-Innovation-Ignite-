@@ -166,6 +166,16 @@ public class ManagerMembersModel {
             System.out.println(e);
         }
     }
+
+    public void deleteManagerManager(ManagerMembers managerMembers) {
+        try {
+            managerMembersManager.deleteManagerManager(managerMembers);
+            allManagerMembers.remove(managerMembers);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
     public void deleteManagerTeam(ManagerMembers managerMembers) {
         try {
             managerMembersManager.deleteManagerMember(managerMembers);

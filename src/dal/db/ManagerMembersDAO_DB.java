@@ -60,13 +60,12 @@ public class ManagerMembersDAO_DB {
     }
 
     public ManagerMembers deleteManagerMember (ManagerMembers managerMembers) throws Exception {
-        String sql = "DELETE FROM SparksExamSchneider.dbo.ManagerMembers WHERE ManagerId = ? AND PersonnelId = ?";
+        String sql = "DELETE FROM SparksExamSchneider.dbo.ManagerMembers WHERE PersonnelId = ?";
 
         try (Connection conn = databaseConnector.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql))
         {
-            stmt.setInt(1,managerMembers.getManagerId());
-            stmt.setInt(2,managerMembers.getPersonnelId());
+            stmt.setInt(1,managerMembers.getPersonnelId());
             stmt.executeUpdate();
         }
         catch (SQLException ex)
@@ -76,6 +75,24 @@ public class ManagerMembersDAO_DB {
         }
         return managerMembers;
     }
+
+    public ManagerMembers deleteManagerManager (ManagerMembers managerMembers) throws Exception {
+        String sql = "DELETE FROM SparksExamSchneider.dbo.ManagerMembers WHERE ManagerId = ?";
+
+        try (Connection conn = databaseConnector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql))
+        {
+            stmt.setInt(1,managerMembers.getManagerId());
+            stmt.executeUpdate();
+        }
+        catch (SQLException ex)
+        {
+            ex.printStackTrace();
+            throw new Exception("Could not delete Manager Manager", ex);
+        }
+        return managerMembers;
+    }
+
     public ManagerMembers deleteManagerTeam (ManagerMembers managerMembers) throws Exception {
         String sql = "DELETE FROM SparksExamSchneider.dbo.ManagerMembers WHERE ManagerId = ? AND TeamId = ?";
 

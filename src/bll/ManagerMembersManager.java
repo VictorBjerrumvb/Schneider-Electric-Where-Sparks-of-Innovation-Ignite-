@@ -63,6 +63,12 @@ public class ManagerMembersManager {
         managerMembersDAO_db.deleteManagerMember(managerMembers);
         return managerMembers;
     }
+
+    public ManagerMembers deleteManagerManager(ManagerMembers managerMembers) throws Exception {
+        managerMembersDAO_db.deleteManagerManager(managerMembers);
+        return managerMembers;
+    }
+
     public ManagerMembers deleteManagerTeam(ManagerMembers managerMembers) throws Exception {
         managerMembersDAO_db.deleteManagerTeam(managerMembers);
         return managerMembers;
