@@ -4,10 +4,10 @@ import be.Personnel;
 import be.Team;
 import dal.db.DataAccessException;
 import gui.helperclases.ShowImageClass;
-import gui.helperclases.WidgetsClass;
 import gui.model.PersonnelModel;
 import gui.model.TeamMappingModel;
 import gui.model.TeamModel;
+import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuButton;
@@ -28,7 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CalculatorViewController {
+    @FXML
+    private ListView<String> rateListView;
     public FlowPane flowPaneInformation;
+    public MFXButton CalcBtn;
     @FXML
     private ImageView imgLogo;
     @FXML
@@ -36,9 +40,9 @@ public class CalculatorViewController {
     @FXML
     private ImageView imgProfileIcon;
     @FXML
-    private ListView listPersonnel;
+    private ListView<Personnel> listPersonnel;
     @FXML
-    private ListView listTeams;
+    private ListView<Team> listTeams;
     @FXML
     private Label lblPersonnelName;
     @FXML
@@ -75,6 +79,7 @@ public class CalculatorViewController {
     private ShowImageClass showImageClass = new ShowImageClass();
     private Personnel selectedPersonnel = new Personnel();
     private Team selectedTeam = new Team();
+
     public CalculatorViewController() {
         try {
             personnelModel = new PersonnelModel();
@@ -84,14 +89,17 @@ public class CalculatorViewController {
             throw new RuntimeException(e);
         }
     }
+
     public void setup() {
         ObservableList<Personnel> listOfPersonnel = FXCollections.observableArrayList();
         listOfPersonnel.setAll(personnelModel.getAllPersonnel());
         listPersonnel.setItems(listOfPersonnel);
+
         ObservableList<Team> listOfTeams = FXCollections.observableArrayList();
         listOfTeams.setAll(teamModel.getAllTeams());
         listTeams.setItems(listOfTeams);
     }
+
     public void setOperator(Personnel operator) {
         this.operator = operator;
         btnProfile.setText(operator.getUsername());
@@ -107,13 +115,13 @@ public class CalculatorViewController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
             Parent secondWindow = loader.load();
-            Scene scene = imgLogo.getScene(); // Get the current scene
-            scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+            Scene scene = imgLogo.getScene();
+            scene.setRoot(secondWindow);
             MainViewController controller = loader.getController();
             controller.setup();
             controller.setOperator(operator);
         } catch (IOException e) {
-            e.printStackTrace(); // Handle exception appropriately
+            e.printStackTrace();
         }
     }
 
@@ -122,13 +130,13 @@ public class CalculatorViewController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PersonnelView.fxml"));
             Parent secondWindow = loader.load();
-            Scene scene = btnProfile.getScene(); // Get the current scene
-            scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+            Scene scene = btnProfile.getScene();
+            scene.setRoot(secondWindow);
             PersonnelController controller = loader.getController();
             controller.setup();
             controller.setOperator(operator);
         } catch (IOException e) {
-            e.printStackTrace(); // Handle exception appropriately
+            e.printStackTrace();
         }
     }
 
@@ -137,15 +145,16 @@ public class CalculatorViewController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
             Parent secondWindow = loader.load();
-            Scene scene = btnProfile.getScene(); // Get the current scene
-            scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+            Scene scene = btnProfile.getScene();
+            scene.setRoot(secondWindow);
         } catch (IOException e) {
-            e.printStackTrace(); // Handle exception appropriately
+            e.printStackTrace();
         }
     }
+
     @FXML
     private void handleSelectedPersonnel(MouseEvent mouseEvent) {
-        selectedPersonnel = (Personnel) listPersonnel.getSelectionModel().getSelectedItem();
+        selectedPersonnel = listPersonnel.getSelectionModel().getSelectedItem();
         lblPersonnelName.setText(selectedPersonnel.getUsername());
         ObservableList<Team> listOfTeams = FXCollections.observableArrayList();
         listOfTeams.setAll(teamMappingModel.getPersonnelTeam(selectedPersonnel));
@@ -160,47 +169,51 @@ public class CalculatorViewController {
 
     @FXML
     private void handleSelectedTeam(MouseEvent mouseEvent) throws DataAccessException {
-        selectedTeam = (Team) listTeams.getSelectionModel().getSelectedItem();
+        selectedTeam = listTeams.getSelectionModel().getSelectedItem();
         ObservableList<Personnel> listOfTeamMembers = FXCollections.observableArrayList();
         listOfTeamMembers.setAll(teamMappingModel.getAllTeamMembers(selectedTeam));
+        listPersonnel.setItems(listOfTeamMembers);
         if (listOfTeamMembers.isEmpty()) {
-            String firststring = "The selected Team";
-            String secondstring = "does not have any members";
+            // Clear the list and display a message
             listPersonnel.getItems().clear();
-            listPersonnel.getItems().add(firststring);
-            listPersonnel.getItems().add(secondstring);
-        }
-        if (!listOfTeamMembers.isEmpty()) {
-            listPersonnel.setItems(teamMappingModel.getAllTeamMembers(selectedTeam));
+            showNoTeamMembersAlert();
+        } else {
+            listPersonnel.setItems(listOfTeamMembers);
         }
     }
 
-    @FXML
-    private void handleSearchCountryName(ActionEvent actionEvent) {
+    private void showNoTeamMembersAlert() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("No Team Members");
+        alert.setHeaderText(null);
+        alert.setContentText("The selected team does not have any members.");
+        alert.showAndWait();
     }
+
     @FXML
     private void handleCalculate(ActionEvent actionEvent) {
-        // Calculate and display day rate or hourly rate based on the entered employee profile
         calculateRates();
     }
 
     private void calculateRates() {
-        // Get selected employee from the list
-        Personnel selectedEmployee = (Personnel) listPersonnel.getSelectionModel().getSelectedItem();
-        if (selectedEmployee != null) {
-            double annualSalary = selectedEmployee.getSalary();
-            double overheadMultiplier = selectedEmployee.getOverheadMultiplier();
-            double fixedAnnualAmount = selectedEmployee.getFixedAnnualAmount();
-            double annualEffectiveWorkingHours = selectedEmployee.getAnnualEffectiveWorkingHours();
-            double utilizationPercentage = selectedEmployee.getUtilizationPercentage();
-
-            // Perform calculations based on the provided formulas
-            double hourlyRate = (annualSalary / (annualEffectiveWorkingHours * utilizationPercentage)) + overheadMultiplier;
-            double dayRate = hourlyRate * 8; // Assuming 8 working hours per day
-
-            // Apply multipliers
+        // Get the values from the text fields
+        try {
+            double annualSalary = Double.parseDouble(txtAnnualSalary.getText());
+            double overheadMultiplier = Double.parseDouble(txtFixedSalary.getText());
+            double fixedAnnualAmount = Double.parseDouble(txtCountryGross.getText());
+            double annualEffectiveWorkingHours = Double.parseDouble(txtEffectiveWorkingHours.getText());
+            double utilizationPercentage = Double.parseDouble(txtAmountOfHoursAllocated.getText());
             double markupMultiplier = Double.parseDouble(txtMarkupMultiplier.getText());
             double gmMultiplier = Double.parseDouble(txtMarginMultiplier.getText());
+
+            // Calculate the hourly rate
+            double hourlyRate = (annualSalary / (annualEffectiveWorkingHours * (utilizationPercentage / 100))) + (fixedAnnualAmount / annualEffectiveWorkingHours);
+            hourlyRate = hourlyRate * (1 + (overheadMultiplier / 100));
+
+            // Calculate the daily rate (assuming 8 working hours per day)
+            double dayRate = hourlyRate * 8;
+
+            // Apply multipliers
             hourlyRate *= (1 + (markupMultiplier / 100));
             hourlyRate *= (1 + (gmMultiplier / 100));
             dayRate *= (1 + (markupMultiplier / 100));
@@ -209,11 +222,24 @@ public class CalculatorViewController {
             // Display the calculated rates in the UI
             txtHourlyRate.setText(String.valueOf(hourlyRate));
             txtDailyRate.setText(String.valueOf(dayRate));
+
+            // Print out the information to the console
+            System.out.println("Annual Salary: " + annualSalary);
+            System.out.println("Overhead Multiplier: " + overheadMultiplier);
+            System.out.println("Fixed Annual Amount: " + fixedAnnualAmount);
+            System.out.println("Annual Effective Working Hours: " + annualEffectiveWorkingHours);
+            System.out.println("Utilization Percentage: " + utilizationPercentage);
+            System.out.println("Markup Multiplier: " + markupMultiplier);
+            System.out.println("GM Multiplier: " + gmMultiplier);
+            System.out.println("Hourly Rate: " + hourlyRate);
+            System.out.println("Daily Rate: " + dayRate);
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid input: " + e.getMessage());
         }
     }
+
     @FXML
     private void handleDistributeCost(ActionEvent actionEvent) {
-        // Distribute the cost of overhead employees among various teams
         distributeCost();
     }
 
@@ -225,5 +251,33 @@ public class CalculatorViewController {
 
     public void handleReload(MouseEvent mouseEvent) {
         listPersonnel.setItems(personnelModel.getAllPersonnel());
+    }
+
+    @FXML
+    private void handleCalcBtn() {
+        try {
+            // Get input values from text fields
+            double fixedSalary = Double.parseDouble(txtFixedSalary.getText());
+            double effectiveWorkingHours = Double.parseDouble(txtEffectiveWorkingHours.getText());
+            double hourlyRate = Double.parseDouble(txtHourlyRate.getText());
+            double dailyRate = Double.parseDouble(txtDailyRate.getText());
+            double markupMultiplier = Double.parseDouble(txtMarkupMultiplier.getText());
+            double marginMultiplier = Double.parseDouble(txtMarginMultiplier.getText());
+            double amountOfHoursAllocated = Double.parseDouble(txtAmountOfHoursAllocated.getText());
+
+            // Perform calculation
+            double calculatedRate = (fixedSalary / effectiveWorkingHours) * (hourlyRate + dailyRate) * markupMultiplier * marginMultiplier * amountOfHoursAllocated;
+
+            // Update ListView with the calculated rate
+            String rateInfo = String.format("Calculated Rate: %.2f", calculatedRate);
+            rateListView.getItems().add(rateInfo);
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid input: " + e.getMessage());
+            // Handle the case where the input values are not valid numbers
+            // You can show an error message to the user or take appropriate action
+        }
+    }
+
+    public void handleSearchCountryName(ActionEvent actionEvent) {
     }
 }
