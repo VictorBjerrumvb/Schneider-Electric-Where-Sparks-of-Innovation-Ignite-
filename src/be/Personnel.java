@@ -69,7 +69,7 @@ public class Personnel implements Serializable {
     public Personnel(int id, String username, String password, int roleId, String role, double salary, String picture) {
         this.id = id;
         this.username = validate(username, "Username must not be empty");
-        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+        this.password = password;
         this.roleId = roleId;
         this.role = role;
         this.salary = salary;
@@ -80,6 +80,9 @@ public class Personnel implements Serializable {
      * Default constructor.
      */
     public Personnel() {
+    }
+
+    public Personnel(String userName, String exampleHashedPassword) {
     }
 
     // Utility Methods

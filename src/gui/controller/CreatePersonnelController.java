@@ -1,8 +1,10 @@
 package gui.controller;
 
 import be.CreateTeamMapping;
+import be.ManagerMembers;
 import be.Personnel;
 import gui.helperclases.ShowImageClass;
+import gui.model.ManagerMembersModel;
 import gui.model.PersonnelModel;
 import gui.model.TeamMappingModel;
 import io.github.palexdev.materialfx.controls.MFXButton;
@@ -19,6 +21,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 
@@ -213,7 +216,7 @@ public class CreatePersonnelController {
                     // Continue with creating the personnel
                     newPersonnel.setUsername(txtUsername.getText());
                     if (txtPassword.getText().equals(txtConfirmPassword.getText())) {
-                        newPersonnel.setPassword(txtPassword.getText());
+                        newPersonnel.setPassword(BCrypt.hashpw(txtPassword.getText(),BCrypt.gensalt()));
                     } else {
                         txtPassword.setText("");
                         txtConfirmPassword.setText("");
@@ -224,7 +227,7 @@ public class CreatePersonnelController {
                     // Database interaction to create personnel
                     try {
                         // Call the method to create personnel in the model
-                        Personnel p = personnelModel.createPersonnelWithReturn(newPersonnel);
+                        personnelModel.createPersonnel(newPersonnel);
 
                         // Optionally, you can show a success message to the user
                         // For example:
@@ -285,11 +288,18 @@ public class CreatePersonnelController {
     private void handleKeyPressedPersonnel(KeyEvent keyEvent) {
         if (keyEvent.getCode() == KeyCode.DELETE) {
             TeamMappingModel teamMappingModel = new TeamMappingModel();
+            ManagerMembersModel managerMembersModel = new ManagerMembersModel();
             Personnel personnel = listPersonnel.getSelectionModel().getSelectedItem(); // Remove unnecessary cast
             if (personnel != null) {
                 CreateTeamMapping createTeamMapping = new CreateTeamMapping();
                 createTeamMapping.setPersonnelId(personnel.getId());
+                ManagerMembers managerMembers = new ManagerMembers();
+                managerMembers.setPersonnelId(personnel.getId());
+
+                managerMembersModel.deleteManagerMembers(managerMembers);
                 teamMappingModel.deleteTeamMappingWithPersonnelId(createTeamMapping);
+                personnelModel.deletePersonnel(personnel);
+
                 listPersonnel.getItems().remove(personnel);
             }
         }

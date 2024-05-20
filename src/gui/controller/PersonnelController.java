@@ -238,29 +238,35 @@ public class PersonnelController {
             System.out.println("Entered new password: " + newPwdText);
             System.out.println("Entered confirm password: " + confirmPwdText);
 
-            if (BCrypt.checkpw(currentPwdText, hashedPassword)) {
-                // Check if new password and confirm password match
-                if (newPwdText.equals(confirmPwdText)) {
-                    // update the operator's password
-                    operator.setPassword(newPassword.getText());
-                    personnelModel.updatePersonnel(operator);
-                    System.out.println("Password updated successfully.");
+            try {
+                if (BCrypt.checkpw(currentPwdText, hashedPassword)) {
+                    // Check if new password and confirm password match
+                    if (newPwdText.equals(confirmPwdText)) {
+                        // Hash the new password and update the operator's password
+                        String newHashedPassword = BCrypt.hashpw(confirmPwdText, BCrypt.gensalt());
+                        operator.setPassword(newHashedPassword);
+                        personnelModel.updatePersonnel(operator);
+                        System.out.println("Password updated successfully.");
+                    } else {
+                        // New password and confirm password didn't match
+                        newPassword.setText("");
+                        confirmPassword.setText("");
+                        confirmPassword.setPromptText("Passwords Didn't Match");
+                        newPassword.setPromptText("Passwords Didn't Match");
+                        newPassword.getStyleClass().add("red-outline");
+                        confirmPassword.getStyleClass().add("red-outline");
+                        System.out.println("New passwords do not match.");
+                    }
                 } else {
-                    // New password and confirm password didn't match
-                    newPassword.setText("");
-                    confirmPassword.setText("");
-                    confirmPassword.setPromptText("Passwords Didn't Match");
-                    newPassword.setPromptText("Passwords Didn't Match");
-                    newPassword.getStyleClass().add("red-outline");
-                    confirmPassword.getStyleClass().add("red-outline");
-                    System.out.println("New passwords do not match.");
+                    // Current password is incorrect
+                    currentPassword.setText("");
+                    currentPassword.setPromptText("Incorrect Password");
+                    currentPassword.getStyleClass().add("red-outline");
+                    System.out.println("Current password is incorrect.");
                 }
-            } else {
-                // Current password is incorrect
-                currentPassword.setText("");
-                currentPassword.setPromptText("Incorrect Password");
-                currentPassword.getStyleClass().add("red-outline");
-                System.out.println("Current password is incorrect.");
+            } catch (Exception e) {
+                System.out.println("Error during password verification: " + e.getMessage());
+                e.printStackTrace();
             }
         });
     }

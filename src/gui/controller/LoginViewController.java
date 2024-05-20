@@ -52,7 +52,8 @@ public class LoginViewController {
         String userPassword = txtFieldPassword.getText();
 
         // Validate the user credentials
-        Personnel personnelLogged = personnelManager.validatePersonnel(userName.toLowerCase(), userPassword);
+        Personnel personnelLogged = personnelManager.validatePersonnel(userName, userPassword);
+
         if (personnelLogged != null) {
             // Load different views based on user role
             FXMLLoader loader;
@@ -92,6 +93,7 @@ public class LoginViewController {
             txtFieldUsername.setPromptText("Incorrect Password or Username");
         }
     }
+
 
     /**
      * Event handler for the forgot password button (currently empty).

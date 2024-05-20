@@ -5,6 +5,7 @@ import be.Personnel;
 import dal.db.DataAccessException;
 import dal.db.EmployeeProfileDAO_DB;
 import dal.db.PersonnelDAO_DB;
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,12 +86,39 @@ public class PersonnelManager {
      * Validates a Personnel with the provided username and password.
      *
      * @param userName The username to validate.
-     * @param password The password to validate.
+     * @param userPassword The password to validate.
      * @return The validated Personnel object, or null if validation fails.
      * @throws DataAccessException If an error occurs while accessing the data.
      */
-    public Personnel validatePersonnel(String userName, String password) throws DataAccessException {
-        return personnelDAO_db.validateUser(userName, password);
+    public Personnel validatePersonnel(String userName, String userPassword) throws DataAccessException {
+        // Fetch the personnel from the database based on the username
+        Personnel personnel = getPersonnelByUserName(userName);
+
+        if (personnel != null) {
+            // Get the stored hashed password
+            String storedHashedPassword = personnel.getPassword();
+
+            // Check if the provided password matches the stored hashed password
+            if (BCrypt.checkpw(userPassword, storedHashedPassword)) {
+                return personnel; // Password is correct
+            } else {
+                System.out.println("Incorrect password.");
+            }
+        } else {
+            System.out.println("User not found.");
+        }
+
+        return null; // Return null if validation fails
+    }
+
+    private Personnel getPersonnelByUserName(String userName) throws DataAccessException {
+        List<Personnel> allPersonnel = getAllPersonnel(); // Implement this method to fetch all personnel from your data source
+        for (Personnel p : allPersonnel) {
+            if (p.getUsername().equalsIgnoreCase(userName)) {
+                return p; // Return the personnel object if the username matches
+            }
+        }
+        return null; // Return null if the user is not found
     }
 
     // EmployeeProfile-related methods
