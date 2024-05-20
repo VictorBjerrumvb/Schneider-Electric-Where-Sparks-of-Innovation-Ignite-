@@ -155,16 +155,25 @@ public class CalculatorViewController {
     @FXML
     private void handleSelectedPersonnel(MouseEvent mouseEvent) {
         selectedPersonnel = listPersonnel.getSelectionModel().getSelectedItem();
-        lblPersonnelName.setText(selectedPersonnel.getUsername());
-        ObservableList<Team> listOfTeams = FXCollections.observableArrayList();
-        listOfTeams.setAll(teamMappingModel.getPersonnelTeam(selectedPersonnel));
-        List<String> teams = new ArrayList<>();
-        for (Team t : listOfTeams) {
-            String string = t.getName();
-            teams.add(string);
+
+        if (selectedPersonnel != null) {
+            lblPersonnelName.setText(selectedPersonnel.getUsername());
+            ObservableList<Team> listOfTeams = FXCollections.observableArrayList();
+            listOfTeams.setAll(teamMappingModel.getPersonnelTeam(selectedPersonnel));
+            List<String> teams = new ArrayList<>();
+            for (Team t : listOfTeams) {
+                String string = t.getName();
+                teams.add(string);
+            }
+            lblTeamName.setText(String.valueOf(teams));
+            txtAnnualSalary.setText(String.valueOf(selectedPersonnel.getSalary()));
+        } else {
+            // Handle the case where selectedPersonnel is null
+            // For example, clear labels and text fields
+            lblPersonnelName.setText("");
+            lblTeamName.setText("");
+            txtAnnualSalary.setText("");
         }
-        lblTeamName.setText(String.valueOf(teams));
-        txtAnnualSalary.setText(String.valueOf(selectedPersonnel.getSalary()));
     }
 
     @FXML
