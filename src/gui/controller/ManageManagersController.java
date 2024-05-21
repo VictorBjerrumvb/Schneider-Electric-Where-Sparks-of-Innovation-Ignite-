@@ -1,6 +1,5 @@
 package gui.controller;
 
-import be.CreateTeamMapping;
 import be.ManagerMembers;
 import be.Personnel;
 import be.Team;
@@ -10,6 +9,7 @@ import gui.model.ManagerMembersModel;
 import gui.model.PersonnelModel;
 import gui.model.TeamModel;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,7 +22,6 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
-
 import java.io.IOException;
 
 public class ManageManagersController {
@@ -40,6 +39,17 @@ public class ManageManagersController {
     private ListView listManagers, listPersonnel, listManagerMembers, listPersonnelManagers ,listManagerTeams ,listTeams;
     @FXML
     private Label lblManagerMembers, lblSelectedPersonnel,lblManagerTeams;
+    @FXML
+    private TextField team1PercentageField;
+
+    @FXML
+    private TextField team2PercentageField;
+
+    @FXML
+    private TextField team3PercentageField;
+    @FXML
+    private ListView<String> teamListView;
+
 
 
     private final ShowImageClass showImageClass = new ShowImageClass();
@@ -58,9 +68,61 @@ public class ManageManagersController {
         managerMembersModel = new ManagerMembersModel();
         teamModel = new TeamModel();
     }
+    public void initialize() {
+        // Populate the list view with teams and their costs
+        ObservableList<String> teamData = getTeamData();
+        listProcentTeams.setItems(teamData);
 
-    public void setup() {
-        // Populate list views and set initial text and labels
+        // Enable drag-and-drop functionality
+        listProcentTeams.setOnDragDetected(event -> {
+            // Start drag-and-drop operation
+            String selectedItem = (String) listProcentTeams.getSelectionModel().getSelectedItem();
+            if (selectedItem != null) {
+                Dragboard db = listProcentTeams.startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent content = new ClipboardContent();
+                content.putString(selectedItem);
+                db.setContent(content);
+                event.consume();
+            }
+        });
+
+        listProcentTeams.setOnDragOver(event -> {
+            if (event.getGestureSource() != listProcentTeams && event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.MOVE);
+            }
+            event.consume();
+        });
+
+        listProcentTeams.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasString()) {
+                ObservableList<String> items = listProcentTeams.getItems();
+                int draggedIndex = items.indexOf(db.getString());
+                int targetIndex = (int) (event.getY() / (listProcentTeams.getHeight() / items.size()));
+
+                if (draggedIndex >= 0 && draggedIndex < items.size() &&
+                        targetIndex >= 0 && targetIndex < items.size()) {
+                    items.remove(draggedIndex);
+                    items.add(targetIndex, db.getString());
+                    success = true;
+                }
+            }
+            event.setDropCompleted(success);
+            event.consume();
+        });
+    }
+
+    // Method to get the data for the team list
+    private ObservableList<String> getTeamData() {
+        ObservableList<String> teamData = FXCollections.observableArrayList();
+        teamData.add("Team A - $1000");
+        teamData.add("Team B - $1500");
+        teamData.add("Team C - $800");
+        return teamData;
+    }
+
+        public void setup() {
         for (Personnel p : personnelModel.getAllPersonnel()) {
             if (p.getRoleId() == 2) {
                 listManagers.getItems().add(p);
@@ -279,6 +341,40 @@ public class ManageManagersController {
             content.put(DataFormat.PLAIN_TEXT, "personnel");
             db.setContent(content);
             mouseEvent.consume();
+        }
+    }
+    @FXML
+    private void handleTeam1PercentageChange() {
+        // Update the data structure storing percentages
+        updatePercentages();
+    }
+
+    // Method to handle changes in team2PercentageField
+    @FXML
+    private void handleTeam2PercentageChange() {
+        // Update the data structure storing percentages
+        updatePercentages();
+    }
+
+    // Method to handle changes in team3PercentageField
+    @FXML
+    private void handleTeam3PercentageChange() {
+        // Update the data structure storing percentages
+        updatePercentages();
+    }
+    private void updatePercentages() {
+        // Get the percentages from the text fields
+        double team1Percentage = Double.parseDouble(team1PercentageField.getText());
+        double team2Percentage = Double.parseDouble(team2PercentageField.getText());
+        double team3Percentage = Double.parseDouble(team3PercentageField.getText());
+
+        // Validate the total percentage
+        double totalPercentage = team1Percentage + team2Percentage + team3Percentage;
+        if (totalPercentage != 100.0) {
+            // Display an error message or handle invalid input
+        } else {
+            // Update the data structure with the new percentages
+            // You can update your data model here
         }
     }
 
