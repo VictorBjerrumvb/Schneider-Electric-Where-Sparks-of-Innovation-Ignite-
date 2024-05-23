@@ -4,6 +4,7 @@ import be.Personnel;
 import be.Team;
 import dal.db.DataAccessException;
 import gui.helperclases.ShowImageClass;
+import gui.helperclases.WidgetsClass;
 import gui.model.PersonnelModel;
 import gui.model.TeamMappingModel;
 import gui.model.TeamModel;
@@ -16,16 +17,27 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.MenuButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import java.awt.*;
+import java.io.*;
+import java.nio.file.Files;
+import java.util.*;
 import java.util.List;
 
 public class CalculatorViewController {
@@ -79,6 +91,9 @@ public class CalculatorViewController {
     private ShowImageClass showImageClass = new ShowImageClass();
     private Personnel selectedPersonnel = new Personnel();
     private Team selectedTeam = new Team();
+    private String lastUpdatedField = "", daily = "daily", hourly = "hourly", markup = "markup";
+    private double fHourlyRate, fDailyRate;
+    private boolean isProgrammaticChange = false;
 
     public CalculatorViewController() {
         try {
@@ -98,6 +113,66 @@ public class CalculatorViewController {
         ObservableList<Team> listOfTeams = FXCollections.observableArrayList();
         listOfTeams.setAll(teamModel.getAllTeams());
         listTeams.setItems(listOfTeams);
+
+
+        // Add listeners for txtHourlyRate
+        txtHourlyRate.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!isProgrammaticChange) {
+                lastUpdatedField = hourly;
+                calculateDailyRate();
+            }
+        });
+
+        // Add listeners for txtDailyRate
+        txtDailyRate.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!isProgrammaticChange) {
+                lastUpdatedField = daily;
+                calculateHourlyRate();
+            }
+        });
+
+        // Add listeners for txtAmountOfHoursAllocated
+        txtAmountOfHoursAllocated.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!isProgrammaticChange) {
+                if (lastUpdatedField.equals(daily)) {
+                    calculateHourlyRate();
+                } else if (lastUpdatedField.equals(hourly)) {
+                    calculateDailyRate();
+                } else if (lastUpdatedField.equals(markup)) {
+                    calculateDailyRate();
+                }
+            }
+        });
+
+        // Add listener for txtMarginMultiplier
+        txtMarkupMultiplier.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!isProgrammaticChange) {
+                lastUpdatedField = markup;
+                if (newValue.isEmpty()) {
+                    setProgrammaticChange(true);
+                    txtHourlyRate.setText(String.valueOf(fHourlyRate));
+                    txtDailyRate.setText(String.valueOf(fDailyRate));
+                    setProgrammaticChange(false);
+                } else {
+                    calculateMarkUp();
+                }
+            }
+        });
+
+        // Add listener for txtFixedSalary
+        txtFixedSalary.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!isProgrammaticChange) {
+                calculateHourlyRate();
+                calculateDailyRate();
+                calculateMarkUp();
+            }
+        });
+
+        txtEffectiveWorkingHours.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!isProgrammaticChange) {
+                calculateRatesWithEffectiveWorkingHours();
+            }
+        });
     }
 
     public void setOperator(Personnel operator) {
@@ -261,32 +336,359 @@ public class CalculatorViewController {
     public void handleReload(MouseEvent mouseEvent) {
         listPersonnel.setItems(personnelModel.getAllPersonnel());
     }
-
-    @FXML
-    private void handleCalcBtn() {
+    public void handlePrintPdf(ActionEvent actionEvent) {
         try {
-            // Get input values from text fields
-            double fixedSalary = Double.parseDouble(txtFixedSalary.getText());
-            double effectiveWorkingHours = Double.parseDouble(txtEffectiveWorkingHours.getText());
-            double hourlyRate = Double.parseDouble(txtHourlyRate.getText());
-            double dailyRate = Double.parseDouble(txtDailyRate.getText());
-            double markupMultiplier = Double.parseDouble(txtMarkupMultiplier.getText());
-            double marginMultiplier = Double.parseDouble(txtMarginMultiplier.getText());
-            double amountOfHoursAllocated = Double.parseDouble(txtAmountOfHoursAllocated.getText());
+            // Create a PDFMergerUtility instance
+            PDFMergerUtility mergerUtility = new PDFMergerUtility();
 
-            // Perform calculation
-            double calculatedRate = (fixedSalary / effectiveWorkingHours) * (hourlyRate + dailyRate) * markupMultiplier * marginMultiplier * amountOfHoursAllocated;
+            // Iterate over FlowPane children and add each PDF to the merger utility
+            for (javafx.scene.Node node : flowPaneInformation.getChildren()) {
+                if (node instanceof VBox) {
+                    VBox pdfBox = (VBox) node;
+                    Object[] userDataArray = (Object[]) pdfBox.getUserData();
+                    String base64PDF = (String) userDataArray[0]; // Base64 PDF data
 
-            // Update ListView with the calculated rate
-            String rateInfo = String.format("Calculated Rate: %.2f", calculatedRate);
-            rateListView.getItems().add(rateInfo);
-        } catch (NumberFormatException e) {
-            System.err.println("Invalid input: " + e.getMessage());
-            // Handle the case where the input values are not valid numbers
-            // You can show an error message to the user or take appropriate action
+                    // Decode base64 to byte array
+                    byte[] pdfBytes = Base64.getDecoder().decode(base64PDF);
+
+                    // Add the PDF bytes to the merger utility
+                    mergerUtility.addSource(new ByteArrayInputStream(pdfBytes));
+                }
+            }
+
+            // Prompt user for save location
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Merged PDF");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+            File file = fileChooser.showSaveDialog(new Stage());
+
+            if (file != null) {
+                // Set the destination file
+                mergerUtility.setDestinationFileName(file.getAbsolutePath());
+
+                // Merge the PDFs
+                mergerUtility.mergeDocuments(null);
+
+                System.out.println("Merged PDF saved successfully.");
+            } else {
+                System.out.println("PDF merge canceled by user.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
+
+    @FXML
+    private void handleCalcPerson() {
+        String name = selectedPersonnel.getUsername();
+        String role = selectedPersonnel.getRole();
+        double personalSalary = selectedPersonnel.getSalary();
+        double fixedSalary = Double.parseDouble(txtFixedSalary.getText());
+        String team = "";
+        if (selectedTeam != null) {
+            team = selectedTeam.getName();
+        }
+        if (selectedTeam.getId() == 0) {
+            selectedTeam.setName("Independent");
+            team = selectedTeam.getName();
+        }
+
+        double effectiveWorkingHours = Double.parseDouble(txtEffectiveWorkingHours.getText());
+        double hourlyRate = Double.parseDouble(txtHourlyRate.getText());
+        double dailyRate = Double.parseDouble(txtDailyRate.getText());
+        double markupMultiplier = Double.parseDouble(txtMarkupMultiplier.getText());
+        double marginMultiplier = 1.0; // Default value
+        String marginMultiplierText = txtMarginMultiplier.getText();
+        if (!marginMultiplierText.isEmpty()) {
+            marginMultiplier = Double.parseDouble(marginMultiplierText);
+        }
+        double amountOfHoursAllocated = Double.parseDouble(txtAmountOfHoursAllocated.getText());
+
+        PDDocument document = null;
+        PDPageContentStream contentStream = null;
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+            // Create a new PDF document
+            document = new PDDocument();
+            PDPage page = new PDPage(PDRectangle.A4);
+            document.addPage(page);
+
+            contentStream = new PDPageContentStream(document, page);
+
+            // Add content to the page
+            contentStream.beginText();
+            contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+            float yCoordinate = 700; // Starting Y-coordinate
+            contentStream.newLineAtOffset(100, yCoordinate);
+            contentStream.showText("Name: " + name);
+            yCoordinate -= 12; // Decrease Y-coordinate for next line
+            if (!team.isEmpty()) {
+                contentStream.newLineAtOffset(0, -12); // Move to the next line
+                contentStream.showText("Team: " + team);
+                yCoordinate -= 12; // Decrease Y-coordinate for next line
+            }
+            contentStream.newLineAtOffset(0, -12); // Move to the next line
+            contentStream.showText("Role: " + role);
+            yCoordinate -= 12; // Decrease Y-coordinate for next line
+            contentStream.newLineAtOffset(0, -12); // Move to the next line
+            contentStream.showText("Personal Salary: " + personalSalary);
+            yCoordinate -= 12; // Decrease Y-coordinate for next line
+            contentStream.newLineAtOffset(0, -12); // Move to the next line
+            contentStream.showText("Fixed Salary: " + fixedSalary);
+            yCoordinate -= 12; // Decrease Y-coordinate for next line
+            contentStream.newLineAtOffset(0, -12); // Move to the next line
+            contentStream.showText("Effective Working Hours: " + effectiveWorkingHours);
+            yCoordinate -= 12; // Decrease Y-coordinate for next line
+            contentStream.newLineAtOffset(0, -12); // Move to the next line
+            contentStream.showText("Hourly Rate: " + hourlyRate);
+            yCoordinate -= 12; // Decrease Y-coordinate for next line
+            contentStream.newLineAtOffset(0, -12); // Move to the next line
+            contentStream.showText("Daily Rate: " + dailyRate);
+            yCoordinate -= 12; // Decrease Y-coordinate for next line
+            contentStream.newLineAtOffset(0, -12); // Move to the next line
+            contentStream.showText("Markup Multiplier: " + markupMultiplier);
+            yCoordinate -= 12; // Decrease Y-coordinate for next line
+            contentStream.newLineAtOffset(0, -12); // Move to the next line
+            contentStream.showText("Country Margin Multiplier: " + marginMultiplier);
+            yCoordinate -= 12; // Decrease Y-coordinate for next line
+            contentStream.newLineAtOffset(0, -12); // Move to the next line
+            contentStream.showText("Amount of Hours Allocated in a day: " + amountOfHoursAllocated);
+            contentStream.endText();
+
+            // Close the content stream
+            contentStream.close();
+
+            // Save the document to a byte array
+            document.save(byteArrayOutputStream);
+
+            // Store PDF data as a base64 string
+            String base64PDF = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+            // Add the PDF to the FlowPane
+            addPDFToFlowPane(base64PDF, name);
+            clearTxtFields();
+
+            System.out.println("PDF generated and added to FlowPane successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (contentStream != null) {
+                    contentStream.close();
+                }
+                if (document != null) {
+                    document.close();
+                }
+                byteArrayOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void clearTxtFields(){
+        txtMarkupMultiplier.setText("");
+        txtDailyRate.setText("");
+        txtAnnualSalary.setText("");
+        txtHourlyRate.setText("");
+        txtFixedSalary.setText("");
+        txtEffectiveWorkingHours.setText("");
+        txtAmountOfHoursAllocated.setText("");
+        txtCountryGross.setText("");
+        txtCountryName.setText("");
+        txtMarginMultiplier.setText("");
+        lblTeamName.setText("Team Name");
+        lblPersonnelName.setText("Personnel Name");
+    }
+
+    private void addPDFToFlowPane(String base64PDF, String name) {
+        VBox pdfBox = new VBox();
+        Text pdfName = new Text("PDF: " + name);
+        Button viewButton = new Button("View");
+        Button deleteButton = new Button("Delete");
+
+        viewButton.setOnAction(event -> viewPDF(base64PDF));
+        deleteButton.setOnAction(event -> deletePDF(pdfBox));
+
+        pdfBox.getChildren().addAll(pdfName, viewButton, deleteButton);
+
+        // Store personnel and additional information as an object array
+        Object[] userDataArray = new Object[]{base64PDF};
+        pdfBox.setUserData(userDataArray); // Store personnel and additional information in userData
+
+        flowPaneInformation.getChildren().add(pdfBox);
+    }
+    private void viewPDF(String base64PDF) {
+        try {
+            // Decode base64 to byte array
+            byte[] pdfBytes = Base64.getDecoder().decode(base64PDF);
+
+            // Create a temporary file
+            File tempFile = File.createTempFile("tempPDF", ".pdf");
+            try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+                fos.write(pdfBytes);
+            }
+
+            // Open the PDF using the system's default PDF viewer
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().open(tempFile);
+            } else {
+                System.out.println("Desktop is not supported. Cannot open PDF.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deletePDF(VBox pdfBox) {
+        flowPaneInformation.getChildren().remove(pdfBox);
+        System.out.println("PDF deleted from FlowPane.");
+    }
+
     public void handleSearchCountryName(ActionEvent actionEvent) {
+    }
+
+    private void calculateDailyRate() {
+        if (txtMarkupMultiplier.getText().isEmpty()) {
+            try {
+                double hourly = Double.parseDouble(txtHourlyRate.getText());
+                double mountOfHoursInADay = Double.parseDouble(txtAmountOfHoursAllocated.getText());
+                double fixedSalary = Double.parseDouble(txtFixedSalary.getText());
+
+                double dailyRate = hourly * mountOfHoursInADay;
+                double totalHours = fixedSalary / hourly;
+
+                setProgrammaticChange(true);
+                txtDailyRate.setText(String.valueOf(dailyRate));
+                txtEffectiveWorkingHours.setText(String.valueOf(totalHours));
+                setProgrammaticChange(false);
+
+                fDailyRate = dailyRate;
+            } catch (NumberFormatException e) {
+                // Handle the case where the text is not a valid double
+                setProgrammaticChange(true);
+                txtDailyRate.setPromptText("Not Calculated Yet");
+                txtEffectiveWorkingHours.setPromptText("Not Calculated Yet");
+                setProgrammaticChange(false);
+            }
+        }
+        if (!txtMarkupMultiplier.getText().isEmpty()){
+            try {
+                double hourly = Double.parseDouble(txtHourlyRate.getText());
+                double mountOfHoursInADay = Double.parseDouble(txtAmountOfHoursAllocated.getText());
+                double fixedSalary = Double.parseDouble(txtFixedSalary.getText());
+
+                double dailyRate = hourly * mountOfHoursInADay;
+                double totalHours = fixedSalary / hourly;
+
+                setProgrammaticChange(true);
+                txtDailyRate.setText(String.valueOf(dailyRate));
+                txtEffectiveWorkingHours.setText(String.valueOf(totalHours));
+                setProgrammaticChange(false);
+            } catch (NumberFormatException e) {
+                // Handle the case where the text is not a valid double
+                setProgrammaticChange(true);
+                txtDailyRate.setPromptText("Not Calculated Yet");
+                txtEffectiveWorkingHours.setPromptText("Not Calculated Yet");
+                setProgrammaticChange(false);
+            }
+        }
+    }
+    private void calculateHourlyRate() {
+        if (txtMarkupMultiplier.getText().isEmpty()) {
+            try {
+                double daily = Double.parseDouble(txtDailyRate.getText());
+                double mountOfHoursInADay = Double.parseDouble(txtAmountOfHoursAllocated.getText());
+                double fixedSalary = Double.parseDouble(txtFixedSalary.getText());
+
+                double hourlyRate = daily / mountOfHoursInADay;
+                double totalHours = fixedSalary / hourlyRate;
+
+                setProgrammaticChange(true);
+                txtHourlyRate.setText(String.valueOf(hourlyRate));
+                txtEffectiveWorkingHours.setText(String.valueOf(totalHours));
+                setProgrammaticChange(false);
+
+                fHourlyRate = hourlyRate;
+            } catch (NumberFormatException e) {
+                // Handle the case where the text is not a valid double
+                setProgrammaticChange(true);
+                txtHourlyRate.setPromptText("Not Calculated Yet");
+                txtEffectiveWorkingHours.setPromptText("Not Calculated Yet");
+                setProgrammaticChange(false);
+            }
+        }
+        if (!txtMarkupMultiplier.getText().isEmpty()) {
+            try {
+                double daily = Double.parseDouble(txtDailyRate.getText());
+                double mountOfHoursInADay = Double.parseDouble(txtAmountOfHoursAllocated.getText());
+                double fixedSalary = Double.parseDouble(txtFixedSalary.getText());
+
+                double hourlyRate = daily / mountOfHoursInADay;
+                double totalHours = fixedSalary / hourlyRate;
+
+                setProgrammaticChange(true);
+                txtHourlyRate.setText(String.valueOf(hourlyRate));
+                txtEffectiveWorkingHours.setText(String.valueOf(totalHours));
+                setProgrammaticChange(false);
+            } catch (NumberFormatException e) {
+                // Handle the case where the text is not a valid double
+                setProgrammaticChange(true);
+                txtHourlyRate.setPromptText("Not Calculated Yet");
+                txtEffectiveWorkingHours.setPromptText("Not Calculated Yet");
+                setProgrammaticChange(false);
+            }
+        }
+    }
+
+    private void calculateMarkUp() {
+        try {
+            if (fHourlyRate == 0 || fDailyRate == 0) {
+                fHourlyRate = Double.parseDouble(txtHourlyRate.getText());
+                fDailyRate = Double.parseDouble(txtDailyRate.getText());
+            }
+
+            double markUp = Double.parseDouble(txtMarkupMultiplier.getText());
+            double fixedSalary = Double.parseDouble(txtFixedSalary.getText());
+
+            double calcRateHourly = fHourlyRate * markUp;
+            double calcRateDaily = fDailyRate * markUp;
+            double totalHours = fixedSalary / calcRateHourly;
+
+            setProgrammaticChange(true);
+            txtDailyRate.setText(String.valueOf(calcRateDaily));
+            txtHourlyRate.setText(String.valueOf(calcRateHourly));
+            txtEffectiveWorkingHours.setText(String.valueOf(totalHours));
+            setProgrammaticChange(false);
+        } catch (NumberFormatException e) {
+            setProgrammaticChange(true);
+            txtHourlyRate.setPromptText("Not Calculated Yet");
+            txtDailyRate.setPromptText("Not Calculated Yet");
+            setProgrammaticChange(false);
+        }
+    }
+
+    private void calculateRatesWithEffectiveWorkingHours() {
+        try {
+            double effectiveWorkingHours = Double.parseDouble(txtEffectiveWorkingHours.getText());
+            double fixedSalary = Double.parseDouble(txtFixedSalary.getText());
+            double mountOfHoursInADay = Double.parseDouble(txtAmountOfHoursAllocated.getText());
+
+            double calcRateHourly = fixedSalary / effectiveWorkingHours;
+            double calcRateDaily = calcRateHourly * mountOfHoursInADay;
+
+            setProgrammaticChange(true);
+            txtDailyRate.setText(String.valueOf(calcRateDaily));
+            txtHourlyRate.setText(String.valueOf(calcRateHourly));
+            setProgrammaticChange(false);
+        } catch (NumberFormatException e) {
+            setProgrammaticChange(true);
+            txtHourlyRate.setPromptText("Not Calculated Yet");
+            txtDailyRate.setPromptText("Not Calculated Yet");
+            setProgrammaticChange(false);
+        }
+    }
+    private void setProgrammaticChange(boolean value) {
+        isProgrammaticChange = value;
     }
 }
