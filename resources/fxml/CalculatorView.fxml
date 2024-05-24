@@ -63,7 +63,7 @@
    <left>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="549.0" prefWidth="196.0" BorderPane.alignment="CENTER">
          <children>
-            <Label maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#handleReload" prefHeight="17.0" prefWidth="237.0" text="List of Personnel">
+            <Label fx:id="lblListPersonnel" maxHeight="-Infinity" maxWidth="-Infinity" onMouseClicked="#handleReload" prefHeight="17.0" prefWidth="237.0" text="List of Personnel">
                <VBox.margin>
                   <Insets bottom="2.0" top="5.0" />
                </VBox.margin>
@@ -153,7 +153,7 @@
                      </rowConstraints>
                      <children>
                         <Label fx:id="lblCountryName" text="Country/Region Name" />
-                        <MFXTextField fx:id="txtCountryName" allowEdit="false" floatMode="ABOVE" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#handleSearchCountryName" prefHeight="13.0" prefWidth="300.0" promptText="Denmark" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
+                        <MFXTextField fx:id="txtCountryName" floatMode="ABOVE" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#handleSearchCountryName" prefHeight="13.0" prefWidth="300.0" promptText="Denmark" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
                      </children>
                      <GridPane.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

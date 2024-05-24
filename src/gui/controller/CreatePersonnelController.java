@@ -29,12 +29,8 @@ import java.util.Map;
 
 public class CreatePersonnelController {
     @FXML
-    private TextField txtTeam1Percentage;
+    private TextField txtTeam1Percentage,txtTeam2Percentage,txtTeam3Percentage;
     @FXML
-    private TextField txtTeam2Percentage;
-    @FXML
-    private TextField txtTeam3Percentage;
-
     private Map<String, Double> teamTimeAllocations = new HashMap<>();
     @FXML
     private MenuButton btnProfile;
@@ -47,22 +43,12 @@ public class CreatePersonnelController {
     @FXML
     private MFXTextField txtUsername, txtPassword, txtConfirmPassword, txtSalary, txtRole;
 
-    private Personnel newPersonnel = new Personnel();
-    private Personnel selectedPersonnel = new Personnel();
-    private Personnel operator;
+    private Personnel newPersonnel = new Personnel(),selectedPersonnel = new Personnel(),operator;
     private ShowImageClass showImageClass = new ShowImageClass();
     private PersonnelModel personnelModel;
-    private String newAdministrator = "New Administrator";
-    private String newManager = "New Manager";
-    private String newProgrammer = "New Programmer";
-    private String updateAdministrator = "Update Administrator";
-    private String updateManager = "Update Manager";
-    private String updateProgrammer = "Update Programmer";
-    private String changeAdministrator = "Change To a  Administrator";
-    private String changeManager = "Change To a  Manager";
-    private String changeProgrammer = "Change To a Programmer";
-    private String create = "Create";
-    private String update = "Update";
+    private String newAdministrator = "New Administrator" ,newManager = "New Manager",newProgrammer = "New Programmer",updateAdministrator = "Update Administrator",
+            updateManager = "Update Manager",updateProgrammer = "Update Programmer",changeAdministrator = "Change To a  Administrator",changeManager = "Change To a  Manager",
+            changeProgrammer = "Change To a Programmer",create = "Create",update = "Update";
 
 
     public CreatePersonnelController() {

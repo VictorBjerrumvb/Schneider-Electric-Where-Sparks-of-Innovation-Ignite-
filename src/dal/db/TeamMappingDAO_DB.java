@@ -1,6 +1,7 @@
 package dal.db;
 
 import be.CreateTeamMapping;
+import dal.Interface.ITeamMapping;
 
 import java.io.IOException;
 import java.sql.*;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * Data Access Object (DAO) class for performing database operations related to Team mappings.
  */
-public class TeamMappingDAO_DB {
+public class TeamMappingDAO_DB implements ITeamMapping {
 
     // DatabaseConnector instance for establishing database connections
     private final DatabaseConnector databaseConnector;

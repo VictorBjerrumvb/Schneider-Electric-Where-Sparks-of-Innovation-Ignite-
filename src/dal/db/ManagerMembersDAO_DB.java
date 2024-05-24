@@ -3,6 +3,7 @@ package dal.db;
 import be.CreateTeamMapping;
 import be.ManagerMembers;
 import be.Personnel;
+import dal.Interface.IManagerMember;
 
 import java.io.IOException;
 import java.sql.*;
@@ -12,7 +13,7 @@ import java.util.List;
 /**
  * Data Access Object (DAO) class for performing database operations related to Team entities.
  */
-public class ManagerMembersDAO_DB {
+public class ManagerMembersDAO_DB implements IManagerMember {
 
     // DatabaseConnector instance for establishing database connections
     private final DatabaseConnector databaseConnector;

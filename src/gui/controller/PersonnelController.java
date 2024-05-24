@@ -50,7 +50,6 @@ public class PersonnelController {
     private FlowPane flowPaneInformation;
 
     private ShowImageClass showImageClass = new ShowImageClass();
-    private int textFieldCount = 0;
     private Personnel operator = new Personnel();
     private PersonnelModel personnelModel;
     private WidgetsClass widgetsClass = new WidgetsClass();

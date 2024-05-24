@@ -27,9 +27,11 @@ public class MainViewController {
             switchCalculatorView();
             switchTeamsView();
             switchManagersView();
+            switchCountryView();
         }
         if (operator.getRoleId() == 2) {
             switchCalculatorView();
+            switchCountryView();
         }
     }
 
@@ -39,14 +41,11 @@ public class MainViewController {
 
     private void switchPersonnelView() {
         GridPane gridPane = widgetsClass.createWidgetGridpane();
-        Button personnel = widgetsClass.createWidgetButton("Click me");
-        Label managePersonnel = widgetsClass.createWidgetLabel("Manage Personnel");
+        Button personnel = widgetsClass.createWidgetButton("Manage Personnel");
 
         GridPane.setHalignment(personnel, HPos.CENTER);
-        GridPane.setHalignment(managePersonnel, HPos.CENTER);
 
-        gridPane.add(personnel, 0, 1);
-        gridPane.add(managePersonnel, 0, 0);
+        gridPane.add(personnel, 0, 0);
 
         gridPane.getStyleClass().add("grid-pane");
         GridPane container = widgetsClass.applyContainer(gridPane);
@@ -69,16 +68,13 @@ public class MainViewController {
     }
     private void switchCalculatorView() {
         GridPane gridPane = widgetsClass.createWidgetGridpane();
-        Button button = widgetsClass.createWidgetButton("Click me");
-        Label label = widgetsClass.createWidgetLabel("Calculation");
+        Button button = widgetsClass.createWidgetButton("Calculation");
 
         // Set alignment for each cell
         GridPane.setHalignment(button, HPos.CENTER);
-        GridPane.setHalignment(label, HPos.CENTER);
 
         // Add nodes to the grid
-        gridPane.add(button, 0, 1);
-        gridPane.add(label, 0, 0);
+        gridPane.add(button, 0, 0);
 
         gridPane.getStyleClass().add("grid-pane");
         GridPane container = widgetsClass.applyContainer(gridPane);
@@ -92,7 +88,7 @@ public class MainViewController {
                 Scene scene = button.getScene(); // Get the current scene
                 scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
                 CalculatorViewController controller = loader.getController();
-                controller.setup();
+                controller.setup(operator);
                 controller.setOperator(operator);
             } catch (IOException e) {
                 e.printStackTrace(); // Handle exception appropriately
@@ -101,16 +97,13 @@ public class MainViewController {
     }
     private void switchTeamsView() {
         GridPane gridPane = widgetsClass.createWidgetGridpane();
-        Button button = widgetsClass.createWidgetButton("Click me");
-        Label label = widgetsClass.createWidgetLabel("Manage Teams");
+        Button button = widgetsClass.createWidgetButton("Manage Teams");
 
         // Set alignment for each cell
         GridPane.setHalignment(button, HPos.CENTER);
-        GridPane.setHalignment(label, HPos.CENTER);
 
         // Add nodes to the grid
-        gridPane.add(button, 0, 1);
-        gridPane.add(label, 0, 0);
+        gridPane.add(button, 0, 0);
 
         gridPane.getStyleClass().add("grid-pane");
         GridPane container = widgetsClass.applyContainer(gridPane);
@@ -133,16 +126,13 @@ public class MainViewController {
     }
     private void switchManagersView() {
         GridPane gridPane = widgetsClass.createWidgetGridpane();
-        Button button = widgetsClass.createWidgetButton("Click me");
-        Label label = widgetsClass.createWidgetLabel("Assign Personnel to Managers");
+        Button button = widgetsClass.createWidgetButton("Assign Personnel to Managers");
 
         // Set alignment for each cell
         GridPane.setHalignment(button, HPos.CENTER);
-        GridPane.setHalignment(label, HPos.CENTER);
 
         // Add nodes to the grid
-        gridPane.add(button, 0, 1);
-        gridPane.add(label, 0, 0);
+        gridPane.add(button, 0, 0);
 
         gridPane.getStyleClass().add("grid-pane");
         GridPane container = widgetsClass.applyContainer(gridPane);
@@ -156,6 +146,35 @@ public class MainViewController {
                 Scene scene = button.getScene(); // Get the current scene
                 scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
                 ManageManagersController controller = loader.getController();
+                controller.setup();
+                controller.setOperator(operator);
+            } catch (IOException e) {
+                e.printStackTrace(); // Handle exception appropriately
+            }
+        });
+    }
+    private void switchCountryView() {
+        GridPane gridPane = widgetsClass.createWidgetGridpane();
+        Button button = widgetsClass.createWidgetButton("Manage Countries/Regions");
+
+        // Set alignment for each cell
+        GridPane.setHalignment(button, HPos.CENTER);
+
+        // Add nodes to the grid
+        gridPane.add(button, 0, 0);
+
+        gridPane.getStyleClass().add("grid-pane");
+        GridPane container = widgetsClass.applyContainer(gridPane);
+
+        flowPaneInformation.getChildren().add(container);
+
+        button.setOnAction(event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CreateCountryView.fxml"));
+                Parent secondWindow = loader.load();
+                Scene scene = button.getScene(); // Get the current scene
+                scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+                CreateCountryController controller = loader.getController();
                 controller.setup();
                 controller.setOperator(operator);
             } catch (IOException e) {

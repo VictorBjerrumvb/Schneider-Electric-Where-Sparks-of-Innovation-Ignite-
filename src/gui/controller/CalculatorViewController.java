@@ -1,13 +1,11 @@
 package gui.controller;
 
+import be.Geography;
 import be.Personnel;
 import be.Team;
 import dal.db.DataAccessException;
 import gui.helperclases.ShowImageClass;
-import gui.helperclases.WidgetsClass;
-import gui.model.PersonnelModel;
-import gui.model.TeamMappingModel;
-import gui.model.TeamModel;
+import gui.model.*;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.collections.FXCollections;
@@ -36,62 +34,32 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import java.awt.*;
 import java.io.*;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.List;
 
 public class CalculatorViewController {
     @FXML
-    private ListView<String> rateListView;
-    public FlowPane flowPaneInformation;
+    private Label lblListPersonnel,lblPersonnelName,lblTeamName;
+    @FXML
+    private FlowPane flowPaneInformation;
     public MFXButton CalcBtn;
     @FXML
-    private ImageView imgLogo;
+    private ImageView imgLogo,imgProfileIcon;
     @FXML
     private MenuButton btnProfile;
     @FXML
-    private ImageView imgProfileIcon;
+    private ListView listPersonnel,listTeams;
     @FXML
-    private ListView<Personnel> listPersonnel;
-    @FXML
-    private ListView<Team> listTeams;
-    @FXML
-    private Label lblPersonnelName;
-    @FXML
-    private MFXTextField txtAnnualSalary;
-    @FXML
-    private Label lblCountryName;
-    @FXML
-    private MFXTextField txtCountryName;
-    @FXML
-    private Label lblTeamName;
-    @FXML
-    private MFXTextField txtFixedSalary;
-    @FXML
-    private Label lblCountryGross;
-    @FXML
-    private MFXTextField txtCountryGross;
-    @FXML
-    private MFXTextField txtEffectiveWorkingHours;
-    @FXML
-    private MFXTextField txtHourlyRate;
-    @FXML
-    private MFXTextField txtDailyRate;
-    @FXML
-    private MFXTextField txtMarkupMultiplier;
-    @FXML
-    private MFXTextField txtMarginMultiplier;
-    @FXML
-    private MFXTextField txtAmountOfHoursAllocated;
+    private MFXTextField txtAnnualSalary,txtCountryName,txtFixedSalary,txtCountryGross,txtEffectiveWorkingHours,txtHourlyRate,txtDailyRate,txtMarkupMultiplier,txtMarginMultiplier,txtAmountOfHoursAllocated;
 
-    private Personnel operator = new Personnel();
+    private Personnel operator = new Personnel(),selectedPersonnel = new Personnel();
     private PersonnelModel personnelModel;
     private TeamMappingModel teamMappingModel;
     private TeamModel teamModel;
+    private ManagerMembersModel managerMembersModel;
     private ShowImageClass showImageClass = new ShowImageClass();
-    private Personnel selectedPersonnel = new Personnel();
     private Team selectedTeam = new Team();
-    private String lastUpdatedField = "", daily = "daily", hourly = "hourly", markup = "markup";
+    private String lastUpdatedField = "", daily = "daily", hourly = "hourly", markup = "markup",personneltext = "List of Personnel", countrytext= "List of Country/Regions";
     private double fHourlyRate, fDailyRate;
     private boolean isProgrammaticChange = false;
 
@@ -100,20 +68,44 @@ public class CalculatorViewController {
             personnelModel = new PersonnelModel();
             teamMappingModel = new TeamMappingModel();
             teamModel = new TeamModel();
+            managerMembersModel = new ManagerMembersModel();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void setup() {
-        ObservableList<Personnel> listOfPersonnel = FXCollections.observableArrayList();
-        listOfPersonnel.setAll(personnelModel.getAllPersonnel());
-        listPersonnel.setItems(listOfPersonnel);
+    public void setup(Personnel operator) {
+        if (operator.getRoleId() == 1) {
+            ObservableList<Personnel> listOfPersonnel = FXCollections.observableArrayList();
+            listOfPersonnel.setAll(personnelModel.getAllPersonnel());
+            listPersonnel.setItems(listOfPersonnel);
 
-        ObservableList<Team> listOfTeams = FXCollections.observableArrayList();
-        listOfTeams.setAll(teamModel.getAllTeams());
-        listTeams.setItems(listOfTeams);
+            ObservableList<Team> listOfTeams = FXCollections.observableArrayList();
+            listOfTeams.setAll(teamModel.getAllTeams());
+            listTeams.setItems(listOfTeams);
+        }
+        if (operator.getRoleId() == 2) {
+            try {
+                listTeams.setItems(managerMembersModel.getAllManagerTeams(operator));
+                listPersonnel.setItems(managerMembersModel.getAllManagerMembers(operator));
+            } catch (DataAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
+
+        lblListPersonnel.setText(personneltext);
+        txtCountryName.textProperty().addListener((observable, oldValue, newValue) -> {
+            lblListPersonnel.setText(countrytext);
+            CountryModel countryModel = new CountryModel();
+            String query = txtCountryName.getText().toLowerCase().trim();
+
+            // Filter personnel based on search query
+            ObservableList<Geography> filteredGeography = countryModel.getAllGeography().filtered(geography ->
+                    geography.getCountry().toLowerCase().contains(query)
+            );
+            listPersonnel.setItems(filteredGeography);
+        });
 
         // Add listeners for txtHourlyRate
         txtHourlyRate.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -159,12 +151,27 @@ public class CalculatorViewController {
             }
         });
 
+        txtMarginMultiplier.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!isProgrammaticChange) {
+                lastUpdatedField = markup;
+                if (newValue.isEmpty()) {
+                    setProgrammaticChange(true);
+                    txtHourlyRate.setText(String.valueOf(fHourlyRate));
+                    txtDailyRate.setText(String.valueOf(fDailyRate));
+                    setProgrammaticChange(false);
+                } else {
+                    calculateMargin();
+                }
+            }
+        });
+
         // Add listener for txtFixedSalary
         txtFixedSalary.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!isProgrammaticChange) {
                 calculateHourlyRate();
                 calculateDailyRate();
                 calculateMarkUp();
+                calculateMargin();
             }
         });
 
@@ -229,34 +236,46 @@ public class CalculatorViewController {
 
     @FXML
     private void handleSelectedPersonnel(MouseEvent mouseEvent) {
-        selectedPersonnel = listPersonnel.getSelectionModel().getSelectedItem();
+        if (lblListPersonnel.getText().equals(personneltext)) {
+            selectedPersonnel = (Personnel) listPersonnel.getSelectionModel().getSelectedItem();
 
-        if (selectedPersonnel != null) {
-            lblPersonnelName.setText(selectedPersonnel.getUsername());
-            ObservableList<Team> listOfTeams = FXCollections.observableArrayList();
-            listOfTeams.setAll(teamMappingModel.getPersonnelTeam(selectedPersonnel));
-            List<String> teams = new ArrayList<>();
-            for (Team t : listOfTeams) {
-                String string = t.getName();
-                teams.add(string);
+            if (selectedPersonnel != null) {
+                lblPersonnelName.setText(selectedPersonnel.getUsername());
+                ObservableList<Team> listOfTeams = FXCollections.observableArrayList();
+                listOfTeams.setAll(teamMappingModel.getPersonnelTeam(selectedPersonnel));
+                List<String> teams = new ArrayList<>();
+                for (Team t : listOfTeams) {
+                    String string = t.getName();
+                    teams.add(string);
+                }
+                lblTeamName.setText(String.valueOf(teams));
+                txtAnnualSalary.setText(String.valueOf(selectedPersonnel.getSalary()));
+            } else {
+                // Handle the case where selectedPersonnel is null
+                // For example, clear labels and text fields
+                lblPersonnelName.setText("");
+                lblTeamName.setText("");
+                txtAnnualSalary.setText("");
             }
-            lblTeamName.setText(String.valueOf(teams));
-            txtAnnualSalary.setText(String.valueOf(selectedPersonnel.getSalary()));
-        } else {
-            // Handle the case where selectedPersonnel is null
-            // For example, clear labels and text fields
-            lblPersonnelName.setText("");
-            lblTeamName.setText("");
-            txtAnnualSalary.setText("");
+        }
+        if (lblListPersonnel.getText().equals(countrytext)) {
+            Geography geography = (Geography) listPersonnel.getSelectionModel().getSelectedItem();
+            txtCountryGross.setText(geography.getCountryGross());
+            txtMarginMultiplier.setText(String.valueOf(geography.getCountryMargin()));
+            txtCountryName.setText(geography.getCountry());
+            lblListPersonnel.setText(personneltext);
+
+            reloadWithRoleId();
         }
     }
 
     @FXML
     private void handleSelectedTeam(MouseEvent mouseEvent) throws DataAccessException {
-        selectedTeam = listTeams.getSelectionModel().getSelectedItem();
+        selectedTeam = (Team) listTeams.getSelectionModel().getSelectedItem();
         ObservableList<Personnel> listOfTeamMembers = FXCollections.observableArrayList();
         listOfTeamMembers.setAll(teamMappingModel.getAllTeamMembers(selectedTeam));
         listPersonnel.setItems(listOfTeamMembers);
+        lblListPersonnel.setText(personneltext);
         if (listOfTeamMembers.isEmpty()) {
             // Clear the list and display a message
             listPersonnel.getItems().clear();
@@ -275,68 +294,23 @@ public class CalculatorViewController {
     }
 
     @FXML
-    private void handleCalculate(ActionEvent actionEvent) {
-        calculateRates();
+    private void handleReload(MouseEvent mouseEvent) {
+        reloadWithRoleId();
     }
-
-    private void calculateRates() {
-        // Get the values from the text fields
-        try {
-            double annualSalary = Double.parseDouble(txtAnnualSalary.getText());
-            double overheadMultiplier = Double.parseDouble(txtFixedSalary.getText());
-            double fixedAnnualAmount = Double.parseDouble(txtCountryGross.getText());
-            double annualEffectiveWorkingHours = Double.parseDouble(txtEffectiveWorkingHours.getText());
-            double utilizationPercentage = Double.parseDouble(txtAmountOfHoursAllocated.getText());
-            double markupMultiplier = Double.parseDouble(txtMarkupMultiplier.getText());
-            double gmMultiplier = Double.parseDouble(txtMarginMultiplier.getText());
-
-            // Calculate the hourly rate
-            double hourlyRate = (annualSalary / (annualEffectiveWorkingHours * (utilizationPercentage / 100))) + (fixedAnnualAmount / annualEffectiveWorkingHours);
-            hourlyRate = hourlyRate * (1 + (overheadMultiplier / 100));
-
-            // Calculate the daily rate (assuming 8 working hours per day)
-            double dayRate = hourlyRate * 8;
-
-            // Apply multipliers
-            hourlyRate *= (1 + (markupMultiplier / 100));
-            hourlyRate *= (1 + (gmMultiplier / 100));
-            dayRate *= (1 + (markupMultiplier / 100));
-            dayRate *= (1 + (gmMultiplier / 100));
-
-            // Display the calculated rates in the UI
-            txtHourlyRate.setText(String.valueOf(hourlyRate));
-            txtDailyRate.setText(String.valueOf(dayRate));
-
-            // Print out the information to the console
-            System.out.println("Annual Salary: " + annualSalary);
-            System.out.println("Overhead Multiplier: " + overheadMultiplier);
-            System.out.println("Fixed Annual Amount: " + fixedAnnualAmount);
-            System.out.println("Annual Effective Working Hours: " + annualEffectiveWorkingHours);
-            System.out.println("Utilization Percentage: " + utilizationPercentage);
-            System.out.println("Markup Multiplier: " + markupMultiplier);
-            System.out.println("GM Multiplier: " + gmMultiplier);
-            System.out.println("Hourly Rate: " + hourlyRate);
-            System.out.println("Daily Rate: " + dayRate);
-        } catch (NumberFormatException e) {
-            System.err.println("Invalid input: " + e.getMessage());
+    private void reloadWithRoleId() {
+        if (operator.getRoleId() == 1) {
+            listPersonnel.setItems(personnelModel.getAllPersonnel());
+        }
+        if (operator.getRoleId() == 2) {
+            try {
+                listPersonnel.setItems(managerMembersModel.getAllManagerMembers(operator));
+            } catch (DataAccessException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
-
     @FXML
-    private void handleDistributeCost(ActionEvent actionEvent) {
-        distributeCost();
-    }
-
-    private void distributeCost() {
-        // Implement the functionality to distribute the cost of overhead employees among various teams
-        // You may need additional UI elements to select teams and specify cost distribution percentages
-        // Calculate and update the cost distribution accordingly
-    }
-
-    public void handleReload(MouseEvent mouseEvent) {
-        listPersonnel.setItems(personnelModel.getAllPersonnel());
-    }
-    public void handlePrintPdf(ActionEvent actionEvent) {
+    private void handlePrintPdf(ActionEvent actionEvent) {
         try {
             // Create a PDFMergerUtility instance
             PDFMergerUtility mergerUtility = new PDFMergerUtility();
@@ -378,7 +352,6 @@ public class CalculatorViewController {
         }
     }
 
-
     @FXML
     private void handleCalcPerson() {
         String name = selectedPersonnel.getUsername();
@@ -397,12 +370,18 @@ public class CalculatorViewController {
         double effectiveWorkingHours = Double.parseDouble(txtEffectiveWorkingHours.getText());
         double hourlyRate = Double.parseDouble(txtHourlyRate.getText());
         double dailyRate = Double.parseDouble(txtDailyRate.getText());
-        double markupMultiplier = Double.parseDouble(txtMarkupMultiplier.getText());
+        double markupMultiplier = 1.0; // Default value
+        String markupMultiplierText = txtMarginMultiplier.getText();
+        if (!markupMultiplierText.isEmpty()) {
+            markupMultiplier = Double.parseDouble(txtMarkupMultiplier.getText());
+        }
         double marginMultiplier = 1.0; // Default value
         String marginMultiplierText = txtMarginMultiplier.getText();
         if (!marginMultiplierText.isEmpty()) {
             marginMultiplier = Double.parseDouble(marginMultiplierText);
         }
+        String countryGross = txtCountryGross.getText();
+        String countryName = txtCountryName.getText();
         double amountOfHoursAllocated = Double.parseDouble(txtAmountOfHoursAllocated.getText());
 
         PDDocument document = null;
@@ -448,6 +427,12 @@ public class CalculatorViewController {
             yCoordinate -= 12; // Decrease Y-coordinate for next line
             contentStream.newLineAtOffset(0, -12); // Move to the next line
             contentStream.showText("Markup Multiplier: " + markupMultiplier);
+            yCoordinate -= 12; // Decrease Y-coordinate for next line
+            contentStream.newLineAtOffset(0, -12); // Move to the next line
+            contentStream.showText("Country: " + countryName);
+            yCoordinate -= 12; // Decrease Y-coordinate for next line
+            contentStream.newLineAtOffset(0, -12); // Move to the next line
+            contentStream.showText("Country GDP: " + countryGross);
             yCoordinate -= 12; // Decrease Y-coordinate for next line
             contentStream.newLineAtOffset(0, -12); // Move to the next line
             contentStream.showText("Country Margin Multiplier: " + marginMultiplier);
@@ -544,8 +529,10 @@ public class CalculatorViewController {
         flowPaneInformation.getChildren().remove(pdfBox);
         System.out.println("PDF deleted from FlowPane.");
     }
-
-    public void handleSearchCountryName(ActionEvent actionEvent) {
+    @FXML
+    private void handleSearchCountryName(ActionEvent actionEvent) {
+        CountryModel countryModel = new CountryModel();
+        listPersonnel.setItems(countryModel.getAllGeography());
     }
 
     private void calculateDailyRate() {
@@ -647,19 +634,78 @@ public class CalculatorViewController {
                 fHourlyRate = Double.parseDouble(txtHourlyRate.getText());
                 fDailyRate = Double.parseDouble(txtDailyRate.getText());
             }
+            if (txtMarginMultiplier.getText().isEmpty()) {
+                double markUp = Double.parseDouble(txtMarkupMultiplier.getText());
+                double fixedSalary = Double.parseDouble(txtFixedSalary.getText());
 
-            double markUp = Double.parseDouble(txtMarkupMultiplier.getText());
-            double fixedSalary = Double.parseDouble(txtFixedSalary.getText());
+                double calcRateHourly = fHourlyRate * markUp;
+                double calcRateDaily = fDailyRate * markUp;
+                double totalHours = fixedSalary / calcRateHourly;
 
-            double calcRateHourly = fHourlyRate * markUp;
-            double calcRateDaily = fDailyRate * markUp;
-            double totalHours = fixedSalary / calcRateHourly;
+                setProgrammaticChange(true);
+                txtDailyRate.setText(String.valueOf(calcRateDaily));
+                txtHourlyRate.setText(String.valueOf(calcRateHourly));
+                txtEffectiveWorkingHours.setText(String.valueOf(totalHours));
+                setProgrammaticChange(false);
+            }
+            if (!txtMarginMultiplier.getText().isEmpty()) {
+                double markUp = Double.parseDouble(txtMarkupMultiplier.getText());
+                double fixedSalary = Double.parseDouble(txtFixedSalary.getText());
+                double margin = Double.parseDouble(txtMarginMultiplier.getText());
 
+                double calcRateHourly = fHourlyRate * markUp * margin;
+                double calcRateDaily = fDailyRate * markUp * margin;;
+                double totalHours = fixedSalary / calcRateHourly;
+
+                setProgrammaticChange(true);
+                txtDailyRate.setText(String.valueOf(calcRateDaily));
+                txtHourlyRate.setText(String.valueOf(calcRateHourly));
+                txtEffectiveWorkingHours.setText(String.valueOf(totalHours));
+                setProgrammaticChange(false);
+            }
+        } catch (NumberFormatException e) {
             setProgrammaticChange(true);
-            txtDailyRate.setText(String.valueOf(calcRateDaily));
-            txtHourlyRate.setText(String.valueOf(calcRateHourly));
-            txtEffectiveWorkingHours.setText(String.valueOf(totalHours));
+            txtHourlyRate.setPromptText("Not Calculated Yet");
+            txtDailyRate.setPromptText("Not Calculated Yet");
             setProgrammaticChange(false);
+        }
+    }
+
+    private void calculateMargin() {
+        try {
+            if (fHourlyRate == 0 || fDailyRate == 0) {
+                fHourlyRate = Double.parseDouble(txtHourlyRate.getText());
+                fDailyRate = Double.parseDouble(txtDailyRate.getText());
+            }
+            if (txtMarkupMultiplier.getText().isEmpty()) {
+                double margin = Double.parseDouble(txtMarginMultiplier.getText());
+                double fixedSalary = Double.parseDouble(txtFixedSalary.getText());
+
+                double calcRateHourly = fHourlyRate * margin;
+                double calcRateDaily = fDailyRate * margin;
+                double totalHours = fixedSalary / calcRateHourly;
+
+                setProgrammaticChange(true);
+                txtDailyRate.setText(String.valueOf(calcRateDaily));
+                txtHourlyRate.setText(String.valueOf(calcRateHourly));
+                txtEffectiveWorkingHours.setText(String.valueOf(totalHours));
+                setProgrammaticChange(false);
+            }
+            if (!txtMarkupMultiplier.getText().isEmpty()) {
+                double markUp = Double.parseDouble(txtMarkupMultiplier.getText());
+                double fixedSalary = Double.parseDouble(txtFixedSalary.getText());
+                double margin = Double.parseDouble(txtMarginMultiplier.getText());
+
+                double calcRateHourly = fHourlyRate * markUp * margin;
+                double calcRateDaily = fDailyRate * markUp * margin;;
+                double totalHours = fixedSalary / calcRateHourly;
+
+                setProgrammaticChange(true);
+                txtDailyRate.setText(String.valueOf(calcRateDaily));
+                txtHourlyRate.setText(String.valueOf(calcRateHourly));
+                txtEffectiveWorkingHours.setText(String.valueOf(totalHours));
+                setProgrammaticChange(false);
+            }
         } catch (NumberFormatException e) {
             setProgrammaticChange(true);
             txtHourlyRate.setPromptText("Not Calculated Yet");

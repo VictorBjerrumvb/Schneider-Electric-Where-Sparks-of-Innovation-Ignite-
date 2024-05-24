@@ -20,12 +20,22 @@ public class Geography {
     @OneToMany(mappedBy = "geography")
     private Set<Personnel> residents;
 
+    private String countryGross;
+    private double countryMargin;
+
     // Constructors
 
     /**
      * Default constructor.
      */
     public Geography() {
+    }
+
+    public Geography(int id, String name, String gross, double margin) {
+        this.id = id;
+        this.country = name;
+        this.countryGross = gross;
+        this.countryMargin = margin;
     }
 
     /**
@@ -104,6 +114,42 @@ public class Geography {
         this.residents = residents;
     }
 
+    /**
+     * Retrieves the country gross value.
+     *
+     * @return The country gross value.
+     */
+    public String getCountryGross() {
+        return countryGross;
+    }
+
+    /**
+     * Sets the country gross value.
+     *
+     * @param countryGross The country gross value to set.
+     */
+    public void setCountryGross(String countryGross) {
+        this.countryGross = countryGross;
+    }
+
+    /**
+     * Retrieves the country margin value.
+     *
+     * @return The country margin value.
+     */
+    public double getCountryMargin() {
+        return countryMargin;
+    }
+
+    /**
+     * Sets the country margin value.
+     *
+     * @param countryMargin The country margin value to set.
+     */
+    public void setCountryMargin(double countryMargin) {
+        this.countryMargin = countryMargin;
+    }
+
     // Equals and HashCode
 
     /**
@@ -139,18 +185,6 @@ public class Geography {
      */
     @Override
     public String toString() {
-        return "Geography{" +
-                "id=" + id +
-                ", country='" + country + '\'' +
-                '}';
-    }
-
-    /**
-     * Retrieves the name of the geography.
-     *
-     * @return The name of the geography.
-     */
-    public String getName() {
         return country;
     }
 }

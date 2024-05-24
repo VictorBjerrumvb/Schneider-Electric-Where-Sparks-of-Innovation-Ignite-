@@ -1,9 +1,7 @@
 package bll;
 
-import be.EmployeeProfile;
 import be.Personnel;
 import dal.db.DataAccessException;
-import dal.db.EmployeeProfileDAO_DB;
 import dal.db.PersonnelDAO_DB;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
@@ -18,7 +16,6 @@ import java.util.List;
 public class PersonnelManager {
     private static final Logger logger = LoggerFactory.getLogger(PersonnelManager.class);
     private PersonnelDAO_DB personnelDAO_db;
-    private EmployeeProfileDAO_DB employeeProfileDAO_db;
 
     /**
      * Constructs a PersonnelManager and initializes DAOs.
@@ -28,12 +25,9 @@ public class PersonnelManager {
     public PersonnelManager() throws IOException {
         try {
             personnelDAO_db = new PersonnelDAO_DB();
-            employeeProfileDAO_db = new EmployeeProfileDAO_DB();
         } catch (IOException e) {
             logger.error("Failed to initialize the DAOs: ", e);
             throw new RuntimeException("Failed to initialize the DAOs", e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -119,48 +113,5 @@ public class PersonnelManager {
             }
         }
         return null; // Return null if the user is not found
-    }
-
-    // EmployeeProfile-related methods
-
-    /**
-     * Retrieves all EmployeeProfile records.
-     *
-     * @return A list of EmployeeProfile objects.
-     * @throws DataAccessException If an error occurs while accessing the data.
-     */
-    public List<EmployeeProfile> getAllEmployeeProfiles() throws DataAccessException {
-        return employeeProfileDAO_db.getAllEmployeeProfiles();
-    }
-
-    /**
-     * Creates a new EmployeeProfile record.
-     *
-     * @param employeeProfile The EmployeeProfile object to create.
-     * @return The created EmployeeProfile object.
-     * @throws DataAccessException If an error occurs while accessing the data.
-     */
-    public EmployeeProfile createEmployeeProfile(EmployeeProfile employeeProfile) throws DataAccessException {
-        return employeeProfileDAO_db.createEmployeeProfile(employeeProfile);
-    }
-
-    /**
-     * Updates an existing EmployeeProfile record.
-     *
-     * @param employeeProfile The EmployeeProfile object to update.
-     * @throws DataAccessException If an error occurs while accessing the data.
-     */
-    public void updateEmployeeProfile(EmployeeProfile employeeProfile) throws DataAccessException {
-        employeeProfileDAO_db.updateEmployeeProfile(employeeProfile);
-    }
-
-    /**
-     * Deletes an existing EmployeeProfile record.
-     *
-     * @param employeeProfile The EmployeeProfile object to delete.
-     * @throws DataAccessException If an error occurs while accessing the data.
-     */
-    public void deleteEmployeeProfile(EmployeeProfile employeeProfile) throws DataAccessException {
-        employeeProfileDAO_db.deleteEmployeeProfile(employeeProfile);
     }
 }

@@ -26,8 +26,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CreateTeamController {
     @FXML
@@ -45,20 +43,15 @@ public class CreateTeamController {
     @FXML
     private TextField txtSearch;
 
-    private Personnel operator;
+    private Personnel operator,selectedPersonnel = new Personnel(),dragPersonnel = new Personnel();
     private ShowImageClass showImageClass = new ShowImageClass();
     private TeamModel teamModel;
     private PersonnelModel personnelModel;
     private TeamMappingModel teamMappingModel;
     private Team selectedTeam = new Team();
-    private Personnel selectedPersonnel = new Personnel();
-    private String stringCreate = "Create New Team Enter Name Below";
-    private String StringUpdate = "Update the current Team name | Click me to make a new Team again";
-    private String stringCreateTeam = "Create New Team";
-    private String StringUpdateTeam = "Update Name";
-    private String stringTeamMembers = "Selected Team Members";
-    private String stringSelectedPersonnel = "Teams the Selected Personnel is part of";
-    private Personnel dragPersonnel = new Personnel();
+    private String stringCreate = "Create New Team Enter Name Below",StringUpdate = "Update the current Team name | Click me to make a new Team again",
+            stringCreateTeam = "Create New Team",StringUpdateTeam = "Update Name",stringTeamMembers = "Selected Team Members",stringSelectedPersonnel = "Teams the Selected Personnel is part of";
+
 
 
     /**

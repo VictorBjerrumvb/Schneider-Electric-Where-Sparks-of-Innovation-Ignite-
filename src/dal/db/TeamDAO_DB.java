@@ -1,6 +1,7 @@
 package dal.db;
 
 import be.Team;
+import dal.Interface.ITeam;
 
 import java.io.IOException;
 import java.sql.*;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * Data Access Object (DAO) class for performing database operations related to Team entities.
  */
-public class TeamDAO_DB {
+public class TeamDAO_DB implements ITeam {
 
     // DatabaseConnector instance for establishing database connections
     private final DatabaseConnector databaseConnector;
@@ -26,29 +27,6 @@ public class TeamDAO_DB {
         } catch (IOException ex) {
             throw ex;
         }
-    }
-
-    /**
-     * Retrieves a Team from the database based on its ID.
-     *
-     * @param id the ID of the Team to retrieve.
-     * @return the retrieved Team object, or null if no Team is found with the given ID.
-     * @throws DataAccessException if an error occurs while fetching the Team from the database.
-     */
-    public Team getTeamById(int id) throws DataAccessException {
-        String sql = "SELECT * FROM Team WHERE TeamId = ?";
-        try (Connection connection = databaseConnector.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                // Extract data from ResultSet and construct Team object
-                return extractTeamFromResultSet(rs);
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException("Error while fetching team by ID", e);
-        }
-        return null; // Return null if no Team object found with the given ID
     }
 
     public List<Team> getAllTeams() throws DataAccessException {
@@ -100,20 +78,6 @@ public class TeamDAO_DB {
         } catch (SQLException ex) {
             throw new DataAccessException("Could not add Team", ex);
         }
-    }
-
-    /**
-     * Extracts data from the ResultSet and constructs a Team object.
-     *
-     * @param rs the ResultSet containing the data.
-     * @return the constructed Team object.
-     * @throws SQLException if a SQL exception occurs while extracting data from the ResultSet.
-     */
-    private Team extractTeamFromResultSet(ResultSet rs) throws SQLException {
-        int id = rs.getInt("TeamId");
-        String name = rs.getString("TeamName");
-        // Construct and return the Team object
-        return new Team(id, name);
     }
 
     public Team updateTeam(Team team) throws DataAccessException {
