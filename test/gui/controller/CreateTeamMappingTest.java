@@ -1,6 +1,9 @@
-package be;
+package gui.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
+import be.CreateTeamMapping;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class CreateTeamMappingTest {
     private CreateTeamMapping mapping1;
