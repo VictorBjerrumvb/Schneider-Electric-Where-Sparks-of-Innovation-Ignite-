@@ -1,7 +1,6 @@
 package gui.helperclases;
 
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
-import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -13,28 +12,6 @@ import javafx.scene.layout.GridPane;
 public class WidgetsClass {
 
     /**
-     * Creates a GridPane containing a button and a label.
-     *
-     * @param buttonText The text to be displayed on the button.
-     * @param labelText   The text to be displayed on the label.
-     * @return The GridPane containing the button and label.
-     */
-    public GridPane createWidgetInGridpane(String buttonText, String labelText) {
-        GridPane widgetGridpane = new GridPane();
-        widgetGridpane.setVgap(2);
-        widgetGridpane.setHgap(2);
-        Button button1 = new Button(buttonText);
-        Label label1 = new Label(labelText);
-        button1.getStyleClass().add("buttonWidget");
-        label1.getStyleClass().add("labelWidget");
-        widgetGridpane.getStyleClass().add("grid-pane");
-        widgetGridpane.add(button1, 0, 1);
-        widgetGridpane.add(label1, 0, 0);
-
-        return widgetGridpane;
-    }
-
-    /**
      * Creates a button widget.
      *
      * @param buttonText The text to be displayed on the button.
@@ -44,12 +21,6 @@ public class WidgetsClass {
         Button button1 = new Button(buttonText);
         button1.getStyleClass().add("buttonWidget");
         return button1;
-    }
-
-    public MFXTextField createWidgetMFXTextfield() {
-        MFXTextField txt = new MFXTextField();
-        txt.setMinWidth(180);
-        return txt;
     }
 
     public MFXPasswordField createWidgetMFXPassword() {

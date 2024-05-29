@@ -7,7 +7,6 @@ import javafx.geometry.HPos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 
@@ -47,7 +46,6 @@ public class MainViewController {
 
         gridPane.add(personnel, 0, 0);
 
-        gridPane.getStyleClass().add("grid-pane");
         GridPane container = widgetsClass.applyContainer(gridPane);
 
         flowPaneInformation.getChildren().add(container);
@@ -66,17 +64,15 @@ public class MainViewController {
             }
         });
     }
+
     private void switchCalculatorView() {
         GridPane gridPane = widgetsClass.createWidgetGridpane();
         Button button = widgetsClass.createWidgetButton("Calculation");
 
-        // Set alignment for each cell
         GridPane.setHalignment(button, HPos.CENTER);
 
-        // Add nodes to the grid
         gridPane.add(button, 0, 0);
 
-        gridPane.getStyleClass().add("grid-pane");
         GridPane container = widgetsClass.applyContainer(gridPane);
 
         flowPaneInformation.getChildren().add(container);
@@ -85,27 +81,25 @@ public class MainViewController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CalculatorView.fxml"));
                 Parent secondWindow = loader.load();
-                Scene scene = button.getScene(); // Get the current scene
-                scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+                Scene scene = button.getScene();
+                scene.setRoot(secondWindow);
                 CalculatorViewController controller = loader.getController();
                 controller.setup(operator);
                 controller.setOperator(operator);
             } catch (IOException e) {
-                e.printStackTrace(); // Handle exception appropriately
+                e.printStackTrace();
             }
         });
     }
+
     private void switchTeamsView() {
         GridPane gridPane = widgetsClass.createWidgetGridpane();
         Button button = widgetsClass.createWidgetButton("Manage Teams");
 
-        // Set alignment for each cell
         GridPane.setHalignment(button, HPos.CENTER);
 
-        // Add nodes to the grid
         gridPane.add(button, 0, 0);
 
-        gridPane.getStyleClass().add("grid-pane");
         GridPane container = widgetsClass.applyContainer(gridPane);
 
         flowPaneInformation.getChildren().add(container);
@@ -114,27 +108,25 @@ public class MainViewController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CreateTeamView.fxml"));
                 Parent secondWindow = loader.load();
-                Scene scene = button.getScene(); // Get the current scene
-                scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+                Scene scene = button.getScene();
+                scene.setRoot(secondWindow);
                 CreateTeamController controller = loader.getController();
                 controller.setup();
                 controller.setOperator(operator);
             } catch (IOException e) {
-                e.printStackTrace(); // Handle exception appropriately
+                e.printStackTrace();
             }
         });
     }
+
     private void switchManagersView() {
         GridPane gridPane = widgetsClass.createWidgetGridpane();
         Button button = widgetsClass.createWidgetButton("Assign Personnel to Managers");
 
-        // Set alignment for each cell
         GridPane.setHalignment(button, HPos.CENTER);
 
-        // Add nodes to the grid
         gridPane.add(button, 0, 0);
 
-        gridPane.getStyleClass().add("grid-pane");
         GridPane container = widgetsClass.applyContainer(gridPane);
 
         flowPaneInformation.getChildren().add(container);
@@ -143,27 +135,25 @@ public class MainViewController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ManageManagersView.fxml"));
                 Parent secondWindow = loader.load();
-                Scene scene = button.getScene(); // Get the current scene
-                scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+                Scene scene = button.getScene();
+                scene.setRoot(secondWindow);
                 ManageManagersController controller = loader.getController();
                 controller.setup();
                 controller.setOperator(operator);
             } catch (IOException e) {
-                e.printStackTrace(); // Handle exception appropriately
+                e.printStackTrace();
             }
         });
     }
+
     private void switchCountryView() {
         GridPane gridPane = widgetsClass.createWidgetGridpane();
         Button button = widgetsClass.createWidgetButton("Manage Countries/Regions");
 
-        // Set alignment for each cell
         GridPane.setHalignment(button, HPos.CENTER);
 
-        // Add nodes to the grid
         gridPane.add(button, 0, 0);
 
-        gridPane.getStyleClass().add("grid-pane");
         GridPane container = widgetsClass.applyContainer(gridPane);
 
         flowPaneInformation.getChildren().add(container);
@@ -172,13 +162,13 @@ public class MainViewController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CreateCountryView.fxml"));
                 Parent secondWindow = loader.load();
-                Scene scene = button.getScene(); // Get the current scene
-                scene.setRoot(secondWindow); // Set the root of the current scene to the new scene
+                Scene scene = button.getScene();
+                scene.setRoot(secondWindow);
                 CreateCountryController controller = loader.getController();
                 controller.setup();
                 controller.setOperator(operator);
             } catch (IOException e) {
-                e.printStackTrace(); // Handle exception appropriately
+                e.printStackTrace();
             }
         });
     }
