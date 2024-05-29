@@ -25,7 +25,6 @@ import javafx.scene.input.*;
 import java.io.IOException;
 
 public class ManageManagersController {
-    public Label lblManagerTeams1;
     public ListView listProcentTeams;
     @FXML
     private ImageView imgLogo, imgProfileIcon;
@@ -39,18 +38,6 @@ public class ManageManagersController {
     private ListView listManagers, listPersonnel, listManagerMembers, listPersonnelManagers ,listManagerTeams ,listTeams;
     @FXML
     private Label lblManagerMembers, lblSelectedPersonnel,lblManagerTeams;
-    @FXML
-    private TextField team1PercentageField;
-
-    @FXML
-    private TextField team2PercentageField;
-
-    @FXML
-    private TextField team3PercentageField;
-    @FXML
-    private ListView<String> teamListView;
-
-
 
     private final ShowImageClass showImageClass = new ShowImageClass();
     private final PersonnelModel personnelModel;
@@ -71,14 +58,14 @@ public class ManageManagersController {
     public void initialize() {
         // Populate the list view with teams and their costs
         ObservableList<String> teamData = getTeamData();
-        listProcentTeams.setItems(teamData);
+        listPersonnelManagers.setItems(teamData);
 
         // Enable drag-and-drop functionality
-        listProcentTeams.setOnDragDetected(event -> {
+        listPersonnelManagers.setOnDragDetected(event -> {
             // Start drag-and-drop operation
-            String selectedItem = (String) listProcentTeams.getSelectionModel().getSelectedItem();
+            String selectedItem = (String) listPersonnelManagers.getSelectionModel().getSelectedItem();
             if (selectedItem != null) {
-                Dragboard db = listProcentTeams.startDragAndDrop(TransferMode.MOVE);
+                Dragboard db = listPersonnelManagers.startDragAndDrop(TransferMode.MOVE);
                 ClipboardContent content = new ClipboardContent();
                 content.putString(selectedItem);
                 db.setContent(content);
@@ -86,20 +73,20 @@ public class ManageManagersController {
             }
         });
 
-        listProcentTeams.setOnDragOver(event -> {
-            if (event.getGestureSource() != listProcentTeams && event.getDragboard().hasString()) {
+        listPersonnelManagers.setOnDragOver(event -> {
+            if (event.getGestureSource() != listPersonnelManagers && event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.MOVE);
             }
             event.consume();
         });
 
-        listProcentTeams.setOnDragDropped(event -> {
+        listPersonnelManagers.setOnDragDropped(event -> {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-                ObservableList<String> items = listProcentTeams.getItems();
+                ObservableList<String> items = listPersonnelManagers.getItems();
                 int draggedIndex = items.indexOf(db.getString());
-                int targetIndex = (int) (event.getY() / (listProcentTeams.getHeight() / items.size()));
+                int targetIndex = (int) (event.getY() / (listPersonnelManagers.getHeight() / items.size()));
 
                 if (draggedIndex >= 0 && draggedIndex < items.size() &&
                         targetIndex >= 0 && targetIndex < items.size()) {
@@ -343,40 +330,7 @@ public class ManageManagersController {
             mouseEvent.consume();
         }
     }
-    @FXML
-    private void handleTeam1PercentageChange() {
-        // Update the data structure storing percentages
-        updatePercentages();
-    }
 
-    // Method to handle changes in team2PercentageField
-    @FXML
-    private void handleTeam2PercentageChange() {
-        // Update the data structure storing percentages
-        updatePercentages();
-    }
-
-    // Method to handle changes in team3PercentageField
-    @FXML
-    private void handleTeam3PercentageChange() {
-        // Update the data structure storing percentages
-        updatePercentages();
-    }
-    private void updatePercentages() {
-        // Get the percentages from the text fields
-        double team1Percentage = Double.parseDouble(team1PercentageField.getText());
-        double team2Percentage = Double.parseDouble(team2PercentageField.getText());
-        double team3Percentage = Double.parseDouble(team3PercentageField.getText());
-
-        // Validate the total percentage
-        double totalPercentage = team1Percentage + team2Percentage + team3Percentage;
-        if (totalPercentage != 100.0) {
-            // Display an error message or handle invalid input
-        } else {
-            // Update the data structure with the new percentages
-            // You can update your data model here
-        }
-    }
 
     public void handleSelectedTeam(MouseEvent mouseEvent) {
         selectedTeam = (Team) listTeams.getSelectionModel().getSelectedItem();
