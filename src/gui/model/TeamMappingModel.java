@@ -33,10 +33,6 @@ public class TeamMappingModel {
         return allTeamMappings;
     }
 
-    private Map<Integer, Set<Integer>> getTeamToPersonnelMap() {
-        return teamToPersonnelMap;
-    }
-
     private void preprocessTeamMappings(List<CreateTeamMapping> allTeamMappings) {
         for (CreateTeamMapping c : allTeamMappings) {
             teamToPersonnelMap.computeIfAbsent(c.getTeamId(), k -> new HashSet<>()).add(c.getPersonnelId());

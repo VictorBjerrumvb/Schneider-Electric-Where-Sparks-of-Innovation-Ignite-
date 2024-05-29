@@ -32,30 +32,6 @@ public class Personnel implements Serializable {
 
     @Column(nullable = false)
     private String picture;
-
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
-
-    @ManyToOne
-    @JoinColumn(name = "geography_id")
-    private Geography geography;
-
-    // New fields for employee profile attributes
-    @Column(nullable = false)
-    private double overheadMultiplier;
-
-    @Column(nullable = false)
-    private double fixedAnnualAmount;
-
-    @Column(nullable = false)
-    private double annualEffectiveWorkingHours;
-
-    @Column(nullable = false)
-    private double utilizationPercentage;
-
-    // Constructors
-
     /**
      * Constructs a Personnel profile object with the specified attributes.
      * @param id The ID of the Personnel profile.

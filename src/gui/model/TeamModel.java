@@ -80,21 +80,6 @@ public class TeamModel {
             System.out.println(e);
         }
     }
-
-    public Team createTeamWithReturn(Team team) {
-        Team t = new Team();
-        try {
-            // Create the Team data through the manager
-            t = teamManager.createTeam(team);
-            // Add the created Team data to the observable list
-            allTeams.add(t);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return  t;
-    }
-
-
     private void preprocessTeam(List<Team> allTeam) {
         for (Team t : allTeam) {
             teamMap.put(t.getId(), t);

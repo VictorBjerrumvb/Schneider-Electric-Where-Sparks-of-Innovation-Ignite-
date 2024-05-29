@@ -51,16 +51,6 @@ public class TeamMappingManager {
         return teamMappingDAO.createTeamMapping(createTeamMapping);
     }
     /**
-     * Deletes team mappings associated with the specified personnel ID.
-     *
-     * @param personnelId The personnel ID of the team mappings to delete.
-     * @throws DataAccessException If an error occurs while accessing the data.
-     */
-    public void deleteTeamMappingsByPersonnelId(int personnelId) throws DataAccessException {
-        teamMappingDAO.deleteTeamMappingsByPersonnelId(personnelId);
-    }
-
-    /**
      * Deletes a team mapping with the specified mapping ID.
      *
      * @param createTeamMapping The CreateTeamMapping object containing the mapping ID to delete.
