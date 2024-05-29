@@ -255,6 +255,71 @@ public class CreatePersonnelController {
                 }
             }
         }
+        if (btnCreate.getText().equals(update)) {
+            String salaryText = txtSalary.getText().trim();
+            if (salaryText.isEmpty()) {
+                // This block of code will only execute if the salary text field is empty,
+                // but it seems like you want to set the team time allocations regardless of the salary.
+                // You should remove this condition so that the team time allocations are always set.
+                double team1Percentage = Double.parseDouble(txtTeam1Percentage.getText());
+                double team2Percentage = Double.parseDouble(txtTeam2Percentage.getText());
+                double team3Percentage = Double.parseDouble(txtTeam3Percentage.getText());
+
+                // Validate that the total percentage equals 100
+                if (team1Percentage + team2Percentage + team3Percentage != 100) {
+                    showAlert("Total percentage must equal 100%");
+                    return;
+                }
+
+                // Set time allocations for each team
+                teamTimeAllocations.put("Team 1", team1Percentage);
+                teamTimeAllocations.put("Team 2", team2Percentage);
+                teamTimeAllocations.put("Team 3", team3Percentage);
+            }
+            if (txtRole.getText().equals("")) {
+                txtRole.setPromptText("Please Fill in a role");
+            }
+            else {
+                try {
+                    // Attempt to parse the salary
+                    double salary = Double.parseDouble(salaryText);
+                    selectedPersonnel.setSalary(salary);
+                    selectedPersonnel.setRole(txtRole.getText());
+
+                    // Continue with creating the personnel
+                    selectedPersonnel.setUsername(txtUsername.getText());
+                    if (txtPassword.getText().equals(txtConfirmPassword.getText())) {
+                        selectedPersonnel.setPassword(BCrypt.hashpw(txtPassword.getText(),BCrypt.gensalt()));
+                    } else {
+                        txtPassword.setText("");
+                        txtConfirmPassword.setText("");
+                        txtPassword.setPromptText("Password Didn't Match");
+                        return;
+                    }
+
+                    // Database interaction to create personnel
+                    try {
+                        // Call the method to create personnel in the model
+                        personnelModel.updatePersonnel(selectedPersonnel);
+
+                        // Optionally, you can show a success message to the user
+                        // For example:
+                        showAlert("Personnel created successfully!");
+
+                        // Reset fields and update UI
+                        setup();
+                    } catch (Exception e) {
+                        // Handle database exception
+                        // For example:
+                        showAlert("Error creating personnel: " + e.getMessage());
+                    }
+                } catch (NumberFormatException e) {
+                    // Error occurred while parsing the salary, show an error message to the user
+                    // For example:
+                    showAlert("Invalid salary format! Please enter a valid number.");
+                }
+            }
+        }
     }
 
     private void showAlert(String s) {
