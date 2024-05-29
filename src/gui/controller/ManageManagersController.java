@@ -25,7 +25,6 @@ import javafx.scene.input.*;
 import java.io.IOException;
 
 public class ManageManagersController {
-    public ListView listProcentTeams;
     @FXML
     private ImageView imgLogo, imgProfileIcon;
     @FXML
@@ -58,14 +57,14 @@ public class ManageManagersController {
     public void initialize() {
         // Populate the list view with teams and their costs
         ObservableList<String> teamData = getTeamData();
-        listPersonnelManagers.setItems(teamData);
+        listManagerTeams.setItems(teamData);
 
         // Enable drag-and-drop functionality
-        listPersonnelManagers.setOnDragDetected(event -> {
+        listManagerTeams.setOnDragDetected(event -> {
             // Start drag-and-drop operation
-            String selectedItem = (String) listPersonnelManagers.getSelectionModel().getSelectedItem();
+            String selectedItem = (String) listManagerTeams.getSelectionModel().getSelectedItem();
             if (selectedItem != null) {
-                Dragboard db = listPersonnelManagers.startDragAndDrop(TransferMode.MOVE);
+                Dragboard db = listManagerTeams.startDragAndDrop(TransferMode.MOVE);
                 ClipboardContent content = new ClipboardContent();
                 content.putString(selectedItem);
                 db.setContent(content);
@@ -73,20 +72,20 @@ public class ManageManagersController {
             }
         });
 
-        listPersonnelManagers.setOnDragOver(event -> {
-            if (event.getGestureSource() != listPersonnelManagers && event.getDragboard().hasString()) {
+        listManagerTeams.setOnDragOver(event -> {
+            if (event.getGestureSource() != listManagerTeams && event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.MOVE);
             }
             event.consume();
         });
 
-        listPersonnelManagers.setOnDragDropped(event -> {
+        listManagerTeams.setOnDragDropped(event -> {
             Dragboard db = event.getDragboard();
             boolean success = false;
             if (db.hasString()) {
-                ObservableList<String> items = listPersonnelManagers.getItems();
+                ObservableList<String> items = listManagerTeams.getItems();
                 int draggedIndex = items.indexOf(db.getString());
-                int targetIndex = (int) (event.getY() / (listPersonnelManagers.getHeight() / items.size()));
+                int targetIndex = (int) (event.getY() / (listManagerTeams.getHeight() / items.size()));
 
                 if (draggedIndex >= 0 && draggedIndex < items.size() &&
                         targetIndex >= 0 && targetIndex < items.size()) {
@@ -376,33 +375,5 @@ public class ManageManagersController {
                 listManagerTeams.getItems().remove(team);
             }
         }
-    }
-
-    public void handleOnDroppedProcentTeams(DragEvent dragEvent) {
-        Dragboard db = dragEvent.getDragboard();
-        boolean success = false;
-        if (db.hasString() && db.getString().equals("personnel")) {
-            // Use dragPersonnel instead of retrieving from Dragboard
-            Team team = dragTeam;
-            ManagerMembers managerMembers = new ManagerMembers();
-            managerMembers.setManagerId(selectedManager.getId());
-            managerMembers.setTeamId(team.getId());
-            managerMembersModel.createManagerMembers(managerMembers);
-
-            // Update the items of listTeamMembers
-            listProcentTeams.getItems().add(team);
-
-            success = true;
-        }
-        dragEvent.setDropCompleted(success);
-        dragEvent.consume();
-
-    }
-
-    public void handleOnDragOverProcentTeams(DragEvent dragEvent) {
-        if (dragEvent.getGestureSource() != listProcentTeams && dragEvent.getDragboard().hasString()) {
-            dragEvent.acceptTransferModes(TransferMode.MOVE);
-        }
-        dragEvent.consume();
     }
 }

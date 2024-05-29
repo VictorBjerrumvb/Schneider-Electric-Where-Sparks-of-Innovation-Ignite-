@@ -108,7 +108,8 @@ public class ManagerMembersModel {
         }
 
         // Retrieve the manager IDs for the specified personnel
-        List<Integer> managerIds = personnelToManagerMap.get(personnel.getId());
+        List<Integer> managerIds;
+        managerIds = personnelToManagerMap.get(personnel.getId());
         if (managerIds != null) {
             PersonnelModel personnelModel = new PersonnelModel();
             for (Integer managerId : managerIds) {
