@@ -106,8 +106,4 @@ public class PersonnelModel {
             personnelMap.put(p.getId(), p);
         }
     }
-
-    public Personnel createPersonnelWithReturn(Personnel newPersonnel) {
-        return newPersonnel;
-    }
 }

@@ -50,22 +50,6 @@ public class TeamMappingManager {
     public CreateTeamMapping createTeamMapping(CreateTeamMapping createTeamMapping) throws DataAccessException {
         return teamMappingDAO.createTeamMapping(createTeamMapping);
     }
-
-    /**
-     * Deletes a team mapping with the specified mapping ID.
-     *
-     * @param mappingId The mapping ID of the team mapping to delete.
-     * @throws DataAccessException If an error occurs while accessing the data.
-     */
-    public void deleteTeamMappingByMappingId(int mappingId) throws Exception {
-        try {
-            teamMappingDAO.deleteTeamMappingByMappingId(mappingId);
-        } catch (Exception e) {
-            logger.error("Failed to delete team mapping with mapping ID {}: {}", mappingId, e.getMessage());
-            throw e;
-        }
-    }
-
     /**
      * Deletes team mappings associated with the specified personnel ID.
      *
@@ -74,17 +58,6 @@ public class TeamMappingManager {
      */
     public void deleteTeamMappingsByPersonnelId(int personnelId) throws DataAccessException {
         teamMappingDAO.deleteTeamMappingsByPersonnelId(personnelId);
-    }
-
-    /**
-     * Deletes team mappings associated with the specified team ID and personnel ID.
-     *
-     * @param teamId      The team ID of the team mappings to delete.
-     * @param personnelId The personnel ID of the team mappings to delete.
-     * @throws DataAccessException If an error occurs while accessing the data.
-     */
-    public void deleteTeamMappingsByTeamAndPersonnelId(int teamId, int personnelId) throws DataAccessException {
-        teamMappingDAO.deleteTeamMappingByTeamAndPersonnelId(teamId, personnelId);
     }
 
     /**

@@ -244,35 +244,4 @@ public class Personnel implements Serializable {
         return username + " | " + role;
     }
 
-    public double getOverheadMultiplier() {
-        return overheadMultiplier;
-    }
-
-    public void setOverheadMultiplier(double overheadMultiplier) {
-        this.overheadMultiplier = overheadMultiplier;
-    }
-
-    public double getFixedAnnualAmount() {
-        return fixedAnnualAmount;
-    }
-
-    public void setFixedAnnualAmount(double fixedAnnualAmount) {
-        this.fixedAnnualAmount = fixedAnnualAmount;
-    }
-
-    public double getAnnualEffectiveWorkingHours() {
-        return annualEffectiveWorkingHours;
-    }
-
-    public void setAnnualEffectiveWorkingHours(double annualEffectiveWorkingHours) {
-        this.annualEffectiveWorkingHours = annualEffectiveWorkingHours;
-    }
-
-    public double getUtilizationPercentage() {
-        return utilizationPercentage;
-    }
-
-    public void setUtilizationPercentage(double utilizationPercentage) {
-        this.utilizationPercentage = utilizationPercentage;
-    }
 }
